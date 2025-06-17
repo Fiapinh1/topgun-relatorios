@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório Drone - TOPGUN</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .container-relatorio {
+      max-width: 480px;
+      margin: 24px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 20px 16px;
+    }
+
+    h2, h3 {
+      color: #1f2937;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #374151;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      font-size: 1rem;
+    }
+
+    .btn {
+      margin-top: 15px;
+      padding: 10px 16px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background-color: #1e40af;
+    }
+
+    .btn-remove-fazenda, .btn-remove-insumo, .btn-remove-talhao {
+      background: #ef4444 !important;
+      margin-top: 10px;
+      width: auto !important;
+      padding: 6px 10px !important;
+      font-size: 0.95rem !important;
+    }
+
+    .box-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .fazenda-box {
+      background: #f3f4f6;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .talhao-group input {
+      width: calc(30% - 10px);
+      display: inline-block;
+      margin: 5px 5px 5px 0;
+    }
+
+    .insumo-group input {
+      width: calc(45% - 10px);
+      display: inline-block;
+      margin: 5px 5px 5px 0;
+    }
+
+    pre {
+      background: #f1f5f9;
+      padding: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 1rem;
+    }
+
+    .resultado-relatorio {
+      font-size: 1.08em;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      word-break: break-word;
+    }
+
+    .botao-copiar {
+      width: 100%;
+      padding: 16px 0;
+      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+
+    .botao-copiar:active {
+      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      .container-relatorio {
+        max-width: 98vw;
+        padding: 12px 4vw;
+        border-radius: 10px;
+      }
+
+      .box-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      input, select, pre {
+        font-size: 1rem;
+      }
+
+      .botao-copiar {
+        font-size: 1em;
+        padding: 14px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Relatório de Aplicação - TOPGUN</h2>
+    <label>Data de aplicação:</label>
+    <input id="data_aplicacao" type="date" />
+    <label>Frente:</label><input id="frente" placeholder="01" />
+    <label>Piloto:</label><input id="piloto" placeholder="Matheus" />
+    <label>Auxiliar:</label><input id="auxiliar" placeholder="Jefferson" />
+
+    <div id="fazendas"></div>
+    <button class="btn" onclick="addFazenda()">+ Adicionar Fazenda</button>
+
+    <div class="box-actions">
+      <button class="btn" onclick="gerarRelatorio()">📄 Gerar Relatório</button>
+      <button class="btn" onclick="salvarPDF()">📅 Salvar em PDF</button>
+    </div>
+
+    <h3>📍 Resultado:</h3>
+    <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
+    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">📋 Copiar Relatório</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Adiciona uma fazenda ao iniciar
+    window.onload = function() {
+      addFazenda();
+    };
+
+    function addFazenda() {
+      const container = document.createElement("div");
+      container.className = "fazenda-box";
+      container.innerHTML = `
+        <label>Fazenda:</label><input name="fazenda" />
+        <label>Código:</label><input name="codigo" />
+        <label>OS:</label><input name="os" />
+        <label>Objetivo:</label>
+        <select name="objetivo">
+          <option value="">Selecione</option>
+          <option value="Área total">Área total</option>
+          <option value="Catação">Catação</option>
+        </select>
+        <label>Tipo de Produto:</label>
+        <select name="produto">
+          <option value="">Selecione</option>
+          <option value="Herbicida">Herbicida</option>
+          <option value="Inseticida">Inseticida</option>
+          <option value="Cotesia">Cotesia</option>
+          <option value="Maturador">Maturador</option>
+        </select>
+        <label>Status:</label>
+        <select name="status">
+          <option value="Finalizada">Sim (Finalizada)</option>
+          <option value="Em andamento">Não (Em andamento)</option>
+        </select>
+        <label>Produto restante (litros):</label><input name="restante" placeholder="0" />
+        <label>Insumos utilizados:</label>
+        <div class="insumos"></div>
+        <button class="btn btn-remove-insumo" type="button" onclick="addInsumo(this)" style="background:#2563eb;">+ Adicionar Insumo</button>
+        <div class="talhoes"></div>
+        <button class="btn btn-remove-talhao" type="button" onclick="addTalhao(this)" style="background:#2563eb;">+ Adicionar Talhão</button>
+        <button class="btn btn-remove-fazenda" type="button" onclick="removerFazenda(this)">🗑️ Remover Fazenda</button>
+      `;
+      document.getElementById("fazendas").appendChild(container);
+
+      // Esconde o botão de remover da primeira fazenda
+      const fazendas = document.querySelectorAll('.fazenda-box');
+      fazendas.forEach((f, i) => {
+        const btnRemove = f.querySelector('.btn-remove-fazenda');
+        if (btnRemove) btnRemove.style.display = (i === 0) ? 'none' : '';
+      });
+    }
+
+    function addInsumo(btn) {
+      const container = btn.previousElementSibling;
+      const insumo = document.createElement("div");
+      insumo.className = "insumo-group";
+      insumo.innerHTML = `
+        <input placeholder="Nome do insumo" />
+        <input placeholder="Dose/quantidade" />
+        <button type="button" onclick="this.parentNode.remove()" style="color:#fff;background:#ef4444;border:none;border-radius:4px;cursor:pointer;">🗑️</button>
+      `;
+      container.appendChild(insumo);
+    }
+
+    function addTalhao(btn) {
+      const container = btn.previousElementSibling;
+      const talhao = document.createElement("div");
+      talhao.className = "talhao-group";
+      talhao.innerHTML = `
+        T:<input placeholder="Número" style="width:60px" /> - 
+        Área:<input placeholder="Área do talhão" style="width:90px" /> ha - 
+        Aplicado:<input placeholder="Área aplicada" style="width:90px" /> ha
+        <button type="button" onclick="this.parentNode.remove()" style="color:#fff;background:#ef4444;border:none;border-radius:4px;cursor:pointer;">🗑️</button>
+      `;
+      container.appendChild(talhao);
+    }
+
+    function removerFazenda(btn) {
+      const fazendas = document.querySelectorAll('.fazenda-box');
+      if (fazendas.length > 1) {
+        btn.parentNode.remove();
+      } else {
+        alert("A primeira fazenda não pode ser removida!");
+      }
+    }
+
+    function gerarRelatorio() {
+      const frente = document.getElementById("frente").value;
+      const piloto = document.getElementById("piloto").value;
+      const auxiliar = document.getElementById("auxiliar").value;
+      const dataAplicacaoRaw = document.getElementById("data_aplicacao").value;
+      let dataAplicacao = "";
+      if (dataAplicacaoRaw) {
+        const [ano, mes, dia] = dataAplicacaoRaw.split("-");
+        dataAplicacao = `${dia}/${mes}/${ano}`;
+      }
+      const data = new Date();
+      const dataEnvio = data.toLocaleDateString('pt-BR');
+      const horaEnvio = data.toLocaleTimeString('pt-BR');
+
+      let relatorio = `📄 *Rendimento aplicação Drone - TOPGUN*\n📅 *Data de aplicação:* ${dataAplicacao}\n\n`;
+      relatorio += `*Frente:* ${frente}\n*Piloto:* ${piloto}\n*Auxiliar:* ${auxiliar}\n____________________________\n`;
+
+      const fazendas = document.querySelectorAll(".fazenda-box");
+      let totalGeral = 0;
+
+      fazendas.forEach(fazenda => {
+        const nome = fazenda.querySelector("input[name='fazenda']").value;
+        const codigo = fazenda.querySelector("input[name='codigo']").value;
+        const os = fazenda.querySelector("input[name='os']").value;
+        const objetivo = fazenda.querySelector("select[name='objetivo']").value;
+        const produto = fazenda.querySelector("select[name='produto']").value;
+        const status = fazenda.querySelector("select[name='status']").value;
+        const restante = fazenda.querySelector("input[name='restante']").value;
+        const talhoes = fazenda.querySelectorAll(".talhoes .talhao-group");
+        relatorio += `\n*Faz:* ${nome}\n*Cód:* ${codigo}\n*OS:* ${os}\n*Objetivo:* ${objetivo}\n*Produto:* ${produto}\n*Status:* ${status === "Finalizada" ? "✅ Finalizada" : "🔄 Em andamento"}\n`;
+        let subtotal = 0;
+        talhoes.forEach(t => {
+          const num = t.querySelectorAll("input")[0].value;
+          const areaTalhao = parseFloat(t.querySelectorAll("input")[1].value.replace(',', '.')) || 0;
+          const areaAplicada = parseFloat(t.querySelectorAll("input")[2].value.replace(',', '.')) || 0;
+          relatorio += `T:${num} - Área: ${areaTalhao.toFixed(2)} ha - Aplicado: ${areaAplicada.toFixed(2)} ha\n`;
+          subtotal += areaAplicada;
+        });
+        relatorio += `\n*Total aplicado na fazenda:* ${subtotal.toFixed(2)} ha\n*Produto restante:* ${restante} lts\n`;
+        totalGeral += subtotal;
+
+        const insumos = fazenda.querySelectorAll(".insumos .insumo-group");
+        if (insumos.length > 0) {
+          relatorio += `*Insumos utilizados:*\n`;
+          insumos.forEach(i => {
+            const nome = i.querySelectorAll("input")[0].value;
+            const dose = i.querySelectorAll("input")[1].value;
+            relatorio += `- ${nome} (${dose})\n`;
+          });
+        }
+      });
+
+      relatorio += `\n📊 *Área total aplicada:* ${totalGeral.toFixed(2)} ha`;
+      relatorio += `\n\nRelatório enviado em: ${dataEnvio} ${horaEnvio}`;
+      document.getElementById("relatorio").textContent = relatorio;
+    }
+
+    function salvarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const texto = document.getElementById("relatorio").textContent;
+      const linhas = texto.split('\n');
+      let y = 10;
+      linhas.forEach(linha => {
+        doc.text(linha, 10, y);
+        y += 7;
+      });
+      doc.save("relatorio_aplicacao.pdf");
+    }
+
+    // Função para copiar texto com fallback
+    function copiarRelatorio() {
+      const texto = document.getElementById("relatorio").textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto)
+          .then(() => alert('Relatório copiado!'))
+          .catch(() => fallbackCopyTextToClipboard(texto));
+      } else {
+        fallbackCopyTextToClipboard(texto);
+      }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Relatório copiado!');
+      } catch (err) {
+        alert('Não foi possível copiar o relatório.');
+      }
+      document.body.removeChild(textArea);
+    }
+  </script>
+</body>
+</html>
+
