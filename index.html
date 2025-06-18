@@ -4,12 +4,44 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Relatório Drone - TOPGUN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f7f7f7;
+      min-height: 100vh;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #090909;
+      background: radial-gradient(ellipse at 70% 30%, #4e5c2a 0%, #181a16 100%);
+      position: relative;
+      transition: background 0.5s;
+    }
+
+    .shape {
+      position: absolute;
+      width: 60vw;
+      height: 60vw;
+      max-width: 400px;
+      max-height: 400px;
+      background: transparent;
+      border-radius: 50%;
+      border: 18vw solid #fff;
+      opacity: 0.12;
+      z-index: 0;
+      filter: blur(2px);
+      transition: opacity 0.3s;
+    }
+
+    .shape.top-left {
+      top: -30vw;
+      left: -30vw;
+      transform: rotate(20deg);
+    }
+
+    .shape.bottom-right {
+      bottom: -30vw;
+      right: -30vw;
+      transform: rotate(-15deg);
     }
 
     .container {
@@ -37,14 +69,14 @@
     label {
       display: block;
       margin-top: 10px;
-      color: #374151;
+      color: #2f361f;
     }
 
     input, select {
-      width: 100%;
+      width: 98%;
       padding: 10px;
       margin-top: 4px;
-      border: 1px solid #ccc;
+      border: 1px solid #3e4824;
       border-radius: 6px;
       background-color: #f1f5f9;
       font-size: 1rem;
@@ -53,7 +85,7 @@
     .btn {
       margin-top: 15px;
       padding: 10px 16px;
-      background-color: #2563eb;
+      background-color: #374022;
       color: white;
       border: none;
       border-radius: 6px;
@@ -67,7 +99,7 @@
     }
 
     .btn-remove-fazenda, .btn-remove-insumo, .btn-remove-talhao {
-      background: #ef4444 !important;
+      background: #3a4422 !important;
       margin-top: 10px;
       width: auto !important;
       padding: 6px 10px !important;
@@ -102,7 +134,7 @@
     }
 
     pre {
-      background: #f1f5f9;
+      background: #d2e69f;
       padding: 15px;
       white-space: pre-wrap;
       word-wrap: break-word;
@@ -122,7 +154,7 @@
     .botao-copiar {
       width: 100%;
       padding: 16px 0;
-      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+      background: linear-gradient(90deg, #628315 0%, #34342e 100%);
       color: #fff;
       font-size: 1.1em;
       font-weight: 600;
@@ -138,6 +170,30 @@
       background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
       transform: scale(0.98);
     }
+
+    /* Estilos para o relatório */
+.sua-classe-relatorio, .resultado, .caixa-relatorio {
+  background: #f5f7fa; /* Fundo mais escuro */
+  color: #222;         /* Texto bem escuro */
+  font-size: 1.1rem;   /* Texto maior */
+  font-weight: 500;
+  line-height: 1.7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+/* Para títulos dentro da caixa */
+.sua-classe-relatorio strong, .resultado strong, .caixa-relatorio strong {
+  color: #1a2a0a;
+  font-weight: 700;
+}
+
+/* Para ícones ou emojis, se quiser destacar */
+.sua-classe-relatorio .emoji, .resultado .emoji, .caixa-relatorio .emoji {
+  font-size: 1.2em;
+  vertical-align: middle;
+}
 
     @media (max-width: 600px) {
       .container {
@@ -168,31 +224,58 @@
         padding: 14px 0;
       }
     }
+
+    /* Toast de feedback */
+#toast {
+  display:none;
+  position:fixed;
+  bottom:32px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#222;
+  color:#fff;
+  padding:14px 28px;
+  border-radius:8px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  font-size:1rem;
+  z-index:9999;
+  transition:opacity 0.3s;
+}
   </style>
 </head>
 <body>
+  <div class="shape top-left"></div>
+  <div class="shape bottom-right"></div>
   <div class="container">
-    <h2>Relatório de Aplicação - TOPGUN</h2>
+    <h2>Relatório de Aplicação - TOP GUN PULVERIZAÇÕES </h2>
     <label>Data de aplicação:</label>
     <input id="data_aplicacao" type="date" />
     <label>Frente:</label><input id="frente" placeholder="Digite a frente de serviço" />
-    <label>Piloto:</label><input id="piloto" placeholder="Digite o nome do Piloto" />
-    <label>Auxiliar:</label><input id="auxiliar" placeholder="Digite o nome do Auxiliar" />
+    <label>Piloto:</label><input id="piloto" placeholder="Digite o Piloto" />
+    <label>Auxiliar:</label><input id="auxiliar" placeholder="Digite o Auxiliar" />
 
     <div id="fazendas"></div>
     <button class="btn" onclick="addFazenda()">+ Adicionar Fazenda</button>
 
     <div class="box-actions">
-      <button class="btn" onclick="gerarRelatorio()">📄 Gerar Relatório</button>
-      <button class="btn" onclick="salvarPDF()">📅 Salvar em PDF</button>
+      <button class="btn" onclick="gerarRelatorio()"> <i data-lucide="file-text"></i>Gerar Relatório</button>
+      <button class="btn" onclick="salvarPDF()"><i data-lucide="file-down"></i>Salvar em PDF</button>
     </div>
 
-    <h3>📍 Resultado:</h3>
+    <p><i data-lucide="map-pin"></i> <strong>Resultado:</strong></p>
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
-    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">📋 Copiar Relatório</button>
+    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()"><i data-lucide="copy"></i>Copiar Relatório</button>
   </div>
 
+  <!-- Toast de feedback -->
+<div id="toast" style="display:none;position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:14px 28px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.15);font-size:1rem;z-index:9999;transition:opacity 0.3s;">
+  Relatório copiado com sucesso!
+</div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
   <script>
     // Adiciona uma fazenda ao iniciar
     window.onload = function() {
@@ -260,7 +343,7 @@
       const talhao = document.createElement("div");
       talhao.className = "talhao-group";
       talhao.innerHTML = `
-        T:<input placeholder="Número" style="width:60px" /> - 
+        Talhão:<input placeholder="Número" style="width:60px" /> - 
         Área:<input placeholder="Área do talhão" style="width:90px" /> ha - 
         Aplicado:<input placeholder="Área aplicada" style="width:90px" /> ha
         <button type="button" onclick="this.parentNode.remove()" style="color:#fff;background:#ef4444;border:none;border-radius:4px;cursor:pointer;">🗑️</button>
@@ -352,7 +435,10 @@
       const texto = document.getElementById("relatorio").textContent;
       if (navigator.clipboard) {
         navigator.clipboard.writeText(texto)
-          .then(() => alert('Relatório copiado!'))
+          .then(() => {
+            // Exibe o toast de sucesso
+            showToast('Relatório copiado com sucesso!');
+          })
           .catch(() => fallbackCopyTextToClipboard(texto));
       } else {
         fallbackCopyTextToClipboard(texto);
@@ -367,11 +453,24 @@
       textArea.select();
       try {
         document.execCommand('copy');
-        alert('Relatório copiado!');
+        // Exibe o toast de sucesso
+        showToast('Relatório copiado com sucesso!');
       } catch (err) {
         alert('Não foi possível copiar o relatório.');
       }
       document.body.removeChild(textArea);
+    }
+
+    // Função para mostrar o toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.style.display = 'none', 300);
+      }, 2000);
     }
   </script>
 </body>
