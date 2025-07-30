@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programação de Trabalho - Drone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: radial-gradient(ellipse at 70% 30%, #1e304b  0%, #181a16 100%);
+      min-height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+      color: #090909;
+    }
+
+    .drone-icon {
+      position: fixed;
+      z-index: 0;
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .drone-icon i {
+      font-size: 4rem;
+      color: #34d399;
+    }
+
+    .drone-1 {
+      top: 5%;
+      left: 5%;
+    }
+
+    .drone-2 {
+      bottom: 5%;
+      right: 5%;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(5deg); }
+      50% { transform: translateY(-15px) rotate(-5deg); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      color: #1f2937;
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #2f361f;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #3e4824;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .separator {
+      border: none;
+      border-top: 2px dashed #34d399;
+      margin: 20px 0;
+      opacity: 0.5;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background-color: #1e304b ;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #2a4e3a;
+    }
+
+    .btn-copiar {
+      background: linear-gradient(90deg, #040a1c  0%, #07102b 100%);
+      margin-top: 10px;
+    }
+
+    .btn-copiar:hover {
+      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+    }
+
+    .btn-copiar i {
+      margin-right: 8px;
+    }
+
+    pre {
+      background: #b7e73c2e;
+      padding: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    /* Toast de notificação */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 15px;
+        padding: 15px;
+      }
+      
+      #toast {
+        width: 90%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ícones de drone animados -->
+  <div class="drone-icon drone-1">
+    <i data-lucide="drone"></i>
+  </div>
+  <div class="drone-icon drone-2">
+    <i data-lucide="quadcopter"></i>
+  </div>
+
+  <!-- Toast de notificação -->
+  <div id="toast">
+    <i data-lucide="check-circle"></i>
+    <span>Relatório copiado para a área de transferência!</span>
+  </div>
+
+  <div class="container">
+    <h2><i data-lucide="calendar-days"></i> PROGRAMAÇÃO DE TRABALHO</h2>
+    
+    <label>Data para aplicação:</label>
+    <input type="date" id="data_aplicacao">
+    
+    <label>Estado:</label>
+    <select id="estado" onchange="carregarUnidades()">
+      <option value="">Selecione o estado</option>
+      <option value="SP">São Paulo (SP)</option>
+      <option value="MG">Minas Gerais (MG)</option>
+    </select>
+    
+    <label>Unidade:</label>
+    <select id="unidade">
+      <option value="">Selecione primeiro o estado</option>
+    </select>
+    
+    <label>Frente:</label>
+    <input id="frente" placeholder="Número da frente">
+    
+    <label>Piloto:</label>
+    <input id="piloto" placeholder="Nome do piloto">
+    
+    <label>Auxiliar:</label>
+    <input id="auxiliar" placeholder="Nome do auxiliar">
+    
+    <label>Drone:</label>
+    <select id="drone">
+      <option value="">Selecione o drone</option>
+      <option value="DJI Agras T20">DJI Agras T20</option>
+      <option value="DJI Agras T25">DJI Agras T25</option>
+      <option value="DJI Agras T30">DJI Agras T30</option>
+      <option value="DJI Agras T40">DJI Agras T40</option>
+      <option value="DJI Agras T50">DJI Agras T50</option>
+    </select>
+    
+    <label>Objetivo:</label>
+    <select id="objetivo">
+      <option value="">Selecione o objetivo</option>
+      <option value="Área Total">Aplicação - Área Total</option>
+      <option value="Catação">Aplicação - Catação</option>
+      <option value="Mapeamento">Mapeamento</option>
+      <option value="Monitoramento">Monitoramento</option>
+      <option value="Pulverização">Pulverização</option>
+    </select>
+    
+    <label>Tipo de Produto:</label>
+    <select id="produto">
+      <option value="">Selecione o produto</option>
+      <option value="Herbicida">Herbicida</option>
+      <option value="Inseticida">Inseticida</option>
+      <option value="Fungicida">Fungicida</option>
+      <option value="Fertilizante">Fertilizante</option>
+    </select>
+    
+    <hr class="separator">
+    
+    <label>OS:</label>
+    <input id="os" placeholder="Número da OS">
+    
+    <label>Fazenda:</label>
+    <input id="fazenda" placeholder="Nome da fazenda">
+    
+    <label>Código:</label>
+    <input id="codigo" placeholder="Código da fazenda">
+    
+    <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
+    
+    <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
+    
+    <button class="btn btn-copiar" onclick="copiarRelatorio()" id="copiarBtn">
+      <i data-lucide="copy"></i> Copiar Relatório
+    </button>
+  </div>
+
+  <script>
+    // Dados das unidades
+    const unidadesPorEstado = {
+      "MG": [
+        "Delta - Delta",
+        "Delta - Volta Grande",
+        "Floretadora - Santa Cecília (João Pinheiro - MG)"
+
+      ],
+      "SP": [
+        "Usina Gasa (Andradina - SP)",
+        "Usina Rafard (Rafard - SP)",
+        "Usina São Francisco (Elias Fausto - SP)",
+        "Usina Barra Bonita (Barra Bonita - SP)",
+        "Usina Costa Pinto (Piracicaba - SP)",
+        "Usina Leme (Leme - SP)",
+        "Usina Destivale (Araçatuba - SP)",
+        "Usina Mundial (Mirandópolis - SP)",
+        "Usina Ipaussu (Ipaussu - SP)",
+        "Usina Diamante (Jaú - SP)",
+        "Usina Univalem (Valparaiso - SP)",
+        "Usina Benálcool (Bento de Abreu - SP)"
+      ]
+    };
+
+    // Carrega unidades conforme estado selecionado
+    function carregarUnidades() {
+      const estado = document.getElementById("estado").value;
+      const selectUnidade = document.getElementById("unidade");
+      
+      selectUnidade.innerHTML = '<option value="">Selecione a unidade</option>';
+      
+      if (estado && unidadesPorEstado[estado]) {
+        unidadesPorEstado[estado].forEach(unidade => {
+          const option = document.createElement("option");
+          option.value = unidade;
+          option.textContent = unidade;
+          selectUnidade.appendChild(option);
+        });
+      }
+    }
+
+    // Gera o relatório
+    function gerarRelatorio() {
+      const data = document.getElementById("data_aplicacao").value;
+      const unidade = document.getElementById("unidade").value;
+      const frente = document.getElementById("frente").value;
+      const piloto = document.getElementById("piloto").value;
+      const auxiliar = document.getElementById("auxiliar").value;
+      const drone = document.getElementById("drone").value;
+      const objetivo = document.getElementById("objetivo").value;
+      const produto = document.getElementById("produto").value;
+      const os = document.getElementById("os").value;
+      const fazenda = document.getElementById("fazenda").value;
+      const codigo = document.getElementById("codigo").value;
+
+      let relatorio = `📅 *Data para aplicação:* ${data}\n\n`;
+      relatorio += ` *Unidade:* ${unidade}\n`;
+      relatorio += ` *Frente:* ${frente}\n`;
+      relatorio += ` *Piloto:* ${piloto}\n`;
+      relatorio += ` *Auxiliar:* ${auxiliar}\n`;
+      relatorio += ` *Drone:* ${drone}\n`;
+      relatorio += ` *Objetivo:* ${objetivo}\n`;
+      relatorio += ` *Tipo de Produto:* ${produto}\n`;
+      relatorio += `________________________________\n\n`;
+      relatorio += `📋 *OS:* ${os}\n`;
+      relatorio += `🌾 *Fazenda:* ${fazenda}\n`;
+      relatorio += `🔢 *Código:* ${codigo}\n`;
+
+      document.getElementById("relatorio").textContent = relatorio;
+    }
+
+    // Copia o relatório para a área de transferência
+    function copiarRelatorio() {
+      const relatorio = document.getElementById("relatorio").textContent;
+      
+      // Tenta usar a API moderna de clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(relatorio)
+          .then(() => mostrarToast())
+          .catch(err => {
+            console.error('Erro ao copiar:', err);
+            copiarFallback(relatorio);
+          });
+      } else {
+        // Fallback para navegadores mais antigos
+        copiarFallback(relatorio);
+      }
+    }
+
+    // Método fallback para copiar texto
+    function copiarFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        mostrarToast();
+      } catch (err) {
+        alert('Não foi possível copiar o relatório. Selecione o texto e pressione Ctrl+C.');
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    // Mostra o toast de notificação
+    function mostrarToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      
+      // Esconde o toast após 3 segundos
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Inicializa os ícones
+    lucide.createIcons();
+  </script>
+</body>
+</html>
