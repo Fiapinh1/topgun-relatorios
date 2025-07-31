@@ -90,8 +90,8 @@
 
     .btn {
       margin-top: 20px;
-      padding: 12px 16px;
-      background-color: #1e304b ;
+      padding: 15px 16px;
+      background-color: #1e304b;
       color: white;
       border: none;
       border-radius: 6px;
@@ -99,6 +99,7 @@
       font-size: 1rem;
       width: 100%;
       transition: background 0.3s;
+      min-height: 50px;
     }
 
     .btn:hover {
@@ -109,17 +110,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
       cursor: pointer;
       user-select: none;
     }
 
     .btn-copiar:hover {
       background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
-    }
-
-    .btn-copiar i {
-      pointer-events: none; /* Faz o clique passar pelo ícone para o botão */
     }
 
     pre {
@@ -283,9 +279,7 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-   <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()"><i data-lucide="copy"></i> Copiar Relatório</button>
-    </button>
-    
+    <button class="btn btn-copiar" id="copiarBtn" onclick="copiarRelatorio()"><i data-lucide="copy"></i> Copiar Relatório</button>
   </div>
 
   <script>
@@ -368,52 +362,89 @@
       document.getElementById("relatorio").textContent = relatorio;
     }
 
-     function copiarRelatorio() {
+    // Função principal de cópia
+    function copiarRelatorio() {
       const texto = document.getElementById("relatorio").textContent;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(texto)
-          .then(() => showToast('Relatório copiado com sucesso!'))
-          .catch(() => fallbackCopyTextToClipboard(texto));
+      
+      if (copiarParaAreaTransferencia(texto)) {
+        mostrarToast();
       } else {
-        fallbackCopyTextToClipboard(texto);
+        // Fallback para dispositivos que não suportam cópia automática
+        selecionarTextoParaCopiar();
       }
     }
 
-    // Método fallback para copiar texto
-    function copiarFallback(text) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      document.body.appendChild(textarea);
-      textarea.select();
+    // Função universal para copiar texto
+    function copiarParaAreaTransferencia(texto) {
+      // Tenta usar a API moderna primeiro
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(texto)
+          .then(() => true)
+          .catch(() => false);
+        return true;
+      }
+      
+      // Método alternativo para outros navegadores
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = texto;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // Para mobile
+        
+        const success = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        return success;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    // Fallback para selecionar o texto manualmente
+    function selecionarTextoParaCopiar() {
+      const relatorio = document.getElementById("relatorio");
+      const range = document.createRange();
+      range.selectNode(relatorio);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
       
       try {
         document.execCommand('copy');
         mostrarToast();
       } catch (err) {
-        alert('Não foi possível copiar o relatório. Selecione o texto e pressione Ctrl+C.');
+        alert("Selecione o texto abaixo e pressione Copiar:\n\n" + relatorio.textContent);
       }
       
-      document.body.removeChild(textarea);
+      window.getSelection().removeAllRanges();
     }
 
     // Mostra o toast de notificação
     function mostrarToast() {
       const toast = document.getElementById('toast');
+      const btn = document.getElementById('copiarBtn');
+      
+      // Feedback visual no botão
+      btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
+      btn.style.backgroundColor = '#4CAF50';
+      
+      // Mostra o toast
       toast.classList.add('show');
       
-      // Esconde o toast após 3 segundos
+      // Restaura após 3 segundos
       setTimeout(() => {
         toast.classList.remove('show');
+        btn.innerHTML = '<i data-lucide="copy"></i> Copiar Relatório';
+        btn.style.backgroundColor = '#1e304b';
+        lucide.createIcons(); // Atualiza ícones
       }, 3000);
     }
 
     // Inicializa os ícones
     lucide.createIcons();
-
-    // 🔹 Torna o botão copiável ao clicar em qualquer parte dele
-    document.getElementById("copiarBtn").addEventListener("click", copiarRelatorio);
-
   </script>
 </body>
 </html>
