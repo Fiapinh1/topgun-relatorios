@@ -379,6 +379,9 @@
       document.getElementById("relatorio").textContent = relatorio;
     }
 
+    // Inicializa ícones
+    lucide.createIcons();
+
      // Função principal de cópia otimizada para iOS
     async function copiarRelatorio() {
       const texto = document.getElementById("relatorio").textContent;
@@ -449,7 +452,7 @@
       }, 3000);
     }
 
-      lucide.createIcons();
+    
   </script>
 </body>
 </html>
