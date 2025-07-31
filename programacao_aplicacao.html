@@ -283,8 +283,7 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-    <button type="button" class="btn btn-copiar" id="copiarBtn" onclick="copiarRelatorio()">
-      <i data-lucide="copy"></i> Copiar Relatório
+   <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()"><i data-lucide="copy"></i> Copiar Relatório</button>
     </button>
     
   </div>
@@ -369,21 +368,14 @@
       document.getElementById("relatorio").textContent = relatorio;
     }
 
-    // Copia o relatório para a área de transferência
-    function copiarRelatorio() {
-      const relatorio = document.getElementById("relatorio").textContent;
-      
-      // Tenta usar a API moderna de clipboard
+     function copiarRelatorio() {
+      const texto = document.getElementById("relatorio").textContent;
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(relatorio)
-          .then(() => mostrarToast())
-          .catch(err => {
-            console.error('Erro ao copiar:', err);
-            copiarFallback(relatorio);
-          });
+        navigator.clipboard.writeText(texto)
+          .then(() => showToast('Relatório copiado com sucesso!'))
+          .catch(() => fallbackCopyTextToClipboard(texto));
       } else {
-        // Fallback para navegadores mais antigos
-        copiarFallback(relatorio);
+        fallbackCopyTextToClipboard(texto);
       }
     }
 
