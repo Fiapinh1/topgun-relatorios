@@ -6,7 +6,6 @@
   <title>Programação de Trabalho - Drone</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/clipboard-polyfill@3.0.0/dist/clipboard-polyfill.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -92,7 +91,7 @@
     .btn {
       margin-top: 20px;
       padding: 12px 16px;
-      background-color: #1e304b;
+      background-color: #1e304b ;
       color: white;
       border: none;
       border-radius: 6px;
@@ -107,21 +106,29 @@
     }
 
     .botao-copiar {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      gap: 8px;
     }
 
     .botao-copiar:hover {
-      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+      background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
+      transform: translateY(-2px);
     }
 
-    .botao-copiar i {
-      pointer-events: none;
+    .botao-copiar:active {
+      transform: translateY(0);
     }
 
     pre {
@@ -167,11 +174,6 @@
       #toast {
         width: 90%;
         text-align: center;
-      }
-      
-      .btn, .botao-copiar {
-        padding: 14px 16px;
-        min-height: 50px;
       }
     }
   </style>
@@ -220,7 +222,7 @@
         <option value="6">Frente 6</option>
         <option value="7">Frente 7</option>
         <option value="8">Frente 8</option>
-    </select>
+    <select>
 
     <label>Piloto:</label>
     <select id="piloto">
@@ -290,7 +292,10 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-    <button class="btn botao-copiar" id="copiarBtn"><i data-lucide="copy"></i> Copiar Relatório</button>
+    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
+      <i data-lucide="copy"></i> Copiar Relatório
+    </button>
+    
   </div>
 
   <script>
@@ -373,7 +378,7 @@
       document.getElementById("relatorio").textContent = relatorio;
     }
 
-    // Função principal de cópia otimizada para iOS
+     // Função principal de cópia otimizada para iOS
     async function copiarRelatorio() {
       const texto = document.getElementById("relatorio").textContent;
       
@@ -442,12 +447,6 @@
         toast.classList.remove('show');
       }, 3000);
     }
-
-    // Inicialização
-    lucide.createIcons();
-    
-    // Configura o evento de clique no botão de copiar
-    document.getElementById('copiarBtn').addEventListener('click', copiarRelatorio);
   </script>
 </body>
 </html>
