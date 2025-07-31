@@ -406,17 +406,21 @@
           <input name="restante" placeholder="0" type="number" min="0" step="0.1" />
         </div>
         
-        <label>Insumos utilizados:</label>
-        <div class="insumos"></div>
-        <button class="btn btn-remove" type="button" onclick="addInsumo(this)">
-          <i data-lucide="plus"></i> Adicionar Insumo
-        </button>
+        <div style="margin-top: 15px;">
+          <label>Insumos utilizados:</label>
+          <div class="insumos" style="margin: 10px 0;"></div>
+          <button class="btn btn-remove" type="button" onclick="addInsumo(this.parentNode.querySelector('.insumos'))">
+            <i data-lucide="plus"></i> Adicionar Insumo
+          </button>
+        </div>
         
-        <label>Talhões:</label>
-        <div class="talhoes"></div>
-        <button class="btn btn-remove" type="button" onclick="addTalhao(this)">
-          <i data-lucide="plus"></i> Adicionar Talhão
-        </button>
+        <div style="margin-top: 15px;">
+          <label>Talhões:</label>
+          <div class="talhoes" style="margin: 10px 0;"></div>
+          <button class="btn btn-remove" type="button" onclick="addTalhao(this.parentNode.querySelector('.talhoes'))">
+            <i data-lucide="plus"></i> Adicionar Talhão
+          </button>
+        </div>
         
         <button class="btn btn-remove" type="button" onclick="removerFazenda(this)">
           <i data-lucide="trash-2"></i> Remover Fazenda
@@ -427,7 +431,7 @@
       // Esconde o botão de remover da primeira fazenda
       const fazendas = document.querySelectorAll('.fazenda-box');
       if (fazendas.length === 1) {
-        fazendas[0].querySelector('.btn-remove').style.display = 'none';
+        container.querySelector('button[onclick="removerFazenda(this)"]').style.display = 'none';
       }
       
       // Atualiza ícones
@@ -439,8 +443,7 @@
       container.style.display = select.value === 'sim' ? 'block' : 'none';
     }
 
-    function addInsumo(btn) {
-      const container = btn.previousElementSibling;
+    function addInsumo(container) {
       const insumo = document.createElement("div");
       insumo.className = "insumo-group";
       insumo.innerHTML = `
@@ -454,8 +457,7 @@
       lucide.createIcons();
     }
 
-    function addTalhao(btn) {
-      const container = btn.previousElementSibling;
+    function addTalhao(container) {
       const talhao = document.createElement("div");
       talhao.className = "talhao-group";
       talhao.innerHTML = `
