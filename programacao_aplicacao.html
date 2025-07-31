@@ -106,14 +106,21 @@
       background-color: #2a4e3a;
     }
 
-    .botao-copiar {
+      .botao-copiar {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      gap: 8px;
     }
 
     .botao-copiar:hover {
@@ -290,10 +297,17 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-    <button class="btn botao-copiar" id="copiarBtn"><i data-lucide="copy"></i> Copiar Relatório</button>
+    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
+      <i data-lucide="copy"></i> Copiar Relatório
+    </button>
   </div>
 
   <script>
+
+
+    // Atualiza ícones
+    lucide.createIcons();
+
     // Dados das unidades
     const unidadesPorEstado = {
       "MG": [
@@ -317,6 +331,8 @@
         "Usina Benálcool (Bento de Abreu - SP)"
       ]
     };
+
+
 
     // Carrega unidades conforme estado selecionado
     function carregarUnidades() {
@@ -442,12 +458,6 @@
         toast.classList.remove('show');
       }, 3000);
     }
-
-    // Inicialização
-    lucide.createIcons();
-    
-    // Configura o evento de clique no botão de copiar
-    document.getElementById('copiarBtn').addEventListener('click', copiarRelatorio);
   </script>
 </body>
 </html>
