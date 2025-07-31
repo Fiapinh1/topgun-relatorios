@@ -6,6 +6,7 @@
   <title>Relatório Drone - TOPGUN</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard-polyfill@3.0.0/dist/clipboard-polyfill.min.js"></script>
   <style>
     body {
       min-height: 100vh;
@@ -14,7 +15,6 @@
       color: #090909;
       background: linear-gradient(145deg, #1e293b, #111827);
       position: relative;
-      transition: background 0.5s;
     }
 
     .shape {
@@ -29,7 +29,6 @@
       opacity: 0.12;
       z-index: 0;
       filter: blur(2px);
-      transition: opacity 0.3s;
     }
 
     .shape.top-left {
@@ -51,155 +50,192 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+      position: relative;
+      z-index: 1;
     }
 
     h2, h3 {
       color: #1f2937;
+      font-family: 'Orbitron', sans-serif;
     }
 
     label {
       display: block;
-      margin-top: 10px;
+      margin-top: 15px;
       color: #2f361f;
+      font-weight: 500;
     }
 
     input, select {
       width: 98%;
-      padding: 10px;
-      margin-top: 4px;
+      padding: 12px;
+      margin-top: 6px;
       border: 1px solid #1e304b;
-      border-radius: 6px;
-      background-color: #f1f5f9;
+      border-radius: 8px;
+      background-color: #f8fafc;
       font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      outline: none;
     }
 
     .btn {
       margin-top: 15px;
-      padding: 10px 16px;
+      padding: 14px 16px;
       background-color: #1e304b;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
       width: 100%;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn:hover {
       background-color: #1e40af;
+      transform: translateY(-2px);
     }
 
-    .btn-remove-fazenda, .btn-remove-insumo, .btn-remove-talhao {
-      background: #101208 !important;
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-remove {
+      background: #ef4444 !important;
       margin-top: 10px;
       width: auto !important;
-      padding: 6px 10px !important;
-      font-size: 0.95rem !important;
+      padding: 8px 12px !important;
+      font-size: 0.9rem !important;
     }
 
     .box-actions {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       margin-top: 20px;
     }
 
     .fazenda-box {
       background: #f3f4f6;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 8px;
+      padding: 18px;
+      margin-top: 20px;
+      border-radius: 10px;
       position: relative;
+      border: 1px solid #e5e7eb;
     }
 
-    .talhao-group input {
-      width: calc(30% - 10px);
-      display: inline-block;
-      margin: 5px 5px 5px 0;
+    .talhao-group, .insumo-group {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .insumo-group input {
-      width: calc(45% - 10px);
-      display: inline-block;
-      margin: 5px 5px 5px 0;
+    .talhao-group input, .insumo-group input {
+      width: auto;
+      flex: 1;
+      min-width: 100px;
     }
 
     pre {
-      background: #4a88ad1f;
-      padding: 15px;
+      background: #f8fafc;
+      padding: 18px;
       white-space: pre-wrap;
       word-wrap: break-word;
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: 'Segoe UI', sans-serif;
       font-size: 1rem;
+      border: 1px solid #e5e7eb;
+      line-height: 1.5;
+      margin: 20px 0;
     }
 
     .botao-copiar {
       width: 100%;
-      padding: 16px 0;
-      background: linear-gradient(90deg, #0c0c0c  0%, #1e304b  100%);
+      padding: 16px;
+      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
       color: #fff;
-      font-size: 1.1em;
+      font-size: 1.1rem;
       font-weight: 600;
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .botao-copiar:hover {
+      background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
+      transform: translateY(-2px);
     }
 
     .botao-copiar:active {
-      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
-      transform: scale(0.98);
+      transform: translateY(0);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      opacity: 1;
     }
 
     @media (max-width: 600px) {
       .container {
-        margin: 10px;
+        margin: 15px;
+        padding: 18px;
+      }
+
+      input, select {
+        padding: 14px;
+      }
+
+      .btn, .botao-copiar {
+        padding: 16px;
+      }
+
+      .fazenda-box {
         padding: 15px;
       }
-
-      .box-actions {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      input, select, pre {
-        font-size: 1rem;
-      }
-
-      .botao-copiar {
-        font-size: 1em;
-        padding: 14px 0;
-      }
-    }
-
-    #toast {
-      display:none;
-      position:fixed;
-      bottom:32px;
-      left:50%;
-      transform:translateX(-50%);
-      background:#222;
-      color:#fff;
-      padding:14px 28px;
-      border-radius:8px;
-      box-shadow:0 2px 12px rgba(0,0,0,0.15);
-      font-size:1rem;
-      z-index:9999;
-      transition:opacity 0.3s;
     }
   </style>
 </head>
 <body>
   <div class="shape top-left"></div>
   <div class="shape bottom-right"></div>
+  
   <div class="container">
-    <h2>Rendimento Aplicação - TOP GUN PULVERIZAÇÕES</h2>
+    <h2><i data-lucide="drone"></i> Rendimento Aplicação - TOP GUN PULVERIZAÇÕES</h2>
+    
     <label>Data de aplicação:</label>
     <input id="data_aplicacao" type="date" />
     
@@ -218,57 +254,63 @@
     <label>Frente:</label>
     <select id="frente">
       <option value="">Selecione a frente</option>
-        <option value="01">Frente 1</option>
-        <option value="02">Frente 2</option>
-        <option value="03">Frente 3</option>
-        <option value="04">Frente 4</option>
-        <option value="05">Frente 5</option>
-        <option value="06">Frente 6</option>
-        <option value="07">Frente 7</option>
-        <option value="08">Frente 8</option>
-    </select> 
+      <option value="01">Frente 1</option>
+      <option value="02">Frente 2</option>
+      <option value="03">Frente 3</option>
+      <option value="04">Frente 4</option>
+      <option value="05">Frente 5</option>
+      <option value="06">Frente 6</option>
+      <option value="07">Frente 7</option>
+      <option value="08">Frente 8</option>
+    </select>
 
     <label>Piloto:</label>
     <select id="piloto">
       <option value="">Selecione o Piloto</option>
-        <option value="Maicon Silva">Maicon Silva</option>
-        <option value="Matheus Pias">Matheus Pias</option>
-        <option value="Felipe Santos">Felipe Santos</option> 
-        <option value="Alexandre Alves">Alexandre Alves</option>
-        <option value="Juan Pablo">Juan Pablo</option>
-        <option value="Juliano Fernandes">Juliano Fernandes</option>
-        <option value="David Costa">David Costa</option>
-        <option value="Pedro Augusto">Pedro Augusto</option>
-        <option value="Ygor Lucas">Ygor Lucas</option>
+      <option value="Maicon Silva">Maicon Silva</option>
+      <option value="Matheus Pias">Matheus Pias</option>
+      <option value="Felipe Santos">Felipe Santos</option>
+      <option value="Alexandre Alves">Alexandre Alves</option>
+      <option value="Juan Pablo">Juan Pablo</option>
+      <option value="Juliano Fernandes">Juliano Fernandes</option>
+      <option value="David Costa">David Costa</option>
+      <option value="Pedro Augusto">Pedro Augusto</option>
+      <option value="Ygor Lucas">Ygor Lucas</option>
     </select>
 
     <label>Auxiliar:</label>
     <select id="auxiliar">
       <option value="">Selecione o auxiliar</option>
-       <option value="Antonio Soares">Antonio Soares</option>
-       <option value="Jefferson Lopes">Jefferson Lopes</option>
-       <option value="Phellipe Gomes ">Phellipe Gomes</option> 
-       <option value="Abdias Neto">Abdias Neto</option>
-       <option value="Ailton Gabriel">Ailton Gabriel</option>
+      <option value="Antonio Soares">Antonio Soares</option>
+      <option value="Jefferson Lopes">Jefferson Lopes</option>
+      <option value="Phellipe Gomes">Phellipe Gomes</option>
+      <option value="Abdias Neto">Abdias Neto</option>
+      <option value="Ailton Gabriel">Ailton Gabriel</option>
     </select>
 
     <div id="fazendas"></div>
-    <button class="btn" onclick="addFazenda()">+ Adicionar Fazenda</button>
+    <button class="btn" onclick="addFazenda()"><i data-lucide="plus"></i> Adicionar Fazenda</button>
 
     <div class="box-actions">
       <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
       <button class="btn" onclick="salvarPDF()"><i data-lucide="file-down"></i> Salvar em PDF</button>
     </div>
 
-    <p><i data-lucide="map-pin"></i> <strong>Resultado:</strong></p>
+    <h3><i data-lucide="map-pin"></i> Resultado</h3>
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
-    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()"><i data-lucide="copy"></i> Copiar Relatório</button>
+    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
+      <i data-lucide="copy"></i> Copiar Relatório
+    </button>
   </div>
 
-  <div id="toast">Relatório copiado com sucesso!</div>
+  <div id="toast">
+    <i data-lucide="check-circle"></i>
+    <span>Relatório copiado com sucesso!</span>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    // Inicializa ícones
     lucide.createIcons();
     
     // Dados das unidades por estado
@@ -322,15 +364,22 @@
       const container = document.createElement("div");
       container.className = "fazenda-box";
       container.innerHTML = `
-        <label>Fazenda:</label><input name="fazenda" />
-        <label>Código:</label><input name="codigo" />
-        <label>OS:</label><input name="os" />
+        <label>Fazenda:</label>
+        <input name="fazenda" placeholder="Nome da fazenda" />
+        
+        <label>Código:</label>
+        <input name="codigo" placeholder="Código da fazenda" />
+        
+        <label>OS:</label>
+        <input name="os" placeholder="Número da OS" />
+        
         <label>Objetivo:</label>
         <select name="objetivo">
           <option value="">Selecione</option>
           <option value="Área total">Área total</option>
           <option value="Catação">Catação</option>
         </select>
+        
         <label>Tipo de Produto:</label>
         <select name="produto">
           <option value="">Selecione</option>
@@ -339,34 +388,50 @@
           <option value="Cotesia">Cotesia</option>
           <option value="Maturador">Maturador</option>
         </select>
+        
         <label>Status:</label>
         <select name="status">
-          <option value="Finalizada">Sim (Finalizada)</option>
-          <option value="Em andamento">Não (Em andamento)</option>
+          <option value="Finalizada">Finalizada</option>
+          <option value="Em andamento">Em andamento</option>
         </select>
+        
         <label>Sobrou produto?</label>
         <select name="sobrou-produto" onchange="toggleProdutoRestante(this)">
           <option value="nao">Não</option>
           <option value="sim">Sim</option>
         </select>
+        
         <div class="container-restante" style="display:none;">
           <label>Produto restante (litros):</label>
           <input name="restante" placeholder="0" type="number" min="0" step="0.1" />
         </div>
+        
         <label>Insumos utilizados:</label>
         <div class="insumos"></div>
-        <button class="btn btn-remove-insumo" type="button" onclick="addInsumo(this)">+ Adicionar Insumo</button>
+        <button class="btn btn-remove" type="button" onclick="addInsumo(this)">
+          <i data-lucide="plus"></i> Adicionar Insumo
+        </button>
+        
+        <label>Talhões:</label>
         <div class="talhoes"></div>
-        <button class="btn btn-remove-talhao" type="button" onclick="addTalhao(this)">+ Adicionar Talhão</button>
-        <button class="btn btn-remove-fazenda" type="button" onclick="removerFazenda(this)">🗑️ Remover Fazenda</button>
+        <button class="btn btn-remove" type="button" onclick="addTalhao(this)">
+          <i data-lucide="plus"></i> Adicionar Talhão
+        </button>
+        
+        <button class="btn btn-remove" type="button" onclick="removerFazenda(this)">
+          <i data-lucide="trash-2"></i> Remover Fazenda
+        </button>
       `;
       document.getElementById("fazendas").appendChild(container);
 
       // Esconde o botão de remover da primeira fazenda
       const fazendas = document.querySelectorAll('.fazenda-box');
       if (fazendas.length === 1) {
-        fazendas[0].querySelector('.btn-remove-fazenda').style.display = 'none';
+        fazendas[0].querySelector('.btn-remove').style.display = 'none';
       }
+      
+      // Atualiza ícones
+      lucide.createIcons();
     }
 
     function toggleProdutoRestante(select) {
@@ -379,11 +444,14 @@
       const insumo = document.createElement("div");
       insumo.className = "insumo-group";
       insumo.innerHTML = `
-        <input placeholder="Nome do insumo" />
-        <input placeholder="Dose/quantidade" />
-        <button type="button" onclick="this.parentNode.remove()" style="color:#fff;background:#ef4444;border:none;border-radius:4px;cursor:pointer;">🗑️</button>
+        <input placeholder="Nome do insumo" class="insumo-nome" />
+        <input placeholder="Dose/quantidade" class="insumo-dose" />
+        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
+          <i data-lucide="trash-2"></i>
+        </button>
       `;
       container.appendChild(insumo);
+      lucide.createIcons();
     }
 
     function addTalhao(btn) {
@@ -391,11 +459,14 @@
       const talhao = document.createElement("div");
       talhao.className = "talhao-group";
       talhao.innerHTML = `
-        Talhão:<input placeholder="Número" style="width:60px" /> - 
-        Aplicado:<input placeholder="Área aplicada" style="width:90px" /> ha
-        <button type="button" onclick="this.parentNode.remove()" style="color:#fff;background:#ef4444;border:none;border-radius:4px;cursor:pointer;">🗑️</button>
+        <input placeholder="Número do talhão" style="width: 100px;" />
+        <input placeholder="Área aplicada (ha)" type="number" step="0.01" />
+        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
+          <i data-lucide="trash-2"></i>
+        </button>
       `;
       container.appendChild(talhao);
+      lucide.createIcons();
     }
 
     function removerFazenda(btn) {
@@ -403,7 +474,7 @@
       if (fazendas.length > 1) {
         btn.parentNode.remove();
       } else {
-        alert("A primeira fazenda não pode ser removida!");
+        alert("Você precisa ter pelo menos uma fazenda!");
       }
     }
 
@@ -414,19 +485,23 @@
       const estado = document.getElementById("estado").value;
       const unidade = document.getElementById("unidade").value;
       const dataAplicacaoRaw = document.getElementById("data_aplicacao").value;
+      
       let dataAplicacao = "";
       if (dataAplicacaoRaw) {
         const [ano, mes, dia] = dataAplicacaoRaw.split("-");
         dataAplicacao = `${dia}/${mes}/${ano}`;
       }
+      
       const data = new Date();
       const dataEnvio = data.toLocaleDateString('pt-BR');
-      const horaEnvio = data.toLocaleTimeString('pt-BR');
+      const horaEnvio = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
       let relatorio = `📄 *Rendimento aplicação Drone - TOPGUN*\n📅 *Data de aplicação:* ${dataAplicacao}\n\n`;
-      relatorio += `*Unidade:* ${unidade}\n`;
-      relatorio += `*Frente:* ${frente}\n*Piloto:* ${piloto}\n*Auxiliar:* ${auxiliar}\n\n`;
-      relatorio += "\n────────\n\n";
+      relatorio += `📍 *Unidade:* ${unidade}\n`;
+      relatorio += `🔢 *Frente:* ${frente}\n`;
+      relatorio += `👨‍✈️ *Piloto:* ${piloto}\n`;
+      relatorio += `👷 *Auxiliar:* ${auxiliar}\n\n`;
+      relatorio += "────────\n\n";
 
       const fazendas = document.querySelectorAll(".fazenda-box");
       let totalGeral = 0;
@@ -443,7 +518,7 @@
         const talhoes = fazenda.querySelectorAll(".talhoes .talhao-group");
         
         relatorio += `🏭 *FAZENDA ${index + 1}:* ${nome}\n`;
-        relatorio += `🔢 *Cód:* ${codigo}\n`;
+        relatorio += `🔢 *Código:* ${codigo}\n`;
         relatorio += `📋 *OS:* ${os}\n`;
         relatorio += `🎯 *Objetivo:* ${objetivo}\n`;
         relatorio += `🧪 *Produto:* ${produto}\n`;
@@ -454,18 +529,16 @@
           relatorio += `📌 *TALHÕES:*\n`;
           talhoes.forEach(t => {
             const num = t.querySelectorAll("input")[0].value;
-            const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value.replace(',', '.')) || 0;
-            relatorio += `- Talhão:${num} | Aplicado: ${areaAplicada.toFixed(2)} ha\n`;
+            const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value) || 0;
+            relatorio += `- Talhão ${num} | Área: ${areaAplicada.toFixed(2)} ha\n`;
             subtotal += areaAplicada;
           });
         }
         
-        relatorio += `\n📊 *Total aplicado na fazenda:* ${subtotal.toFixed(2)} ha\n`;
+        relatorio += `\n📊 *Total na fazenda:* ${subtotal.toFixed(2)} ha\n`;
         
         if (sobrouProduto === 'sim' && restante > 0) {
           relatorio += `🧴 *Produto restante:* ${restante} lts\n`;
-        } else {
-          relatorio += `🧴 *Produto restante:* Não sobrou produto\n`;
         }
         
         totalGeral += subtotal;
@@ -474,8 +547,8 @@
         if (insumos.length > 0) {
           relatorio += `\n🧪 *Insumos utilizados:*\n`;
           insumos.forEach(i => {
-            const nome = i.querySelectorAll("input")[0].value;
-            const dose = i.querySelectorAll("input")[1].value;
+            const nome = i.querySelector(".insumo-nome").value;
+            const dose = i.querySelector(".insumo-dose").value;
             relatorio += `- ${nome} (${dose})\n`;
           });
         }
@@ -487,7 +560,7 @@
 
       relatorio += "\n────────\n\n";
       relatorio += `📈 *ÁREA TOTAL APLICADA:* ${totalGeral.toFixed(2)} ha\n\n`;
-      relatorio += `⏱️ Relatório enviado em: ${dataEnvio} ${horaEnvio}`;
+      relatorio += `⏱️ *Relatório gerado em:* ${dataEnvio} às ${horaEnvio}`;
       
       document.getElementById("relatorio").textContent = relatorio;
     }
@@ -495,51 +568,89 @@
     function salvarPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
+      
+      // Adiciona título
+      doc.setFontSize(18);
+      doc.text("Relatório de Aplicação - TOPGUN", 10, 15);
+      
+      // Adiciona conteúdo
+      doc.setFontSize(12);
       const texto = document.getElementById("relatorio").textContent;
-      const linhas = texto.split('\n');
-      let y = 10;
-      linhas.forEach(linha => {
-        doc.text(linha, 10, y);
-        y += 7;
-      });
-      doc.save("relatorio_aplicacao.pdf");
+      const linhas = doc.splitTextToSize(texto, 180);
+      doc.text(linhas, 10, 25);
+      
+      // Salva o PDF
+      doc.save(`Relatório_TOPGUN_${new Date().toLocaleDateString('pt-BR')}.pdf`);
     }
 
-    function copiarRelatorio() {
+    // Função principal de cópia otimizada para iOS
+    async function copiarRelatorio() {
       const texto = document.getElementById("relatorio").textContent;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(texto)
-          .then(() => showToast('Relatório copiado com sucesso!'))
-          .catch(() => fallbackCopyTextToClipboard(texto));
-      } else {
-        fallbackCopyTextToClipboard(texto);
-      }
-    }
-
-    function fallbackCopyTextToClipboard(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+      
       try {
+        // 1. Tenta Clipboard API moderno
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(texto);
+          mostrarToast();
+          return;
+        }
+        
+        // 2. Tenta polyfill se disponível
+        if (window.clipboardPolyfill?.writeText) {
+          await clipboardPolyfill.writeText(texto);
+          mostrarToast();
+          return;
+        }
+        
+        // 3. Fallback tradicional para iOS
+        const textarea = document.createElement('textarea');
+        textarea.value = texto;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        
+        // Seleção especial para iOS
+        if (navigator.userAgent.match(/ipad|iphone/i)) {
+          const range = document.createRange();
+          range.selectNodeContents(textarea);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          textarea.setSelectionRange(0, 999999);
+        } else {
+          textarea.select();
+        }
+        
+        // Executa a cópia
         document.execCommand('copy');
-        showToast('Relatório copiado com sucesso!');
+        document.body.removeChild(textarea);
+        
+        mostrarToast();
       } catch (err) {
-        alert('Não foi possível copiar o relatório.');
+        // Fallback final - seleciona o texto para copiar manualmente
+        const relatorioEl = document.getElementById("relatorio");
+        selecionarTexto(relatorioEl);
+        alert("Toque prolongado no texto acima e selecione 'Copiar'");
       }
-      document.body.removeChild(textArea);
     }
 
-    function showToast(msg) {
+    function selecionarTexto(elemento) {
+      const range = document.createRange();
+      range.selectNodeContents(elemento);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    function mostrarToast() {
       const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.style.display = 'block';
-      toast.style.opacity = '1';
+      toast.classList.add('show');
+      
       setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.style.display = 'none', 300);
-      }, 2000);
+        toast.classList.remove('show');
+      }, 3000);
     }
   </script>
 </body>
