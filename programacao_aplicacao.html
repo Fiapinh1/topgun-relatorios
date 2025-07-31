@@ -6,7 +6,6 @@
   <title>Programação de Trabalho - Drone</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/clipboard-polyfill@3.0.0/dist/clipboard-polyfill.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -58,7 +57,7 @@
     }
 
     h2 {
-      color: #1f2937;
+      color: #0b410d;
       text-align: center;
       margin-bottom: 20px;
       font-family: 'Orbitron', sans-serif;
@@ -107,21 +106,26 @@
     }
 
     .botao-copiar {
+      background: linear-gradient(90deg, #628315 0%, #34342e 100%);
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
+      gap: 8px;
+      padding: 16px 0;
     }
 
-    .botao-copiar:hover {
-      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
-    }
-
-    .botao-copiar i {
-      pointer-events: none;
+    .botao-copiar:active {
+      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+      transform: scale(0.98);
     }
 
     pre {
@@ -135,26 +139,25 @@
       margin-top: 20px;
     }
 
-    /* Toast de notificação */
+    /* Toast de feedback */
     #toast {
+      display: none;
       position: fixed;
-      bottom: 30px;
+      bottom: 32px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
-      padding: 12px 24px;
+      background: #222;
+      color: #fff;
+      padding: 14px 28px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      font-size: 1rem;
+      z-index: 9999;
+      transition: opacity 0.3s;
     }
 
     #toast.show {
+      display: block;
       opacity: 1;
     }
 
@@ -168,11 +171,6 @@
         width: 90%;
         text-align: center;
       }
-      
-      .btn, .botao-copiar {
-        padding: 14px 16px;
-        min-height: 50px;
-      }
     }
   </style>
 </head>
@@ -185,14 +183,14 @@
     <i data-lucide="quadcopter"></i>
   </div>
 
-  <!-- Toast de notificação -->
+  <!-- Toast de feedback -->
   <div id="toast">
     <i data-lucide="check-circle"></i>
-    <span>Relatório copiado para a área de transferência!</span>
+    <span>Relatório copiado com sucesso!</span>
   </div>
 
   <div class="container">
-    <h2><i data-lucide="calendar-days"></i> PROGRAMAÇÃO DE TRABALHO</h2>
+    <h2><i data-lucide="drone"></i> PROGRAMAÇÃO DE TRABALHO - TOPGUN PULVERIZAÇÕES </h2>
     
     <label>Data para aplicação:</label>
     <input type="date" id="data_aplicacao">
@@ -290,7 +288,9 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-    <button class="btn botao-copiar" id="copiarBtn"><i data-lucide="copy"></i> Copiar Relatório</button>
+    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
+      <i data-lucide="copy"></i> Copiar Relatório
+    </button>
   </div>
 
   <script>
@@ -373,81 +373,51 @@
       document.getElementById("relatorio").textContent = relatorio;
     }
 
-    // Função principal de cópia otimizada para iOS
-    async function copiarRelatorio() {
-      const texto = document.getElementById("relatorio").textContent;
+    // Função para mostrar o toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg || 'Relatório copiado com sucesso!';
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.style.display = 'none', 300);
+      }, 2000);
+    }
+
+    // Função para copiar com fallback
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
       
       try {
-        // 1. Tenta Clipboard API moderno
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 2. Tenta polyfill se disponível
-        if (window.clipboardPolyfill?.writeText) {
-          await clipboardPolyfill.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 3. Fallback tradicional para iOS
-        const textarea = document.createElement('textarea');
-        textarea.value = texto;
-        textarea.style.position = 'fixed';
-        textarea.style.top = '0';
-        textarea.style.left = '0';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        
-        // Seleção especial para iOS
-        if (navigator.userAgent.match(/ipad|iphone/i)) {
-          const range = document.createRange();
-          range.selectNodeContents(textarea);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          textarea.setSelectionRange(0, 999999);
-        } else {
-          textarea.select();
-        }
-        
-        // Executa a cópia
         document.execCommand('copy');
-        document.body.removeChild(textarea);
-        
-        mostrarToast();
+        showToast();
       } catch (err) {
-        // Fallback final - seleciona o texto para copiar manualmente
-        const relatorioEl = document.getElementById("relatorio");
-        selecionarTexto(relatorioEl);
-        alert("Toque prolongado no texto acima e selecione 'Copiar'");
+        showToast('Erro ao copiar. Selecione o texto e pressione Ctrl+C.');
       }
-    }
-
-    function selecionarTexto(elemento) {
-      const range = document.createRange();
-      range.selectNodeContents(elemento);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-
-    function mostrarToast() {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
       
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      document.body.removeChild(textArea);
+    }
+
+    // Função principal de cópia
+    function copiarRelatorio() {
+      const texto = document.getElementById("relatorio").textContent;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto)
+          .then(() => showToast())
+          .catch(() => fallbackCopyTextToClipboard(texto));
+      } else {
+        fallbackCopyTextToClipboard(texto);
+      }
     }
 
     // Inicialização
     lucide.createIcons();
-    
-    // Configura o evento de clique no botão de copiar
-    document.getElementById('copiarBtn').addEventListener('click', copiarRelatorio);
   </script>
 </body>
 </html>
