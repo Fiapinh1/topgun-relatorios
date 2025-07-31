@@ -53,15 +53,9 @@
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
     }
 
-    h3 {
+    h2, h3 {
       color: #1f2937;
     }
-    h2 {
-    color: #1f2937;
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: 'Orbitron', sans-serif;
-}
 
     label {
       display: block;
@@ -205,7 +199,7 @@
   <div class="shape top-left"></div>
   <div class="shape bottom-right"></div>
   <div class="container">
-    <h2><i data-lucide="calendar-days"></i> RENDIMENTO APLICAÇÃO - TOP GUN PULVERIZAÇÕES</h2>
+    <h2>Rendimento Aplicação - TOP GUN PULVERIZAÇÕES</h2>
     <label>Data de aplicação:</label>
     <input id="data_aplicacao" type="date" />
     
@@ -221,9 +215,42 @@
       <option value="">Selecione primeiro o estado</option>
     </select>
     
-    <label>Frente:</label><input id="frente" placeholder="Digite a frente de serviço" />
-    <label>Piloto:</label><input id="piloto" placeholder="Digite o Piloto" />
-    <label>Auxiliar:</label><input id="auxiliar" placeholder="Digite o Auxiliar" />
+    <label>Frente:</label>
+    <select id="frente">
+      <option value="">Selecione a frente</option>
+        <option value="01">Frente 1</option>
+        <option value="02">Frente 2</option>
+        <option value="03">Frente 3</option>
+        <option value="04">Frente 4</option>
+        <option value="05">Frente 5</option>
+        <option value="06">Frente 6</option>
+        <option value="07">Frente 7</option>
+        <option value="08">Frente 8</option>
+    </select> 
+
+    <label>Piloto:</label>
+    <select id="piloto">
+      <option value="">Selecione o Piloto</option>
+        <option value="Maicon Silva">Maicon Silva</option>
+        <option value="Matheus Pias">Matheus Pias</option>
+        <option value="Felipe Santos">Felipe Santos</option> 
+        <option value="Alexandre Alves">Alexandre Alves</option>
+        <option value="Juan Pablo">Juan Pablo</option>
+        <option value="Juliano Fernandes">Juliano Fernandes</option>
+        <option value="David Costa">David Costa</option>
+        <option value="Pedro Augusto">Pedro Augusto</option>
+        <option value="Ygor Lucas">Ygor Lucas</option>
+    </select>
+
+    <label>Auxiliar:</label>
+    <select id="auxiliar">
+      <option value="">Selecione o auxiliar</option>
+       <option value="Antonio Soares">Antonio Soares</option>
+       <option value="Jefferson Lopes">Jefferson Lopes</option>
+       <option value="Phellipe Gomes ">Phellipe Gomes</option> 
+       <option value="Abdias Neto">Abdias Neto</option>
+       <option value="Ailton Gabriel">Ailton Gabriel</option>
+    </select>
 
     <div id="fazendas"></div>
     <button class="btn" onclick="addFazenda()">+ Adicionar Fazenda</button>
@@ -249,7 +276,8 @@
       "MG": [
         "Delta - Delta (Delta - MG)",
         "Delta - Volta Grande (Conceição das Alagoas - MG)",
-        "Floretadora - Santa Cecília (João Pinheiro - MG)"
+        "Floretadora - Santa Cecília (João Pinheiro - MG)",
+        "Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)"
       ],
       "SP": [
         "Usina Gasa (Andradina - SP)",
@@ -398,7 +426,7 @@
       let relatorio = `📄 *Rendimento aplicação Drone - TOPGUN*\n📅 *Data de aplicação:* ${dataAplicacao}\n\n`;
       relatorio += `*Unidade:* ${unidade}\n`;
       relatorio += `*Frente:* ${frente}\n*Piloto:* ${piloto}\n*Auxiliar:* ${auxiliar}\n\n`;
-      relatorio += "════════════════════════════════════\n\n";
+      relatorio += "\n────────\n\n";
 
       const fazendas = document.querySelectorAll(".fazenda-box");
       let totalGeral = 0;
@@ -427,7 +455,7 @@
           talhoes.forEach(t => {
             const num = t.querySelectorAll("input")[0].value;
             const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value.replace(',', '.')) || 0;
-            relatorio += `- T:${num} | Aplicado: ${areaAplicada.toFixed(2)} ha\n`;
+            relatorio += `- Talhão:${num} | Aplicado: ${areaAplicada.toFixed(2)} ha\n`;
             subtotal += areaAplicada;
           });
         }
@@ -453,11 +481,11 @@
         }
 
         if (index < fazendas.length - 1) {
-          relatorio += "\n────────────────────────────────\n\n";
+          relatorio += "\n────────\n\n";
         }
       });
 
-      relatorio += "\n════════════════════════════════════\n\n";
+      relatorio += "\n────────\n\n";
       relatorio += `📈 *ÁREA TOTAL APLICADA:* ${totalGeral.toFixed(2)} ha\n\n`;
       relatorio += `⏱️ Relatório enviado em: ${dataEnvio} ${horaEnvio}`;
       
