@@ -99,13 +99,6 @@
       font-size: 1rem;
       width: 100%;
       transition: background 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-       gap: 8px;
-    }
-    .btn * {
-    pointer-events: none; /* Permite que clique em qualquer parte do botão conte */
     }
 
     .btn:hover {
@@ -113,8 +106,12 @@
     }
 
     .btn-copiar {
-      background: linear-gradient(90deg, #040a1c  0%, #07102b 100%);
-      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
     }
 
     .btn-copiar:hover {
@@ -122,7 +119,7 @@
     }
 
     .btn-copiar i {
-      margin-right: 8px;
+      pointer-events: none; /* Faz o clique passar pelo ícone para o botão */
     }
 
     pre {
@@ -211,6 +208,7 @@
     <label>Piloto:</label>
     <input id="piloto" placeholder="Nome do piloto">
     
+    
     <label>Auxiliar:</label>
     <input id="auxiliar" placeholder="Nome do auxiliar">
     
@@ -258,9 +256,10 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
     
-    <button class="btn btn-copiar" onclick="copiarRelatorio()" id="copiarBtn">
+    <button type="button" class="btn btn-copiar" id="copiarBtn">
       <i data-lucide="copy"></i> Copiar Relatório
     </button>
+    
   </div>
 
   <script>
@@ -269,8 +268,8 @@
       "MG": [
         "Delta - Delta",
         "Delta - Volta Grande",
-        "Floretadora - Santa Cecília (João Pinheiro - MG)"
-
+        "Floretadora - Santa Cecília (João Pinheiro - MG)",
+        "Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)"
       ],
       "SP": [
         "Usina Gasa (Andradina - SP)",
@@ -307,7 +306,15 @@
 
     // Gera o relatório
     function gerarRelatorio() {
-      const data = document.getElementById("data_aplicacao").value;
+      const dataInput = document.getElementById("data_aplicacao").value;
+
+      // Converte a data para formato brasileiro
+      let dataFormatada = "";
+      if (dataInput) {
+        const partes = dataInput.split("-");
+        dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+     
       const unidade = document.getElementById("unidade").value;
       const frente = document.getElementById("frente").value;
       const piloto = document.getElementById("piloto").value;
@@ -319,7 +326,7 @@
       const fazenda = document.getElementById("fazenda").value;
       const codigo = document.getElementById("codigo").value;
 
-      let relatorio = `📅 *Data para aplicação:* ${data}\n\n`;
+      let relatorio = `📅 *Programação para aplicação:* ${dataFormatada}\n\n`;
       relatorio += ` *Unidade:* ${unidade}\n`;
       relatorio += ` *Frente:* ${frente}\n`;
       relatorio += ` *Piloto:* ${piloto}\n`;
@@ -327,10 +334,10 @@
       relatorio += ` *Drone:* ${drone}\n`;
       relatorio += ` *Objetivo:* ${objetivo}\n`;
       relatorio += ` *Tipo de Produto:* ${produto}\n`;
-      relatorio += `________________________________\n\n`;
+      relatorio += `_________________\n\n`;
       relatorio += `📋 *OS:* ${os}\n`;
-      relatorio += `🌾 *Fazenda:* ${fazenda}\n`;
-      relatorio += `🔢 *Código:* ${codigo}\n`;
+      relatorio += `*Fazenda:* ${fazenda}\n`;
+      relatorio += `*Código:* ${codigo}\n`;
 
       document.getElementById("relatorio").textContent = relatorio;
     }
@@ -384,6 +391,10 @@
 
     // Inicializa os ícones
     lucide.createIcons();
+
+    // 🔹 Torna o botão copiável ao clicar em qualquer parte dele
+    document.getElementById("copiarBtn").addEventListener("click", copiarRelatorio);
+
   </script>
 </body>
 </html>
