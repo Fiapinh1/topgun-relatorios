@@ -58,7 +58,7 @@
     }
 
     h2 {
-      color: #0b410d;
+      color: #1f2937;
       text-align: center;
       margin-bottom: 20px;
       font-family: 'Orbitron', sans-serif;
@@ -106,21 +106,14 @@
       background-color: #2a4e3a;
     }
 
-      .botao-copiar {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
+    .botao-copiar {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .botao-copiar:hover {
@@ -199,7 +192,7 @@
   </div>
 
   <div class="container">
-    <h2><i data-lucide="drone"></i> PROGRAMAÇÃO DE TRABALHO - TOPGUN PULVERIZAÇÕES </h2>
+    <h2><i data-lucide="calendar-days"></i> PROGRAMAÇÃO DE TRABALHO</h2>
     
     <label>Data para aplicação:</label>
     <input type="date" id="data_aplicacao">
@@ -297,17 +290,10 @@
     
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
 
-    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
-      <i data-lucide="copy"></i> Copiar Relatório
-    </button>
+    <button class="btn botao-copiar" id="copiarBtn"><i data-lucide="copy"></i> Copiar Relatório</button>
   </div>
 
   <script>
-
-
-    // Atualiza ícones
-    lucide.createIcons();
-
     // Dados das unidades
     const unidadesPorEstado = {
       "MG": [
@@ -331,8 +317,6 @@
         "Usina Benálcool (Bento de Abreu - SP)"
       ]
     };
-
-
 
     // Carrega unidades conforme estado selecionado
     function carregarUnidades() {
@@ -458,6 +442,12 @@
         toast.classList.remove('show');
       }, 3000);
     }
+
+    // Inicialização
+    lucide.createIcons();
+    
+    // Configura o evento de clique no botão de copiar
+    document.getElementById('copiarBtn').addEventListener('click', copiarRelatorio);
   </script>
 </body>
 </html>
