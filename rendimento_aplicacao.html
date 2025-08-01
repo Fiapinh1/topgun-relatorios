@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relatório Drone - TOPGUN</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programação de Trabalho - Drone</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/clipboard-polyfill@3.0.0/dist/clipboard-polyfill.min.js"></script>
   <style>
     body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: radial-gradient(ellipse at 70% 30%, #1e304b  0%, #181a16 100%);
       min-height: 100vh;
       margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      color: #090909;
-      background: linear-gradient(145deg, #1e293b, #111827);
       position: relative;
+      overflow-x: hidden;
+      color: #090909;
     }
 
-    .shape {
-      position: absolute;
-      width: 60vw;
-      height: 60vw;
-      max-width: 400px;
-      max-height: 400px;
-      background: transparent;
-      border-radius: 50%;
-      border: 18vw solid #fff;
-      opacity: 0.12;
+    .drone-icon {
+      position: fixed;
       z-index: 0;
-      filter: blur(2px);
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .drone-icon i {
+      font-size: 4rem;
+      color: #34d399;
     }
 
-    .shape.top-left {
-      top: -30vw;
-      left: -30vw;
-      transform: rotate(20deg);
+    .drone-1 {
+      top: 5%;
+      left: 5%;
     }
 
-    .shape.bottom-right {
-      bottom: -30vw;
-      right: -30vw;
-      transform: rotate(-15deg);
+    .drone-2 {
+      bottom: 5%;
+      right: 5%;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(5deg); }
+      50% { transform: translateY(-15px) rotate(-5deg); }
     }
 
     .container {
@@ -54,8 +56,10 @@
       z-index: 1;
     }
 
-    h2, h3 {
-      color: #1f2937;
+    h2 {
+      color: #0b410d;
+      text-align: center;
+      margin-bottom: 20px;
       font-family: 'Orbitron', sans-serif;
     }
 
@@ -67,177 +71,200 @@
     }
 
     input, select {
-      width: 98%;
-      padding: 12px;
-      margin-top: 6px;
-      border: 1px solid #1e304b;
-      border-radius: 8px;
-      background-color: #f8fafc;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #3e4824;
+      border-radius: 6px;
+      background-color: #f1f5f9;
       font-size: 1rem;
-      transition: border 0.3s;
+      box-sizing: border-box;
     }
 
-    input:focus, select:focus {
-      border-color: #3b82f6;
-      outline: none;
+    .separator {
+      border: none;
+      border-top: 2px dashed #34d399;
+      margin: 20px 0;
+      opacity: 0.5;
     }
 
     .btn {
-      margin-top: 15px;
-      padding: 14px 16px;
+      margin-top: 20px;
+      padding: 12px 16px;
       background-color: #1e304b;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 1rem;
       width: 100%;
-      font-weight: 600;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      transition: background 0.3s;
     }
 
     .btn:hover {
-      background-color: #1e40af;
-      transform: translateY(-2px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-remove {
-      background: #ef4444 !important;
-      margin-top: 10px;
-      width: auto !important;
-      padding: 8px 12px !important;
-      font-size: 0.9rem !important;
-    }
-
-    .box-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .fazenda-box {
-      background: #f3f4f6;
-      padding: 18px;
-      margin-top: 20px;
-      border-radius: 10px;
-      position: relative;
-      border: 1px solid #e5e7eb;
-    }
-
-    .talhao-group, .insumo-group {
-      margin: 8px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .talhao-group input, .insumo-group input {
-      width: auto;
-      flex: 1;
-      min-width: 100px;
-    }
-
-    pre {
-      background: #f8fafc;
-      padding: 18px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      border-radius: 10px;
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 1rem;
-      border: 1px solid #e5e7eb;
-      line-height: 1.5;
-      margin: 20px 0;
+      background-color: #2a4e3a;
     }
 
     .botao-copiar {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
+      background: linear-gradient(90deg, #070902 0%, #0cb3ab 100%);
       color: #fff;
-      font-size: 1.1rem;
+      font-size: 1.1em;
       font-weight: 600;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.08);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-    }
-
-    .botao-copiar:hover {
-      background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
-      transform: translateY(-2px);
+      padding: 16px 0;
     }
 
     .botao-copiar:active {
-      transform: translateY(0);
+      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+      transform: scale(0.98);
     }
 
+    pre {
+      background: #b7e73c2e;
+      padding: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    /* Toast de feedback */
     #toast {
+      display: none;
       position: fixed;
-      bottom: 30px;
+      bottom: 32px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
+      background: #222;
+      color: #fff;
       padding: 14px 28px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1000;
-      opacity: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      font-size: 1rem;
+      z-index: 9999;
       transition: opacity 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
     }
 
     #toast.show {
+      display: block;
       opacity: 1;
+    }
+
+    /* Botões de voltar */
+    .btn-voltar {
+      background-color: #0e131c;
+      margin-bottom: 20px;
+    }
+
+    .btn-voltar:hover {
+      background-color: #0e131c;
+    }
+
+    .btn-voltar-rodape {
+      background-color: #0e131c;
+      margin-top: 8px;
+    }
+    
+    .btn-voltar-rodape:hover {
+      background-color: #0e131c;
+    }
+
+    .observacoes {
+    width: 100%;
+    padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #3e4824;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      font-size: 1rem;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 60px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Container de fazendas */
+    .fazenda-container {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .fazenda-container h3 {
+      margin-top: 0;
+      color: #2d3748;
+      font-size: 1rem;
+    }
+
+    .remove-fazenda {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #f56565;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
 
     @media (max-width: 600px) {
       .container {
         margin: 15px;
-        padding: 18px;
-      }
-
-      input, select {
-        padding: 14px;
-      }
-
-      .btn, .botao-copiar {
-        padding: 16px;
-      }
-
-      .fazenda-box {
         padding: 15px;
       }
+      
+      #toast {
+        width: 90%;
+        text-align: center;
+      }
+
+      
     }
   </style>
 </head>
 <body>
-  <div class="shape top-left"></div>
-  <div class="shape bottom-right"></div>
-  
+  <!-- Ícones de drone animados -->
+  <div class="drone-icon drone-1">
+    <i data-lucide="drone"></i>
+  </div>
+  <div class="drone-icon drone-2">
+    <i data-lucide="quadcopter"></i>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div id="toast">
+    <i data-lucide="check-circle"></i>
+    <span>Relatório copiado com sucesso!</span>
+  </div>
+
   <div class="container">
-    <h2><i data-lucide="drone"></i> Rendimento Aplicação - TOP GUN PULVERIZAÇÕES</h2>
+    <!-- Botão Voltar no topo -->
+    <button class="btn btn-voltar" onclick="window.location.href='index.html'">
+      <i data-lucide="arrow-left"></i> Voltar
+    </button>
     
-    <label>Data de aplicação:</label>
-    <input id="data_aplicacao" type="date" />
+    <h2><i data-lucide="drone"></i> PROGRAMAÇÃO DE TRABALHO - TOPGUN PULVERIZAÇÕES </h2>
+    
+    <label>Data para aplicação:</label>
+    <input type="date" id="data_aplicacao">
     
     <label>Estado:</label>
     <select id="estado" onchange="carregarUnidades()">
@@ -254,14 +281,14 @@
     <label>Frente:</label>
     <select id="frente">
       <option value="">Selecione a frente</option>
-      <option value="01">Frente 1</option>
-      <option value="02">Frente 2</option>
-      <option value="03">Frente 3</option>
-      <option value="04">Frente 4</option>
-      <option value="05">Frente 5</option>
-      <option value="06">Frente 6</option>
-      <option value="07">Frente 7</option>
-      <option value="08">Frente 8</option>
+      <option value="1">Frente 1</option>
+      <option value="2">Frente 2</option>
+      <option value="3">Frente 3</option>
+      <option value="4">Frente 4</option>
+      <option value="5">Frente 5</option>
+      <option value="6">Frente 6</option>
+      <option value="7">Frente 7</option>
+      <option value="8">Frente 8</option>
     </select>
 
     <label>Piloto:</label>
@@ -269,7 +296,7 @@
       <option value="">Selecione o Piloto</option>
       <option value="Maicon Silva">Maicon Silva</option>
       <option value="Matheus Pias">Matheus Pias</option>
-      <option value="Felipe Santos">Felipe Santos</option>
+      <option value="Felipe Santos">Felipe Santos</option> 
       <option value="Alexandre Alves">Alexandre Alves</option>
       <option value="Juan Pablo">Juan Pablo</option>
       <option value="Juliano Fernandes">Juliano Fernandes</option>
@@ -283,41 +310,89 @@
       <option value="">Selecione o auxiliar</option>
       <option value="Antonio Soares">Antonio Soares</option>
       <option value="Jefferson Lopes">Jefferson Lopes</option>
-      <option value="Phellipe Gomes">Phellipe Gomes</option>
+      <option value="Phellipe Gomes ">Phellipe Gomes</option> 
       <option value="Abdias Neto">Abdias Neto</option>
       <option value="Ailton Gabriel">Ailton Gabriel</option>
     </select>
+    
+    <label>Drone:</label>
+    <select id="drone">
+      <option value="">Selecione o drone</option>
+      <option value="DJI Agras T20">DJI Agras T20</option>
+      <option value="DJI Agras T25">DJI Agras T25</option>
+      <option value="DJI Agras T30">DJI Agras T30</option>
+      <option value="DJI Agras T40">DJI Agras T40</option>
+      <option value="DJI Agras T50">DJI Agras T50</option>
+    </select>
+    
+    <label>Objetivo:</label>
+    <select id="objetivo">
+      <option value="">Selecione o objetivo</option>
+      <option value="Área Total">Aplicação - Área Total</option>
+      <option value="Catação">Aplicação - Catação</option>
+      <option value="Mapeamento">Mapeamento</option>
+      <option value="Monitoramento">Monitoramento</option>
+      <option value="Pulverização">Pulverização</option>
+    </select>
+    
+    <label>Tipo de Produto:</label>
+    <select id="produto">
+      <option value="">Selecione o produto</option>
+      <option value="Herbicida">Herbicida</option>
+      <option value="Inseticida">Inseticida</option>
+      <option value="Fungicida">Fungicida</option>
+      <option value="Fertilizante">Fertilizante</option>
+    </select>
+    
+    <hr class="separator">
+      
+    <!-- Container de fazendas -->
+    <div id="fazendas-container">
+      <div class="fazenda-item">
+        <div class="fazenda-container">
+          <h3>Fazenda 1</h3>
+          <label>📋OS da Fazenda:</label>
+          <input class="os-fazenda" placeholder="Número da OS">
+          
+          <label>Fazenda:</label>
+          <input class="fazenda" placeholder="Nome da fazenda">
+          
+          <label>Código:</label>
+          <input class="codigo" placeholder="Código da fazenda">
 
-    <div id="fazendas"></div>
-    <button class="btn" onclick="addFazenda()"><i data-lucide="plus"></i> Adicionar Fazenda</button>
+          <label>Área da OS (ha):</label>
+          <input class="area-os" placeholder="Área em hectares" type="number">
 
-    <div class="box-actions">
-      <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
-      <button class="btn" onclick="salvarPDF()"><i data-lucide="file-down"></i> Salvar em PDF</button>
+          <label>Observações:</label>
+          <textarea class="observacoes" placeholder="Observações sobre a fazenda" rows="2"></textarea>
+        </div>
+      </div>
     </div>
-
-    <h3><i data-lucide="map-pin"></i> Resultado</h3>
+    
+    <button class="btn" onclick="adicionarFazenda()">
+      <i data-lucide="plus"></i> Adicionar Fazenda
+    </button>
+    
+    <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
+    
     <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
-    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
+
+    <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
       <i data-lucide="copy"></i> Copiar Relatório
+    </button>
+    
+    <!-- Botão Voltar no rodapé -->
+    <button class="btn btn-voltar-rodape" onclick="window.location.href='index.html'">
+      <i data-lucide="arrow-left"></i> Voltar para Página Inicial
     </button>
   </div>
 
-  <div id="toast">
-    <i data-lucide="check-circle"></i>
-    <span>Relatório copiado com sucesso!</span>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    // Inicializa ícones
-    lucide.createIcons();
-    
-    // Dados das unidades por estado
+    // Dados das unidades
     const unidadesPorEstado = {
       "MG": [
-        "Delta - Delta (Delta - MG)",
-        "Delta - Volta Grande (Conceição das Alagoas - MG)",
+        "Delta - Delta",
+        "Delta - Volta Grande",
         "Floretadora - Santa Cecília (João Pinheiro - MG)",
         "Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)"
       ],
@@ -336,329 +411,170 @@
         "Usina Benálcool (Bento de Abreu - SP)"
       ]
     };
-    
-    // Carrega as unidades com base no estado selecionado
+
+    // Carrega unidades conforme estado selecionado
     function carregarUnidades() {
-      const estadoSelect = document.getElementById("estado");
-      const unidadeSelect = document.getElementById("unidade");
-      const estado = estadoSelect.value;
+      const estado = document.getElementById("estado").value;
+      const selectUnidade = document.getElementById("unidade");
       
-      unidadeSelect.innerHTML = '<option value="">Selecione a unidade</option>';
+      selectUnidade.innerHTML = '<option value="">Selecione a unidade</option>';
       
       if (estado && unidadesPorEstado[estado]) {
         unidadesPorEstado[estado].forEach(unidade => {
           const option = document.createElement("option");
           option.value = unidade;
           option.textContent = unidade;
-          unidadeSelect.appendChild(option);
+          selectUnidade.appendChild(option);
         });
       }
     }
-    
-    // Adiciona uma fazenda ao iniciar
-    window.onload = function() {
-      addFazenda();
-    };
 
-    function addFazenda() {
-      const container = document.createElement("div");
-      container.className = "fazenda-box";
-      container.innerHTML = `
-        <label>Fazenda:</label>
-        <input name="fazenda" placeholder="Nome da fazenda" />
-        
-        <label>Código:</label>
-        <input name="codigo" placeholder="Código da fazenda" />
-        
-        <label>OS:</label>
-        <input name="os" placeholder="Número da OS" />
-        
-        <label>Objetivo:</label>
-        <select name="objetivo">
-          <option value="">Selecione</option>
-          <option value="Área total">Área total</option>
-          <option value="Catação">Catação</option>
-          <option value="Mapeamento">Mapeamento</option>
-          <option value="Monitoramento">Monitoramento</option>
-          <option value="Pulverização">Pulverização</option>
-        </select>
-        
-        <label>Tipo de Produto:</label>
-        <select name="produto">
-          <option value="">Selecione</option>
-          <option value="Herbicida">Herbicida</option>
-          <option value="Inseticida">Inseticida</option>
-          <option value="Fungicida">Fungicida</option>
-          <option value="Fertilizante">Fertilizante</option>
-          <option value="Cotesia">Cotesia</option>
-          <option value="Maturador">Maturador</option>
-        </select>
-        
-        <label>Status:</label>
-        <select name="status">
-          <option value="Finalizada">Finalizada</option>
-          <option value="Em andamento">Em andamento</option>
-        </select>
-        
-        <label>Sobrou produto?</label>
-        <select name="sobrou-produto" onchange="toggleProdutoRestante(this)">
-          <option value="nao">Não</option>
-          <option value="sim">Sim</option>
-        </select>
-        
-        <div class="container-restante" style="display:none;">
-          <label>Produto restante (litros):</label>
-          <input name="restante" placeholder="0" type="number" min="0" step="0.1" />
-        </div>
-        
-        <div style="margin-top: 15px;">
-          <label>Insumos utilizados:</label>
-          <div class="insumos" style="margin: 10px 0;"></div>
-          <button class="btn btn-remove" type="button" onclick="addInsumo(this.parentNode.querySelector('.insumos'))">
-            <i data-lucide="plus"></i> Adicionar Insumo
-          </button>
-        </div>
-        
-        <div style="margin-top: 15px;">
-          <label>Talhões:</label>
-          <div class="talhoes" style="margin: 10px 0;"></div>
-          <button class="btn btn-remove" type="button" onclick="addTalhao(this.parentNode.querySelector('.talhoes'))">
-            <i data-lucide="plus"></i> Adicionar Talhão
-          </button>
-        </div>
-        
-        <button class="btn btn-remove" type="button" onclick="removerFazenda(this)">
-          <i data-lucide="trash-2"></i> Remover Fazenda
-        </button>
-      `;
-      document.getElementById("fazendas").appendChild(container);
-
-      // Esconde o botão de remover da primeira fazenda
-      const fazendas = document.querySelectorAll('.fazenda-box');
-      if (fazendas.length === 1) {
-        container.querySelector('button[onclick="removerFazenda(this)"]').style.display = 'none';
-      }
+    // Adiciona nova fazenda
+    function adicionarFazenda() {
+      const container = document.getElementById("fazendas-container");
+      const newFazenda = document.createElement("div");
+      newFazenda.className = "fazenda-item";
+      const fazendaNumber = container.children.length + 1;
       
-      // Atualiza ícones
-      lucide.createIcons();
-    }
+      newFazenda.innerHTML = `
+        <div class="fazenda-container">
+          <button class="remove-fazenda" onclick="this.parentElement.parentElement.remove()">
+            <i data-lucide="x"></i>
+          </button>
+          <h3>Fazenda ${fazendaNumber}</h3>
+          <label>OS da Fazenda:</label>
+          <input class="os-fazenda" placeholder="Número da OS específica">
+          
+          <label>Fazenda:</label>
+          <input class="fazenda" placeholder="Nome da fazenda">
+          
+          <label>Código:</label>
+          <input class="codigo" placeholder="Código da fazenda">
 
-    function toggleProdutoRestante(select) {
-      const container = select.parentNode.querySelector('.container-restante');
-      container.style.display = select.value === 'sim' ? 'block' : 'none';
-    }
+          <label>Área da Os (ha):</label>
+          <input class="area-os" type="number" placeholder="Área da OS em hectares">
 
-    function addInsumo(container) {
-      const insumo = document.createElement("div");
-      insumo.className = "insumo-group";
-      insumo.innerHTML = `
-        <input placeholder="Nome do insumo" class="insumo-nome" />
-        <input placeholder="Dose/quantidade" class="insumo-dose" />
-        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
-          <i data-lucide="trash-2"></i>
-        </button>
+          <label>Observações:</label>
+          <textarea class="observacoes" placeholder="Observações sobre a fazenda" rows="2"></textarea>
+        </div>
       `;
-      container.appendChild(insumo);
+      container.appendChild(newFazenda);
       lucide.createIcons();
     }
 
-    function addTalhao(container) {
-      const talhao = document.createElement("div");
-      talhao.className = "talhao-group";
-      talhao.innerHTML = `
-        <input placeholder="Número do talhão" style="width: 100px;" />
-        <input placeholder="Área aplicada (ha)" type="number" step="0.01" />
-        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
-          <i data-lucide="trash-2"></i>
-        </button>
-      `;
-      container.appendChild(talhao);
-      lucide.createIcons();
-    }
-
-    function removerFazenda(btn) {
-      const fazendas = document.querySelectorAll('.fazenda-box');
-      if (fazendas.length > 1) {
-        btn.parentNode.remove();
-      } else {
-        alert("Você precisa ter pelo menos uma fazenda!");
-      }
-    }
-
+    // Gera o relatório
     function gerarRelatorio() {
+      const dataInput = document.getElementById("data_aplicacao").value;
+
+      // Converte a data para formato brasileiro
+      let dataFormatada = "";
+      if (dataInput) {
+        const partes = dataInput.split("-");
+        dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+     
+      const unidade = document.getElementById("unidade").value;
       const frente = document.getElementById("frente").value;
       const piloto = document.getElementById("piloto").value;
       const auxiliar = document.getElementById("auxiliar").value;
-      const estado = document.getElementById("estado").value;
-      const unidade = document.getElementById("unidade").value;
-      const dataAplicacaoRaw = document.getElementById("data_aplicacao").value;
+      const drone = document.getElementById("drone").value;
+      const objetivo = document.getElementById("objetivo").value;
+      const produto = document.getElementById("produto").value;
       
-      let dataAplicacao = "";
-      if (dataAplicacaoRaw) {
-        const [ano, mes, dia] = dataAplicacaoRaw.split("-");
-        dataAplicacao = `${dia}/${mes}/${ano}`;
-      }
+      // Coleta todas as fazendas
+      const fazendaItems = document.querySelectorAll('.fazenda-item');
+      const fazendas = [];
       
-      const data = new Date();
-      const dataEnvio = data.toLocaleDateString('pt-BR');
-      const horaEnvio = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      let relatorio = `📄 *Rendimento aplicação Drone - TOPGUN*\n📅 *Data de aplicação:* ${dataAplicacao}\n\n`;
-      relatorio += `📍 *Unidade:* ${unidade}\n`;
-      relatorio += `🔢 *Frente:* ${frente}\n`;
-      relatorio += `👨‍✈️ *Piloto:* ${piloto}\n`;
-      relatorio += `👷 *Auxiliar:* ${auxiliar}\n\n`;
-      relatorio += "────────\n\n";
-
-      const fazendas = document.querySelectorAll(".fazenda-box");
-      let totalGeral = 0;
-
-      fazendas.forEach((fazenda, index) => {
-        const nome = fazenda.querySelector("input[name='fazenda']").value;
-        const codigo = fazenda.querySelector("input[name='codigo']").value;
-        const os = fazenda.querySelector("input[name='os']").value;
-        const objetivo = fazenda.querySelector("select[name='objetivo']").value;
-        const produto = fazenda.querySelector("select[name='produto']").value;
-        const status = fazenda.querySelector("select[name='status']").value;
-        const sobrouProduto = fazenda.querySelector("select[name='sobrou-produto']").value;
-        const restante = sobrouProduto === 'sim' ? fazenda.querySelector("input[name='restante']").value : '0';
-        const talhoes = fazenda.querySelectorAll(".talhoes .talhao-group");
-        
-        relatorio += `🏭 *FAZENDA ${index + 1}:* ${nome}\n`;
-        relatorio += `🔢 *Código:* ${codigo}\n`;
-        relatorio += `📋 *OS:* ${os}\n`;
-        relatorio += `🎯 *Objetivo:* ${objetivo}\n`;
-        relatorio += `🧪 *Produto:* ${produto}\n`;
-        relatorio += `🔄 *Status:* ${status === "Finalizada" ? "✅ Finalizada" : "🟡 Em andamento"}\n\n`;
-        
-        let subtotal = 0;
-        if (talhoes.length > 0) {
-          relatorio += `📌 *TALHÕES:*\n`;
-          talhoes.forEach(t => {
-            const num = t.querySelectorAll("input")[0].value;
-            const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value) || 0;
-            relatorio += `- Talhão ${num} | Área Aplicada: ${areaAplicada.toFixed(2)} ha\n`;
-            subtotal += areaAplicada;
-          });
-        }
-        
-        relatorio += `\n📊 *Total na fazenda:* ${subtotal.toFixed(2)} ha\n`;
-        
-        if (sobrouProduto === 'sim' && restante > 0) {
-          relatorio += `🧴 *Produto restante:* ${restante} lts\n`;
-        }
-        
-        totalGeral += subtotal;
-
-        const insumos = fazenda.querySelectorAll(".insumos .insumo-group");
-        if (insumos.length > 0) {
-          relatorio += `\n🧪 *Insumos utilizados:*\n`;
-          insumos.forEach(i => {
-            const nome = i.querySelector(".insumo-nome").value;
-            const dose = i.querySelector(".insumo-dose").value;
-            relatorio += `- ${nome} (${dose})\n`;
-          });
-        }
-
-        if (index < fazendas.length - 1) {
-          relatorio += "\n────────\n\n";
+      fazendaItems.forEach(item => {
+        const osFazenda = item.querySelector('.os-fazenda').value;
+        const fazenda = item.querySelector('.fazenda').value;
+        const codigo = item.querySelector('.codigo').value;
+        const area = item.querySelector('.area-os').value;
+        const observacoes = item.querySelector('.observacoes').value;
+        if (osFazenda || fazenda || codigo || area || observacoes) {
+          fazendas.push({ osFazenda, fazenda, codigo, area, observacoes });
         }
       });
 
-      relatorio += "\n────────\n\n";
-      relatorio += `📈 *ÁREA TOTAL APLICADA:* ${totalGeral.toFixed(2)} ha\n\n`;
-      relatorio += `⏱️ *Relatório gerado em:* ${dataEnvio} às ${horaEnvio}`;
+      let relatorio = `📅 *Programação para aplicação:* ${dataFormatada}\n\n`;
+      relatorio += ` *Unidade:* ${unidade}\n`;
+      relatorio += ` *Frente:* ${frente}\n`;
+      relatorio += ` *Piloto:* ${piloto}\n`;
+      relatorio += ` *Auxiliar:* ${auxiliar}\n`;
+      relatorio += ` *Drone:* ${drone}\n`;
+      relatorio += ` *Objetivo:* ${objetivo}\n`;
+      relatorio += ` *Tipo de Produto:* ${produto}\n`;
+      relatorio += `_________________\n\n`;
       
+      
+      // Adiciona cada fazenda ao relatório
+      fazendas.forEach((fazenda, index) => {
+        relatorio += `*📋OS:* ${fazenda.osFazenda}\n`;
+        relatorio += `*Fazenda:* ${fazenda.fazenda}\n`;
+        relatorio += `*Código:* ${fazenda.codigo}\n`;
+        relatorio += `*Área da OS (ha):* ${fazenda.area} ha\n`;
+        
+        // Só adiciona observações se não estiver vazio
+    if (fazenda.observacoes && fazenda.observacoes.trim() !== '') {
+      relatorio += `*Observações:* ${fazenda.observacoes}\n`;
+    }
+ 
+        // Adiciona separador se não for a última fazenda
+        if (index < fazendas.length - 1) {
+          relatorio += `_________________\n\n`;
+        }
+      });
+
       document.getElementById("relatorio").textContent = relatorio;
     }
 
-    function salvarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+    // Função para mostrar o toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerHTML = `<i data-lucide="check-circle"></i> <span>${msg || 'Relatório copiado com sucesso!'}</span>`;
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      lucide.createIcons();
       
-      // Adiciona título
-      doc.setFontSize(18);
-      doc.text("Relatório de Aplicação - TOPGUN", 10, 15);
-      
-      // Adiciona conteúdo
-      doc.setFontSize(12);
-      const texto = document.getElementById("relatorio").textContent;
-      const linhas = doc.splitTextToSize(texto, 180);
-      doc.text(linhas, 10, 25);
-      
-      // Salva o PDF
-      doc.save(`Relatório_TOPGUN_${new Date().toLocaleDateString('pt-BR')}.pdf`);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.style.display = 'none', 300);
+      }, 2000);
     }
 
-    // Função principal de cópia otimizada para iOS
-    async function copiarRelatorio() {
-      const texto = document.getElementById("relatorio").textContent;
+    // Função para copiar com fallback
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
       
       try {
-        // 1. Tenta Clipboard API moderno
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 2. Tenta polyfill se disponível
-        if (window.clipboardPolyfill?.writeText) {
-          await clipboardPolyfill.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 3. Fallback tradicional para iOS
-        const textarea = document.createElement('textarea');
-        textarea.value = texto;
-        textarea.style.position = 'fixed';
-        textarea.style.top = '0';
-        textarea.style.left = '0';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        
-        // Seleção especial para iOS
-        if (navigator.userAgent.match(/ipad|iphone/i)) {
-          const range = document.createRange();
-          range.selectNodeContents(textarea);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          textarea.setSelectionRange(0, 999999);
-        } else {
-          textarea.select();
-        }
-        
-        // Executa a cópia
         document.execCommand('copy');
-        document.body.removeChild(textarea);
-        
-        mostrarToast();
+        showToast();
       } catch (err) {
-        // Fallback final - seleciona o texto para copiar manualmente
-        const relatorioEl = document.getElementById("relatorio");
-        selecionarTexto(relatorioEl);
-        alert("Toque prolongado no texto acima e selecione 'Copiar'");
+        showToast('Erro ao copiar. Selecione o texto e pressione Ctrl+C.');
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    // Função principal de cópia
+    function copiarRelatorio() {
+      const texto = document.getElementById("relatorio").textContent;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto)
+          .then(() => showToast())
+          .catch(() => fallbackCopyTextToClipboard(texto));
+      } else {
+        fallbackCopyTextToClipboard(texto);
       }
     }
 
-    function selecionarTexto(elemento) {
-      const range = document.createRange();
-      range.selectNodeContents(elemento);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-
-    function mostrarToast() {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
+    // Inicialização
+    lucide.createIcons();
   </script>
 </body>
 </html>
