@@ -106,7 +106,7 @@
     }
 
     .botao-copiar {
-      background: linear-gradient(90deg, #628315 0%, #34342e 100%);
+      background: linear-gradient(90deg, #070902 0%, #0cb3ab 100%);
       color: #fff;
       font-size: 1.1em;
       font-weight: 600;
@@ -161,6 +161,70 @@
       opacity: 1;
     }
 
+    /* Botões de voltar */
+    .btn-voltar {
+      background-color: #0e131c;
+      margin-bottom: 20px;
+    }
+
+    .btn-voltar:hover {
+      background-color: #0e131c;
+    }
+
+    .btn-voltar-rodape {
+      background-color: #0e131c;
+      margin-top: 8px;
+    }
+    
+    .btn-voltar-rodape:hover {
+      background-color: #0e131c;
+    }
+
+    .observacoes {
+    width: 100%;
+    padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #3e4824;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      font-size: 1rem;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 60px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Container de fazendas */
+    .fazenda-container {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .fazenda-container h3 {
+      margin-top: 0;
+      color: #2d3748;
+      font-size: 1rem;
+    }
+
+    .remove-fazenda {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #f56565;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
     @media (max-width: 600px) {
       .container {
         margin: 15px;
@@ -171,6 +235,8 @@
         width: 90%;
         text-align: center;
       }
+
+      
     }
   </style>
 </head>
@@ -190,6 +256,11 @@
   </div>
 
   <div class="container">
+    <!-- Botão Voltar no topo -->
+    <button class="btn btn-voltar" onclick="window.location.href='index.html'">
+      <i data-lucide="arrow-left"></i> Voltar
+    </button>
+    
     <h2><i data-lucide="drone"></i> PROGRAMAÇÃO DE TRABALHO - TOPGUN PULVERIZAÇÕES </h2>
     
     <label>Data para aplicação:</label>
@@ -210,38 +281,38 @@
     <label>Frente:</label>
     <select id="frente">
       <option value="">Selecione a frente</option>
-        <option value="1">Frente 1</option>
-        <option value="2">Frente 2</option>
-        <option value="3">Frente 3</option>
-        <option value="4">Frente 4</option>
-        <option value="5">Frente 5</option>
-        <option value="6">Frente 6</option>
-        <option value="7">Frente 7</option>
-        <option value="8">Frente 8</option>
+      <option value="1">Frente 1</option>
+      <option value="2">Frente 2</option>
+      <option value="3">Frente 3</option>
+      <option value="4">Frente 4</option>
+      <option value="5">Frente 5</option>
+      <option value="6">Frente 6</option>
+      <option value="7">Frente 7</option>
+      <option value="8">Frente 8</option>
     </select>
 
     <label>Piloto:</label>
     <select id="piloto">
       <option value="">Selecione o Piloto</option>
-        <option value="Maicon Silva">Maicon Silva</option>
-        <option value="Matheus Pias">Matheus Pias</option>
-        <option value="Felipe Santos">Felipe Santos</option> 
-        <option value="Alexandre Alves">Alexandre Alves</option>
-        <option value="Juan Pablo">Juan Pablo</option>
-        <option value="Juliano Fernandes">Juliano Fernandes</option>
-        <option value="David Costa">David Costa</option>
-        <option value="Pedro Augusto">Pedro Augusto</option>
-        <option value="Ygor Lucas">Ygor Lucas</option>
+      <option value="Maicon Silva">Maicon Silva</option>
+      <option value="Matheus Pias">Matheus Pias</option>
+      <option value="Felipe Santos">Felipe Santos</option> 
+      <option value="Alexandre Alves">Alexandre Alves</option>
+      <option value="Juan Pablo">Juan Pablo</option>
+      <option value="Juliano Fernandes">Juliano Fernandes</option>
+      <option value="David Costa">David Costa</option>
+      <option value="Pedro Augusto">Pedro Augusto</option>
+      <option value="Ygor Lucas">Ygor Lucas</option>
     </select>
 
     <label>Auxiliar:</label>
     <select id="auxiliar">
       <option value="">Selecione o auxiliar</option>
-       <option value="Antonio Soares">Antonio Soares</option>
-       <option value="Jefferson Lopes">Jefferson Lopes</option>
-       <option value="Phellipe Gomes ">Phellipe Gomes</option> 
-       <option value="Abdias Neto">Abdias Neto</option>
-       <option value="Ailton Gabriel">Ailton Gabriel</option>
+      <option value="Antonio Soares">Antonio Soares</option>
+      <option value="Jefferson Lopes">Jefferson Lopes</option>
+      <option value="Phellipe Gomes ">Phellipe Gomes</option> 
+      <option value="Abdias Neto">Abdias Neto</option>
+      <option value="Ailton Gabriel">Ailton Gabriel</option>
     </select>
     
     <label>Drone:</label>
@@ -274,15 +345,33 @@
     </select>
     
     <hr class="separator">
+      
+    <!-- Container de fazendas -->
+    <div id="fazendas-container">
+      <div class="fazenda-item">
+        <div class="fazenda-container">
+          <h3>Fazenda 1</h3>
+          <label>📋OS da Fazenda:</label>
+          <input class="os-fazenda" placeholder="Número da OS">
+          
+          <label>Fazenda:</label>
+          <input class="fazenda" placeholder="Nome da fazenda">
+          
+          <label>Código:</label>
+          <input class="codigo" placeholder="Código da fazenda">
+
+          <label>Área da OS (ha):</label>
+          <input class="area-os" placeholder="Área em hectares" type="number">
+
+          <label>Observações:</label>
+          <textarea class="observacoes" placeholder="Observações sobre a fazenda" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
     
-    <label>OS:</label>
-    <input id="os" placeholder="Número da OS">
-    
-    <label>Fazenda:</label>
-    <input id="fazenda" placeholder="Nome da fazenda">
-    
-    <label>Código:</label>
-    <input id="codigo" placeholder="Código da fazenda">
+    <button class="btn" onclick="adicionarFazenda()">
+      <i data-lucide="plus"></i> Adicionar Fazenda
+    </button>
     
     <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
     
@@ -290,6 +379,11 @@
 
     <button class="btn botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
       <i data-lucide="copy"></i> Copiar Relatório
+    </button>
+    
+    <!-- Botão Voltar no rodapé -->
+    <button class="btn btn-voltar-rodape" onclick="window.location.href='index.html'">
+      <i data-lucide="arrow-left"></i> Voltar para Página Inicial
     </button>
   </div>
 
@@ -335,6 +429,39 @@
       }
     }
 
+    // Adiciona nova fazenda
+    function adicionarFazenda() {
+      const container = document.getElementById("fazendas-container");
+      const newFazenda = document.createElement("div");
+      newFazenda.className = "fazenda-item";
+      const fazendaNumber = container.children.length + 1;
+      
+      newFazenda.innerHTML = `
+        <div class="fazenda-container">
+          <button class="remove-fazenda" onclick="this.parentElement.parentElement.remove()">
+            <i data-lucide="x"></i>
+          </button>
+          <h3>Fazenda ${fazendaNumber}</h3>
+          <label>OS da Fazenda:</label>
+          <input class="os-fazenda" placeholder="Número da OS específica">
+          
+          <label>Fazenda:</label>
+          <input class="fazenda" placeholder="Nome da fazenda">
+          
+          <label>Código:</label>
+          <input class="codigo" placeholder="Código da fazenda">
+
+          <label>Área da Os (ha):</label>
+          <input class="area-os" type="number" placeholder="Área da OS em hectares">
+
+          <label>Observações:</label>
+          <textarea class="observacoes" placeholder="Observações sobre a fazenda" rows="2"></textarea>
+        </div>
+      `;
+      container.appendChild(newFazenda);
+      lucide.createIcons();
+    }
+
     // Gera o relatório
     function gerarRelatorio() {
       const dataInput = document.getElementById("data_aplicacao").value;
@@ -353,9 +480,21 @@
       const drone = document.getElementById("drone").value;
       const objetivo = document.getElementById("objetivo").value;
       const produto = document.getElementById("produto").value;
-      const os = document.getElementById("os").value;
-      const fazenda = document.getElementById("fazenda").value;
-      const codigo = document.getElementById("codigo").value;
+      
+      // Coleta todas as fazendas
+      const fazendaItems = document.querySelectorAll('.fazenda-item');
+      const fazendas = [];
+      
+      fazendaItems.forEach(item => {
+        const osFazenda = item.querySelector('.os-fazenda').value;
+        const fazenda = item.querySelector('.fazenda').value;
+        const codigo = item.querySelector('.codigo').value;
+        const area = item.querySelector('.area-os').value;
+        const observacoes = item.querySelector('.observacoes').value;
+        if (osFazenda || fazenda || codigo || area || observacoes) {
+          fazendas.push({ osFazenda, fazenda, codigo, area, observacoes });
+        }
+      });
 
       let relatorio = `📅 *Programação para aplicação:* ${dataFormatada}\n\n`;
       relatorio += ` *Unidade:* ${unidade}\n`;
@@ -366,9 +505,25 @@
       relatorio += ` *Objetivo:* ${objetivo}\n`;
       relatorio += ` *Tipo de Produto:* ${produto}\n`;
       relatorio += `_________________\n\n`;
-      relatorio += `📋 *OS:* ${os}\n`;
-      relatorio += `*Fazenda:* ${fazenda}\n`;
-      relatorio += `*Código:* ${codigo}\n`;
+      
+      
+      // Adiciona cada fazenda ao relatório
+      fazendas.forEach((fazenda, index) => {
+        relatorio += `*📋OS:* ${fazenda.osFazenda}\n`;
+        relatorio += `*Fazenda:* ${fazenda.fazenda}\n`;
+        relatorio += `*Código:* ${fazenda.codigo}\n`;
+        relatorio += `*Área da OS (ha):* ${fazenda.area} ha\n`;
+        
+        // Só adiciona observações se não estiver vazio
+    if (fazenda.observacoes && fazenda.observacoes.trim() !== '') {
+      relatorio += `*Observações:* ${fazenda.observacoes}\n`;
+    }
+ 
+        // Adiciona separador se não for a última fazenda
+        if (index < fazendas.length - 1) {
+          relatorio += `_________________\n\n`;
+        }
+      });
 
       document.getElementById("relatorio").textContent = relatorio;
     }
@@ -376,9 +531,11 @@
     // Função para mostrar o toast
     function showToast(msg) {
       const toast = document.getElementById('toast');
-      toast.textContent = msg || 'Relatório copiado com sucesso!';
+      toast.innerHTML = `<i data-lucide="check-circle"></i> <span>${msg || 'Relatório copiado com sucesso!'}</span>`;
       toast.style.display = 'block';
       toast.style.opacity = '1';
+      lucide.createIcons();
+      
       setTimeout(() => {
         toast.style.opacity = '0';
         setTimeout(() => toast.style.display = 'none', 300);
