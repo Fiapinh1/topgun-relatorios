@@ -36,7 +36,7 @@
     h1 {
       font-size: 1.5rem;
       margin-bottom: 30px;
-      color: #34d399;
+      color: #eff3f1;
     }
 
     .btn-container {
@@ -64,6 +64,22 @@
       background: #22c55e;
     }
 
+    .btn-interno {
+      background: #2563eb; /* azul */
+      color: #fff;
+    }
+    .btn-interno:hover {
+      background: #1e40af;
+    }
+
+    .btn-voltar {
+      background: #34d399; /* vermelho */
+      color: #fff;
+    }
+    .btn-voltar:hover {
+      background: #205213;
+    }
+
     @media (max-width: 400px) {
       h1 {
         font-size: 1.2rem;
@@ -73,6 +89,26 @@
         padding: 12px;
       }
     }
+
+    .footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #94a3b8;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+  }
+  .footer a {
+    color: #34d399;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+    color: #22c55e;
+  }
   </style>
 </head>
 <body>
@@ -82,16 +118,55 @@
     <img src="logo_topgun.png" alt="Logo TOPGUN">
   </div>
 
-  <h1>Painel de Aplicação</h1>
+  <h1>Painel de Aplicações</h1>
 
-  <div class="btn-container">
-    <button class="btn" onclick="window.location.href='programacao_aplicacao.html'">
-      Programação Aplicação
-    </button>
-    <button class="btn" onclick="window.location.href='rendimento_aplicacao.html'">
-      Rendimento Aplicação
-    </button>
+  <div class="btn-container" id="main-btns">
+    <button class="btn" onclick="showPulverizacao()">Pulverização</button>
+    <button class="btn" onclick="showCotesia()">Cotésia</button>
   </div>
 
+  <div class="btn-container" id="pulverizacao-btns" style="display:none;">
+    <button class="btn btn-interno" onclick="window.location.href='programacao_aplicacao.html'">
+      Programação Aplicação Pulverização
+    </button>
+    <button class="btn btn-interno" onclick="window.location.href='rendimento_aplicacao.html'">
+      Rendimento Aplicação Pulverização
+    </button>
+    <button class="btn btn-voltar" onclick="backToMain()">Voltar</button>
+  </div>
+
+  <div class="btn-container" id="cotesia-btns" style="display:none;">
+    <button class="btn btn-interno" onclick="window.location.href='programação_cotesia.html'">
+      Programação Aplicação Cotésia
+    </button>
+    <button class="btn btn-interno" onclick="window.location.href='rendimento_cotesia.html'">
+      Rendimento Aplicação Cotésia
+    </button>
+    <button class="btn btn-voltar" onclick="backToMain()">Voltar</button>
+  </div>
+
+  <script>
+  function showPulverizacao() {
+    document.getElementById('main-btns').style.display = 'none';
+    document.getElementById('pulverizacao-btns').style.display = 'flex';
+    document.getElementById('cotesia-btns').style.display = 'none';
+  }
+
+  function showCotesia() {
+    document.getElementById('main-btns').style.display = 'none';
+    document.getElementById('cotesia-btns').style.display = 'flex';
+    document.getElementById('pulverizacao-btns').style.display = 'none';
+  }
+
+  function backToMain() {
+    document.getElementById('main-btns').style.display = 'flex';
+    document.getElementById('pulverizacao-btns').style.display = 'none';
+    document.getElementById('cotesia-btns').style.display = 'none';
+  }
+  </script>
+
+  <footer class="footer">
+    Desenvolvido por <a href="https://pulviontech.com.br" target="_blank">Pulvion Tech</a>
+  </footer>
 </body>
 </html>
