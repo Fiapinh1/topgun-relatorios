@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatizador TOPGUN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #34d399;
+            --primary-dark: #22c55e;
+            --dark: #0f172a;
+            --darker: #0a0e1a;
+            --light: #1e293b;
+            --lighter: #334155;
+            --text: #f1f5f9;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        header {
+            background: var(--dark);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+        }
+        
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section, .preview-section {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--lighter);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .section-title i {
+            font-size: 1.4rem;
+        }
+        
+        .toggle-container {
+            display: flex;
+            background: var(--dark);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 2px solid var(--lighter);
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .toggle-btn.active {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        label i {
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--lighter);
+            border-radius: 8px;
+            background: var(--dark);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 211, 153, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--lighter);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+        
+        .message-preview {
+            background: var(--dark);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 350px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            border: 2px solid var(--lighter);
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        
+        .copy-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 211, 153, 0.4);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--primary);
+            color: var(--dark);
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .pilot-info {
+            background: var(--dark);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-jet-fighter logo-icon"></i>
+                <div class="logo-text">TOPGUN</div>
+            </div>
+            <h1>Status Operacional</h1>
+            <p class="subtitle">Gerencie e comunique suas operações de forma eficiente</p>
+        </header>
+        
+        <div class="content">
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-pen-to-square"></i>
+                    <span>Dados da Operação</span>
+                </div>
+                
+                <div class="toggle-container">
+                    <button class="toggle-btn active" id="btn-inicio">
+                        <i class="fas fa-play-circle"></i> Início
+                    </button>
+                    <button class="toggle-btn" id="btn-fim">
+                        <i class="fas fa-flag-checkered"></i> Fim
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unidade"><i class="fas fa-building"></i> Unidade:</label>
+                    <select id="unidade">
+                        <option value="">Selecione a unidade</option>
+                        <option value="Delta - Delta">Delta - Delta</option>
+                        <option value="Delta - Volta Grande">Delta - Volta Grande</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frente"><i class="fas fa-route"></i> Frente:</label>
+                    <select id="frente">
+                        <option value="">Selecione a frente</option>
+                        <option value="Cotesia 01">Cotesia 01</option>
+                        <option value="Cotesia 02">Cotesia 02</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="piloto"><i class="fas fa-user"></i> Piloto:</label>
+                    <select id="piloto">
+                        <option value="">Selecione o piloto</option>
+                        <option value="Caio Brito">Caio Brito</option>
+                        <option value="Ygor Lucas">Ygor Lucas</option>
+                    </select>
+                    
+                    <div class="pilot-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <span id="pilot-association">Piloto selecionado automaticamente</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data"><i class="fas fa-calendar"></i> Data:</label>
+                    <input type="date" id="data">
+                </div>
+                
+                <div class="form-group">
+                    <label for="hora"><i class="fas fa-clock"></i> Hora:</label>
+                    <input type="time" id="hora">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fazenda"><i class="fas fa-tractor"></i> Fazenda:</label>
+                    <input type="text" id="fazenda" placeholder="Nome da fazenda">
+                </div>
+                
+                <div class="form-group">
+                    <label for="codigo"><i class="fas fa-hashtag"></i> Código:</label>
+                    <input type="text" id="codigo" placeholder="Código da fazenda">
+                </div>
+                
+                <div class="form-group">
+                    <label for="os"><i class="fas fa-file-alt"></i> OS:</label>
+                    <input type="text" id="os" placeholder="Número da OS">
+                </div>
+                
+                <div class="form-group" id="status-group">
+                    <label for="status"><i class="fas fa-tasks"></i> Status:</label>
+                    <select id="status">
+                        <option value="Andamento"> 🟡 Andamento </option>
+                        <option value="Ag. Condições"> ⚠️ Ag. Condições</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="generate-btn">
+                        <i class="fas fa-message"></i> Gerar Mensagem
+                    </button>
+                    <button class="btn btn-secondary" id="clear-btn">
+                        <i class="fas fa-broom"></i> Limpar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <div class="section-title">
+                    <i class="fas fa-eye"></i>
+                    <span>Visualização da Mensagem</span>
+                </div>
+                
+                <div class="message-preview" id="message-preview">
+                    A mensagem gerada aparecerá aqui...
+                </div>
+                
+                <button class="copy-btn" id="copy-btn">
+                    <i class="fas fa-copy"></i> Copiar Mensagem
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Mensagem copiada para a área de transferência!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const btnInicio = document.getElementById('btn-inicio');
+            const btnFim = document.getElementById('btn-fim');
+            const statusGroup = document.getElementById('status-group');
+            const generateBtn = document.getElementById('generate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const notification = document.getElementById('notification');
+            const messagePreview = document.getElementById('message-preview');
+            const frenteSelect = document.getElementById('frente');
+            const pilotoSelect = document.getElementById('piloto');
+            
+            // Definir data e hora atuais
+            const now = new Date();
+            const data = now.toISOString().substring(0, 10);
+            const hora = now.toTimeString().substring(0, 5);
+            
+            document.getElementById('data').value = data;
+            document.getElementById('hora').value = hora;
+            
+            // Configurar seleção automática de piloto baseado na frente
+            frenteSelect.addEventListener('change', function() {
+                if (this.value === 'Cotesia 01') {
+                    pilotoSelect.value = 'Caio Brito';
+                } else if (this.value === 'Cotesia 02') {
+                    pilotoSelect.value = 'Ygor Lucas';
+                }
+            });
+            
+            // Alternar entre início e fim da operação
+            btnInicio.addEventListener('click', function() {
+                btnInicio.classList.add('active');
+                btnFim.classList.remove('active');
+                statusGroup.style.display = 'block';
+            });
+            
+            btnFim.addEventListener('click', function() {
+                btnFim.classList.add('active');
+                btnInicio.classList.remove('active');
+                statusGroup.style.display = 'none';
+            });
+            
+            // Gerar mensagem
+            generateBtn.addEventListener('click', function() {
+                const isInicio = btnInicio.classList.contains('active');
+                const unidade = document.getElementById('unidade').value;
+                const frente = document.getElementById('frente').value;
+                const piloto = document.getElementById('piloto').value;
+                const data = formatarData(document.getElementById('data').value);
+                const hora = document.getElementById('hora').value;
+                const fazenda = document.getElementById('fazenda').value;
+                const codigo = document.getElementById('codigo').value;
+                const os = document.getElementById('os').value;
+                const status = isInicio ? document.getElementById('status').value : 'Finalizada';
+
+                let statusEmoji = '';
+                if (status.includes('Andamento')) statusEmoji = '🟡 ';
+                if (status.includes('Ag. Condições')) statusEmoji = '⚠️ ';
+                if (status === 'Finalizada') statusEmoji = '🔵 ';
+
+                let mensagem = `*Status Operação*\n\n`;
+                mensagem += `*Frente* ${frente}\n`;
+                mensagem += `*Data:* ${data}\n`;
+                mensagem += `*Faz:* ${fazenda}\n`;
+                mensagem += `*Cod:* ${codigo}\n`;
+                mensagem += `*Horário:* ${hora}\n`;
+                mensagem += `*OS:* ${os}\n`;
+                mensagem += `*Talhão:*\n`;
+                mensagem += `*Unidade:* ${unidade}\n`;
+                mensagem += `*Piloto:* ${piloto}\n`;
+                mensagem += `*Status da operação:* ${statusEmoji}${status}\n`;
+                
+                if (!isInicio) {
+                    mensagem += `\n--- OPERAÇÃO FINALIZADA ✅ ---\n`;
+                }
+                
+                messagePreview.textContent = mensagem;
+            });
+            
+            // Copiar mensagem
+            copyBtn.addEventListener('click', function() {
+                const mensagem = messagePreview.textContent;
+                navigator.clipboard.writeText(mensagem)
+                    .then(() => {
+                        notification.classList.add('show');
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 3000);
+                    })
+                    .catch(err => {
+                        console.error('Erro ao copiar texto: ', err);
+                    });
+            });
+            
+            // Limpar formulário
+            clearBtn.addEventListener('click', function() {
+                document.querySelectorAll('input').forEach(input => {
+                    if (input.type !== 'button') {
+                        input.value = '';
+                    }
+                });
+                
+                document.querySelectorAll('select').forEach(select => {
+                    select.selectedIndex = 0;
+                });
+                
+                // Restaurar data e hora atuais
+                document.getElementById('data').value = data;
+                document.getElementById('hora').value = hora;
+                
+                messagePreview.textContent = 'A mensagem gerada aparecerá aqui...';
+                
+                // Restaurar para início
+                btnInicio.classList.add('active');
+                btnFim.classList.remove('active');
+                statusGroup.style.display = 'block';
+            });
+            
+            function formatarData(data) {
+                const partes = data.split('-');
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+        });
+    </script>
+</body>
+</html>
