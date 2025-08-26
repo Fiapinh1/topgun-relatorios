@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página em construção</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f7f7f7;
+      font-family: Arial, sans-serif;
+    }
+    .icon svg {
+      margin-bottom: 20px;
+      width: 80px;
+      height: 80px;
+      stroke: #ff9800;
+      stroke-width: 2.5;
+      animation: hammer 0.7s infinite;
+      transform-origin: 60% 20%;
+    }
+    @keyframes hammer {
+      0% { transform: rotate(0deg);}
+      20% { transform: rotate(-30deg);}
+      40% { transform: rotate(0deg);}
+      100% { transform: rotate(0deg);}
+    }
+    .mensagem {
+      font-size: 2rem;
+      color: #333;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .submensagem {
+      font-size: 1.1rem;
+      color: #9d0909;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="icon" class="icon"></div>
+  <div class="mensagem">Página em construção</div>
+  <div class="submensagem">Estamos trabalhando para trazer novidades!</div>
+  <script>
+    // Renderiza o ícone Hammer diretamente
+    document.getElementById('icon').innerHTML = lucide.icons.Hammer({ size: 80, color: '#ff9800' });
+  </script>
+</body>
+</html>
