@@ -559,12 +559,12 @@
           talhoes.forEach(t => {
             const num = t.querySelectorAll("input")[0].value;
             const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value) || 0;
-            relatorio += `- Talhão ${num} | Área: ${areaAplicada.toFixed(2)} ha\n`;
+            relatorio += `- Talhão ${num} | Área Aplicada: ${areaAplicada.toFixed(2)} ha\n`;
             subtotal += areaAplicada;
           });
         }
         
-        relatorio += `\n📊 *Total na fazenda:* ${subtotal.toFixed(2)} ha\n`;
+        relatorio += `\n📊 *Total aplicado na fazenda:* ${subtotal.toFixed(2)} ha\n`;
         
         if (sobrouProduto === 'sim' && restante > 0) {
           relatorio += `🧴 *Produto restante:* ${restante} lts\n`;
@@ -684,6 +684,7 @@
   </script>
 </body>
 </html>
+
 
 
 
