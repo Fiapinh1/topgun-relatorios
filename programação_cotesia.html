@@ -39,192 +39,133 @@
 
   /* Header */
   header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0;
-  padding: 0;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: var(--shadow);
-  min-height: 64px;
-}
-
-header .btn.light {
-  margin-left: 16px;
-  margin-right: 0;
-  width: auto;
-  min-width: 90px;
-  padding: 0 16px;
-  height: 48px;
-  font-size: 1rem;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-}
-
-header h1 {
-  flex: 1;
-  text-align: center;
-  margin: 0 auto 0 0;
-  font-size: 1.2rem;
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-}
-
-@media (max-width: 790px) {
-  header {
-    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
     padding: 0;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: var(--shadow);
+    min-height: 64px;
   }
   header .btn.light {
-    margin-left: 8px;
-    height: 40px;
-    font-size: 0.98rem;
-    padding: 0 10px;
+    margin-left: 16px;
+    margin-right: 0;
+    width: auto;
+    min-width: 90px;
+    padding: 0 16px;
+    height: 48px;
+    font-size: 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
   }
   header h1 {
-    font-size: 1rem;
+    flex: 1;
+    text-align: center;
     margin: 0 auto 0 0;
-    gap: 6px;
-  }
-}
-
-  /* Botões */
-  /* === Botões (tamanho como no 1º layout) === */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  padding: 16px 0;
-  border-radius: 12px;
-  font-weight: 600;        /* leve ênfase como no 1º */
-  font-size: 1.1rem;         /* antes: 14px */
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  width: 100%;
-  margin-bottom: 12px;
-  -webkit-tap-highlight-color: transparent;
-}
-/* Mantém variações existentes */
-.btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
-.btn.neon:hover { background: var(--primary-dark); }
-.btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
-.btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
-
-
-  /* Layout principal */
-  .wrap {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 480px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-  /* Cards */
-  .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-  width: 100%;
-  max-width: 100%;
-}
-  .card h2 {
-    margin: 0 0 16px 0;
-    font-size: 16px;
+    font-size: 1.2rem;
     color: var(--primary);
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center;
   }
+  @media (max-width: 790px) {
+    header { min-height: 56px; padding: 0; }
+    header .btn.light { margin-left: 8px; height: 40px; font-size: 0.98rem; padding: 0 10px; }
+    header h1 { font-size: 1rem; margin: 0 auto 0 0; gap: 6px; }
+  }
+
+  /* Botões */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 16px 0;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+    margin-bottom: 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
+  .btn.neon:hover { background: var(--primary-dark); }
+  .btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+  .btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+
+  /* Layout principal */
+  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; margin: 0 auto; width: 100%; }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); width: 100%; max-width: 100%; }
+  .card h2 { margin: 0 0 16px 0; font-size: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
 
   /* Formulários */
   .grid { display: flex; flex-direction: column; gap: 12px; }
   .row { display: flex; flex-direction: column; gap: 6px; }
 
-  label {
-  color: #2f361f;          /* tom do 1º */
-  font-size: 1rem;         /* antes: 13px */
-  font-weight: 500;
-  display: block;
-  margin-top: 0;           /* layout já tem espaçamentos por .row */
-}
+  label { color: #2f361f; font-size: 1rem; font-weight: 500; display: block; margin-top: 0; }
 
   input, select, textarea {
-  width: 100%;
-  background: #f8fafc;
-  color: var(--text);
-  border: 1px solid #1e304b;
-  border-radius: 8px;
-  padding: 16px 12px;
-  font-size: 1rem;
-  outline: none;
-  transition: border 0.3s, box-shadow 0.2s;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  margin-bottom: 10px;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: #3b82f6;   /* como no 1º */
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
+    width: 100%;
+    background: #f8fafc;
+    color: var(--text);
+    border: 1px solid #1e304b;
+    border-radius: 8px;
+    padding: 16px 12px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    margin-bottom: 10px;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+  input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
 
-/* === Prévia (tipografia como no 1º) === */
-.preview {
-  white-space: pre-wrap;
-  background: #f8fafc;           /* como no 1º */
-  border: 1px solid #e5e7eb;     /* tom leve */
-  border-radius: var(--radius);
-  padding: 18px;                 /* como no 1º */
-  min-height: 200px;
-  font-family: 'Segoe UI', Arial, sans-serif; /* como no 1º */
-  font-size: 1rem;               /* antes: 13px */
-  line-height: 1.5;
-  overflow: auto;
-  max-height: 300px;
-}
+  .preview {
+    white-space: pre-wrap;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius);
+    padding: 18px;
+    min-height: 200px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    overflow: auto;
+    max-height: 300px;
+  }
 
-/* === Ajustes mobile (mantidos, com padding do 1º) === */
-@media (max-width: 790px) {
-  .small-input { max-width: 110px; }
-  .btn { padding: 14px 16px; }    /* mantém o novo padrão */
-}
+  @media (max-width: 790px) {
+    .small-input { max-width: 110px; }
+    .btn { padding: 14px 16px; }
+  }
   .sep { height: 1px; background: var(--border); margin: 16px 0; }
 
-  .badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 12px; padding: 4px 10px; border-radius: 999px;
-    border: 1px solid var(--border); color: var(--text-muted);
-    background: var(--background); margin-top: 8px; text-align: center; justify-content: center;
-  }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); background: var(--background); margin-top: 8px; text-align: center; justify-content: center; }
   .warn { color: var(--warning); }
   .success { color: var(--success); }
 
-  /* Utilitários */
   .flex-1 { flex: 1; }
   .mt-2 { margin-top: 8px; }
   .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .small-input { max-width: 120px; }
 
-  /* iPhone widths */
   @media (max-width: 790px) {
     .small-input { max-width: 110px; }
     .btn { padding: 12px 14px; }
@@ -327,42 +268,26 @@ lucide.createIcons();
 
 /* ===== Util ===== */
 const pad2 = n => String(n).padStart(2,'0');
-function todaySP(){ // yyyy-mm-dd para input date
-  const now = new Date();
-  return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
-}
-function fmtBR(n, d=2){
-  return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:d, maximumFractionDigits:d});
-}
-function toNumBR(s){
-  if (typeof s === 'number') return s;
-  const t = String(s||'').replace(/\./g,'').replace(',','.');
-  const n = parseFloat(t);
-  return isNaN(n) ? 0 : n;
-}
-function fmtDateBRfromInput(yyyy_mm_dd){
-  if (!yyyy_mm_dd) return '';
-  const [y,m,d] = yyyy_mm_dd.split('-');
-  return `${d}/${m}/${y}`;
-}
-function nowStrSP(){
-  const f = new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    dateStyle: 'short', timeStyle: 'short'
-  });
-  return f.format(new Date());
-}
+function todaySP(){ const now = new Date(); return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`; }
+function fmtBR(n, d=2){ return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:d, maximumFractionDigits:d}); }
+function toNumBR(s){ if (typeof s === 'number') return s; const t = String(s||'').replace(/\./g,'').replace(',','.'); const n = parseFloat(t); return isNaN(n) ? 0 : n; }
+function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,d] = yyyy_mm_dd.split('-'); return `${d}/${m}/${y}`; }
+function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = {
-  'Frente 01': 'Caio Brito',
-  'Frente 02': 'Ygor Lucas'
-};
-function setPilotByFrente(){
-  const frente = document.getElementById('selFrente').value || '';
-  const piloto = PILOTOS[frente] || '';
-  const $pil = document.getElementById('txtPiloto');
-  $pil.value = piloto;
+const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Ygor Lucas' };
+function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
+
+/* ===== API (Apps Script Web App) ===== */
+const API_URL = 'https://script.google.com/a/macros/pulverizacoes.com/s/AKfycbyzM5P7itCGBCjGIPYfylja_c6ODdTcXrVP5sQ2e1tdljQOWKR6meRy62Put2xish0l8w/exec';
+const API_TOKEN = ''; // opcional: se você proteger com token no servidor, coloque aqui
+
+async function lookupOS(os){
+  const params = new URLSearchParams({ action:'lookup', os, ...(API_TOKEN ? {token:API_TOKEN} : {}) });
+  const url = `${API_URL}?${params.toString()}`;
+  const res = await fetch(url, { method:'GET' }); // GET evita preflight/CORS chato
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
 }
 
 /* ===== Linha de fazenda (OS) ===== */
@@ -410,78 +335,65 @@ function makeRow(prefill={}){
     </div>
   `;
   rowsEl.appendChild(el);
-
-  // Ícones da nova linha
   lucide.createIcons();
 
-  // refs
   const $os = el.querySelector('.os');
   const $msg = el.querySelector('.msg');
   const $faz = el.querySelector('.faz');
   const $cod = el.querySelector('.cod');
   const $ha  = el.querySelector('.ha');
   const $cop = el.querySelector('.copos');
-  const $obj = el.querySelector('.objetivo');
-  const $pil = el.querySelector('.piloto');
 
-  // prefill opcional
   if (prefill.os)  $os.value  = prefill.os;
   if (prefill.faz) $faz.value = prefill.faz;
   if (prefill.cod) $cod.value = prefill.cod;
   if (prefill.ha)  $ha.value  = prefill.ha;
   if (prefill.copos) $cop.value = prefill.copos;
 
-  // eventos
-  el.querySelector('.remover').addEventListener('click', ()=>{
-    el.remove(); recalcTotals(); updatePreview(false);
-  });
+  el.querySelector('.remover').addEventListener('click', ()=>{ el.remove(); recalcTotals(); updatePreview(false); });
   el.querySelector('.buscar').addEventListener('click', ()=> doLookup(el));
   $os.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doLookup(el); });
-  [$ha,$cop,$faz,$cod,$obj,$pil].forEach(inp=>{
+  [$ha,$cop,$faz,$cod,el.querySelector('.objetivo'),el.querySelector('.piloto')].forEach(inp=>{
     inp.addEventListener('input', ()=>{ recalcTotals(); updatePreview(false); });
   });
 
   return el;
 }
 
-function doLookup(el){
+async function doLookup(el){
   const $os = el.querySelector('.os');
   const os = String($os.value || '').trim();
   const $msg = el.querySelector('.msg');
   if (!os){ $msg.innerHTML = '<span class="warn">Informe a OS.</span>'; return; }
 
   $msg.textContent = 'Buscando...';
-  google.script.run
-    .withSuccessHandler(res=>{
-      if (!res || !res.found || !res.items || res.items.length === 0){
-        $msg.innerHTML = '<span class="warn">OS não encontrada na planilha. Preencha manualmente.</span>';
-        return;
-      }
-      // se houver várias linhas, pega a com data mais recente
-      const items = res.items.slice();
-      items.sort((a,b)=>{
-        const pa = (a.data||'').split('/'); const pb = (b.data||'').split('/');
-        const da = pa.length===3 ? new Date(+pa[2], +pa[1]-1, +pa[0]) : new Date(0);
-        const db = pb.length===3 ? new Date(+pb[2], +pb[1]-1, +pb[0]) : new Date(0);
-        return db - da; // desc
-      });
-      const it = items[0];
+  try{
+    const res = await lookupOS(os);
+    if (!res || !res.ok || !res.found || !res.items || res.items.length === 0){
+      $msg.innerHTML = '<span class="warn">OS não encontrada na planilha. Preencha manualmente.</span>';
+      return;
+    }
+    const items = res.items.slice().sort((a,b)=>{
+      const pa = (a.data||'').split('/'), pb = (b.data||'').split('/');
+      const da = pa.length===3 ? new Date(+pa[2], +pa[1]-1, +pa[0]) : new Date(0);
+      const db = pb.length===3 ? new Date(+pb[2], +pb[1]-1, +pb[0]) : new Date(0);
+      return db - da;
+    });
+    const it = items[0];
 
-      el.querySelector('.faz').value = it.fazenda || '';
-      el.querySelector('.cod').value = it.codigo  || '';
-      el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
-      el.querySelector('.copos').value = it.copos ? String(it.copos).replace('.', ',') : '';
-      el.querySelector('.piloto').value   = it.piloto   || '';
-      el.querySelector('.objetivo').value = it.objetivo || '';
+    el.querySelector('.faz').value = it.fazenda || '';
+    el.querySelector('.cod').value = it.codigo  || '';
+    el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
+    el.querySelector('.copos').value = it.copos ? String(it.copos).replace('.', ',') : '';
+    el.querySelector('.piloto').value   = it.piloto   || '';
+    el.querySelector('.objetivo').value = it.objetivo || '';
 
-      $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
-      recalcTotals();
-      updatePreview(false);
-    })
-    .withFailureHandler(err=>{
-      $msg.innerHTML = `<span class="warn">Falha no lookup: ${err && err.message ? err.message : err}</span>`;
-    })
-    .lookupCotesiaByOS(os);
+    $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
+    recalcTotals();
+    updatePreview(false);
+  }catch(err){
+    $msg.innerHTML = `<span class="warn">Falha no lookup: ${err && err.message ? err.message : err}</span>`;
+  }
 }
 
 /* ===== Totais ===== */
@@ -544,12 +456,9 @@ function updatePreview(andScroll=true){
 (function init(){
   document.getElementById('dtData').value = todaySP();
 
-  // 1ª linha já pronta
   makeRow();
 
-  document.getElementById('btnAdd').addEventListener('click', ()=>{
-    makeRow(); updatePreview(false);
-  });
+  document.getElementById('btnAdd').addEventListener('click', ()=>{ makeRow(); updatePreview(false); });
 
   document.getElementById('btnGerar').addEventListener('click', ()=>{
     updatePreview();
@@ -577,20 +486,11 @@ function updatePreview(andScroll=true){
     window.open(url, '_blank');
   });
 
-  // atualiza prévia a cada mudança dos dados gerais
   ['dtData','selFrente','txtPiloto','txtDrone','selUnidade','txtObjetivo'].forEach(id=>{
     document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
   });
 
-  // Frente → Piloto
-  document.getElementById('selFrente').addEventListener('change', ()=>{
-    setPilotByFrente();
-    updatePreview(false);
-  });
-
-  // opcional: defina uma frente inicial
-  // document.getElementById('selFrente').value = 'Frente 01';
-  // setPilotByFrente();
+  document.getElementById('selFrente').addEventListener('change', ()=>{ setPilotByFrente(); updatePreview(false); });
 
   recalcTotals();
   updatePreview(false);
