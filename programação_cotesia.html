@@ -1,55 +1,601 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Página em construção</title>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: #f7f7f7;
-      font-family: Arial, sans-serif;
-    }
-    .icon svg {
-      margin-bottom: 20px;
-      width: 80px;
-      height: 80px;
-      stroke: #ff9800;
-      stroke-width: 2.5;
-      animation: hammer 0.7s infinite;
-      transform-origin: 60% 20%;
-    }
-    @keyframes hammer {
-      0% { transform: rotate(0deg);}
-      20% { transform: rotate(-30deg);}
-      40% { transform: rotate(0deg);}
-      100% { transform: rotate(0deg);}
-    }
-    .mensagem {
-      font-size: 2rem;
-      color: #333;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    .submensagem {
-      font-size: 1.1rem;
-      color: #9d0909;
-      margin-top: 6px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Programação (Cotesia) - Top Gun</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Ícones Lucide -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  :root {
+    --primary: #16a34a;
+    --primary-light: #dcfce7;
+    --primary-dark: #15803d;
+    --background: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --success: #10b981;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 20px;
+  }
+
+  /* Header */
+  header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: var(--shadow);
+  min-height: 64px;
+}
+
+header .btn.light {
+  margin-left: 16px;
+  margin-right: 0;
+  width: auto;
+  min-width: 90px;
+  padding: 0 16px;
+  height: 48px;
+  font-size: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+}
+
+header h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0 auto 0 0;
+  font-size: 1.2rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+@media (max-width: 790px) {
+  header {
+    min-height: 56px;
+    padding: 0;
+  }
+  header .btn.light {
+    margin-left: 8px;
+    height: 40px;
+    font-size: 0.98rem;
+    padding: 0 10px;
+  }
+  header h1 {
+    font-size: 1rem;
+    margin: 0 auto 0 0;
+    gap: 6px;
+  }
+}
+
+  /* Botões */
+  /* === Botões (tamanho como no 1º layout) === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: 16px 0;
+  border-radius: 12px;
+  font-weight: 600;        /* leve ênfase como no 1º */
+  font-size: 1.1rem;         /* antes: 14px */
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  width: 100%;
+  margin-bottom: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Mantém variações existentes */
+.btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
+.btn.neon:hover { background: var(--primary-dark); }
+.btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+.btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+
+
+  /* Layout principal */
+  .wrap {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+  /* Cards */
+  .card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 100%;
+}
+  .card h2 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Formulários */
+  .grid { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+  color: #2f361f;          /* tom do 1º */
+  font-size: 1rem;         /* antes: 13px */
+  font-weight: 500;
+  display: block;
+  margin-top: 0;           /* layout já tem espaçamentos por .row */
+}
+
+  input, select, textarea {
+  width: 100%;
+  background: #f8fafc;
+  color: var(--text);
+  border: 1px solid #1e304b;
+  border-radius: 8px;
+  padding: 16px 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: 10px;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6;   /* como no 1º */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
+
+/* === Prévia (tipografia como no 1º) === */
+.preview {
+  white-space: pre-wrap;
+  background: #f8fafc;           /* como no 1º */
+  border: 1px solid #e5e7eb;     /* tom leve */
+  border-radius: var(--radius);
+  padding: 18px;                 /* como no 1º */
+  min-height: 200px;
+  font-family: 'Segoe UI', Arial, sans-serif; /* como no 1º */
+  font-size: 1rem;               /* antes: 13px */
+  line-height: 1.5;
+  overflow: auto;
+  max-height: 300px;
+}
+
+/* === Ajustes mobile (mantidos, com padding do 1º) === */
+@media (max-width: 790px) {
+  .small-input { max-width: 110px; }
+  .btn { padding: 14px 16px; }    /* mantém o novo padrão */
+}
+  .sep { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--text-muted);
+    background: var(--background); margin-top: 8px; text-align: center; justify-content: center;
+  }
+  .warn { color: var(--warning); }
+  .success { color: var(--success); }
+
+  /* Utilitários */
+  .flex-1 { flex: 1; }
+  .mt-2 { margin-top: 8px; }
+  .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .small-input { max-width: 120px; }
+
+  /* iPhone widths */
+  @media (max-width: 790px) {
+    .small-input { max-width: 110px; }
+    .btn { padding: 12px 14px; }
+  }
+</style>
 </head>
 <body>
-  <div id="icon" class="icon"></div>
-  <div class="mensagem">Página em construção...</div>
-  <div class="submensagem">Estamos trabalhando para trazer novidades!</div>
-  <script>
-    // Renderiza o ícone Hammer diretamente
-    document.getElementById('icon').innerHTML = lucide.icons.Hammer({ size: 80, color: '#ff9800' });
-  </script>
+
+<header>
+  <a class="btn light" href="./"><i data-lucide="arrow-left" width="16" height="16"></i> Voltar</a>
+  <h1><i data-lucide="bug" width="20" height="20"></i> Programação (Cotesia) – Top Gun</h1>
+</header>
+
+<div class="wrap">
+  <!-- Dados gerais -->
+  <section class="card">
+    <h2><i data-lucide="clipboard-list" width="18" height="18"></i> Dados gerais</h2>
+    <div class="grid">
+      <div class="row">
+        <label for="dtData">Data</label>
+        <input type="date" id="dtData">
+      </div>
+
+      <div class="row">
+        <label for="selFrente">Frente</label>
+        <select id="selFrente">
+          <option value="" selected>Selecione…</option>
+          <option value="Frente 01">Frente 01</option>
+          <option value="Frente 02">Frente 02</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="txtPiloto">Piloto</label>
+        <input type="text" id="txtPiloto" placeholder="Selecione a Frente" readonly title="Preenchido automaticamente pela Frente">
+      </div>
+
+      <div class="row">
+        <label for="txtDrone">Drone</label>
+        <input type="text" id="txtDrone" value="X 800">
+      </div>
+
+      <div class="row">
+        <label for="selUnidade">Unidade</label>
+        <select id="selUnidade">
+          <option>Delta - Delta</option>
+          <option>Delta - Volta Grande</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="txtObjetivo" class="muted">Observação (opcional)</label>
+        <input type="text" id="txtObjetivo" placeholder="Ex.: Dois">
+      </div>
+    </div>
+  </section>
+
+  <!-- Fazendas -->
+  <section class="card">
+    <h2><i data-lucide="tractor" width="18" height="18"></i> Fazendas (por OS)</h2>
+
+    <div class="rows" id="rows"></div>
+
+    <div class="inline mt-2">
+      <button class="btn" id="btnAdd"><i data-lucide="plus" width="16" height="16"></i> Adicionar fazenda</button>
+      <span class="muted">Preencha a <b>OS</b> e clique "Buscar" para auto-preencher.</span>
+    </div>
+
+    <div class="totals">
+      <div class="row">
+        <label>Total hectares</label>
+        <input id="totHa" type="text" readonly>
+      </div>
+      <div class="row">
+        <label>Total de copos</label>
+        <input id="totCopos" type="text" readonly>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prévia e ações -->
+  <section class="card">
+    <h2><i data-lucide="eye" width="18" height="18"></i> Prévia WhatsApp</h2>
+    <div class="preview" id="preview"></div>
+
+    <div class="sep"></div>
+
+    <div class="action-buttons">
+      <button class="btn neon" id="btnGerar"><i data-lucide="refresh-cw" width="16" height="16"></i> Gerar prévia</button>
+      <button class="btn" id="btnCopiar"><i data-lucide="copy" width="16" height="16"></i> Copiar mensagem</button>
+      <button class="btn light" id="btnWhats"><i data-lucide="message-circle" width="16" height="16"></i> Abrir no WhatsApp</button>
+      <span class="badge" id="lblInfo"></span>
+    </div>
+  </section>
+</div>
+
+<script>
+// Inicializar ícones Lucide
+lucide.createIcons();
+
+/* ===== Util ===== */
+const pad2 = n => String(n).padStart(2,'0');
+function todaySP(){ // yyyy-mm-dd para input date
+  const now = new Date();
+  return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+}
+function fmtBR(n, d=2){
+  return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:d, maximumFractionDigits:d});
+}
+function toNumBR(s){
+  if (typeof s === 'number') return s;
+  const t = String(s||'').replace(/\./g,'').replace(',','.');
+  const n = parseFloat(t);
+  return isNaN(n) ? 0 : n;
+}
+function fmtDateBRfromInput(yyyy_mm_dd){
+  if (!yyyy_mm_dd) return '';
+  const [y,m,d] = yyyy_mm_dd.split('-');
+  return `${d}/${m}/${y}`;
+}
+function nowStrSP(){
+  const f = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    dateStyle: 'short', timeStyle: 'short'
+  });
+  return f.format(new Date());
+}
+
+/* ===== Frente → Piloto ===== */
+const PILOTOS = {
+  'Frente 01': 'Caio Brito',
+  'Frente 02': 'Ygor Lucas'
+};
+function setPilotByFrente(){
+  const frente = document.getElementById('selFrente').value || '';
+  const piloto = PILOTOS[frente] || '';
+  const $pil = document.getElementById('txtPiloto');
+  $pil.value = piloto;
+}
+
+/* ===== Linha de fazenda (OS) ===== */
+const rowsEl = document.getElementById('rows');
+
+function makeRow(prefill={}){
+  const el = document.createElement('div');
+  el.className = 'farm';
+  el.innerHTML = `
+    <div class="top">
+      <div class="inline">
+        <div class="inline-row">
+          <input type="text" class="os small-input" placeholder="Nº OS">
+          <button class="btn light buscar"><i data-lucide="search" width="14" height="14"></i> Buscar</button>
+        </div>
+        <button class="btn warning remover" title="Remover"><i data-lucide="trash-2" width="14" height="14"></i> Remover fazenda</button>
+      </div>
+      <div class="muted msg" style="min-height: 20px;"></div>
+    </div>
+    <div class="grid">
+      <div class="row">
+        <label>Fazenda</label>
+        <input type="text" class="faz">
+      </div>
+      <div class="row">
+        <label>Código</label>
+        <input type="text" class="cod">
+      </div>
+      <div class="row">
+        <label>Hectares (ha)</label>
+        <input type="text" class="ha">
+      </div>
+      <div class="row">
+        <label>Qtd. Copos</label>
+        <input type="text" class="copos">
+      </div>
+      <div class="row">
+        <label class="muted">Objetivo (opcional)</label>
+        <input type="text" class="objetivo">
+      </div>
+      <div class="row">
+        <label class="muted">Piloto (opcional)</label>
+        <input type="text" class="piloto">
+      </div>
+    </div>
+  `;
+  rowsEl.appendChild(el);
+
+  // Ícones da nova linha
+  lucide.createIcons();
+
+  // refs
+  const $os = el.querySelector('.os');
+  const $msg = el.querySelector('.msg');
+  const $faz = el.querySelector('.faz');
+  const $cod = el.querySelector('.cod');
+  const $ha  = el.querySelector('.ha');
+  const $cop = el.querySelector('.copos');
+  const $obj = el.querySelector('.objetivo');
+  const $pil = el.querySelector('.piloto');
+
+  // prefill opcional
+  if (prefill.os)  $os.value  = prefill.os;
+  if (prefill.faz) $faz.value = prefill.faz;
+  if (prefill.cod) $cod.value = prefill.cod;
+  if (prefill.ha)  $ha.value  = prefill.ha;
+  if (prefill.copos) $cop.value = prefill.copos;
+
+  // eventos
+  el.querySelector('.remover').addEventListener('click', ()=>{
+    el.remove(); recalcTotals(); updatePreview(false);
+  });
+  el.querySelector('.buscar').addEventListener('click', ()=> doLookup(el));
+  $os.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doLookup(el); });
+  [$ha,$cop,$faz,$cod,$obj,$pil].forEach(inp=>{
+    inp.addEventListener('input', ()=>{ recalcTotals(); updatePreview(false); });
+  });
+
+  return el;
+}
+
+function doLookup(el){
+  const $os = el.querySelector('.os');
+  const os = String($os.value || '').trim();
+  const $msg = el.querySelector('.msg');
+  if (!os){ $msg.innerHTML = '<span class="warn">Informe a OS.</span>'; return; }
+
+  $msg.textContent = 'Buscando...';
+  google.script.run
+    .withSuccessHandler(res=>{
+      if (!res || !res.found || !res.items || res.items.length === 0){
+        $msg.innerHTML = '<span class="warn">OS não encontrada na planilha. Preencha manualmente.</span>';
+        return;
+      }
+      // se houver várias linhas, pega a com data mais recente
+      const items = res.items.slice();
+      items.sort((a,b)=>{
+        const pa = (a.data||'').split('/'); const pb = (b.data||'').split('/');
+        const da = pa.length===3 ? new Date(+pa[2], +pa[1]-1, +pa[0]) : new Date(0);
+        const db = pb.length===3 ? new Date(+pb[2], +pb[1]-1, +pb[0]) : new Date(0);
+        return db - da; // desc
+      });
+      const it = items[0];
+
+      el.querySelector('.faz').value = it.fazenda || '';
+      el.querySelector('.cod').value = it.codigo  || '';
+      el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
+      el.querySelector('.copos').value = it.copos ? String(it.copos).replace('.', ',') : '';
+      el.querySelector('.piloto').value   = it.piloto   || '';
+      el.querySelector('.objetivo').value = it.objetivo || '';
+
+      $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
+      recalcTotals();
+      updatePreview(false);
+    })
+    .withFailureHandler(err=>{
+      $msg.innerHTML = `<span class="warn">Falha no lookup: ${err && err.message ? err.message : err}</span>`;
+    })
+    .lookupCotesiaByOS(os);
+}
+
+/* ===== Totais ===== */
+function recalcTotals(){
+  let tHa = 0, tCop = 0;
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    tHa  += toNumBR(el.querySelector('.ha').value);
+    tCop += toNumBR(el.querySelector('.copos').value);
+  });
+  document.getElementById('totHa').value    = fmtBR(tHa);
+  document.getElementById('totCopos').value = fmtBR(tCop,0);
+}
+
+/* ===== Mensagem ===== */
+function buildMessage(){
+  const dt   = document.getElementById('dtData').value;
+  const fr   = document.getElementById('selFrente').value || '—';
+  const pil  = document.getElementById('txtPiloto').value || '—';
+  const dr   = document.getElementById('txtDrone').value  || '—';
+  const uni  = document.getElementById('selUnidade').value || '—';
+  const objG = document.getElementById('txtObjetivo').value || '';
+
+  let msg = `Programação (Cotesia 🪰)Top Gun
+
+Data: ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}
+Frente: ${fr}
+Piloto: ${pil}
+Drone: ${dr}
+Unidade: ${uni}`;
+  if (objG) msg += `\nObjetivo: ${objG}`;
+  msg += `\n_________`;
+
+  let tHa = 0, tCop = 0;
+
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    const os  = (el.querySelector('.os').value || '').trim();
+    const faz = (el.querySelector('.faz').value || '').trim();
+    const cod = (el.querySelector('.cod').value || '').trim();
+    const ha  = toNumBR(el.querySelector('.ha').value);
+    const cp  = toNumBR(el.querySelector('.copos').value);
+    const obj = (el.querySelector('.objetivo').value || '').trim();
+
+    tHa  += ha; tCop += cp;
+
+    msg += `\nOS: ${os || '—'}\nFaz: ${faz || '—'}\nCod: ${cod || '—'}\nHá: ${fmtBR(ha)}\nQtd. Copos: ${fmtBR(cp,0)}`;
+    if (obj) msg += `\nObjetivo: ${obj}`;
+    msg += `\n————————-`;
+  });
+
+  msg += `\nTotal de copos: ${fmtBR(tCop,0)}\nTotal hectares: ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
+  return msg;
+}
+function updatePreview(andScroll=true){
+  const p = document.getElementById('preview');
+  p.textContent = buildMessage();
+  if (andScroll) p.scrollTop = p.scrollHeight;
+}
+
+/* ===== Init & eventos ===== */
+(function init(){
+  document.getElementById('dtData').value = todaySP();
+
+  // 1ª linha já pronta
+  makeRow();
+
+  document.getElementById('btnAdd').addEventListener('click', ()=>{
+    makeRow(); updatePreview(false);
+  });
+
+  document.getElementById('btnGerar').addEventListener('click', ()=>{
+    updatePreview();
+    const lblInfo = document.getElementById('lblInfo');
+    lblInfo.innerHTML = '<i data-lucide="check" width="12" height="12"></i> Prévia atualizada';
+    lucide.createIcons();
+    setTimeout(()=> lblInfo.textContent = '', 1800);
+  });
+
+  document.getElementById('btnCopiar').addEventListener('click', async ()=>{
+    const txt = buildMessage();
+    try{
+      await navigator.clipboard.writeText(txt);
+      const lblInfo = document.getElementById('lblInfo');
+      lblInfo.innerHTML = '<i data-lucide="check" width="12" height="12"></i> Copiado';
+      lucide.createIcons();
+    }catch(_e){
+      document.getElementById('lblInfo').textContent = 'Falhou ao copiar';
+    }
+    setTimeout(()=> document.getElementById('lblInfo').textContent = '', 1800);
+  });
+
+  document.getElementById('btnWhats').addEventListener('click', ()=>{
+    const url = 'https://wa.me/?text=' + encodeURIComponent(buildMessage());
+    window.open(url, '_blank');
+  });
+
+  // atualiza prévia a cada mudança dos dados gerais
+  ['dtData','selFrente','txtPiloto','txtDrone','selUnidade','txtObjetivo'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
+  });
+
+  // Frente → Piloto
+  document.getElementById('selFrente').addEventListener('change', ()=>{
+    setPilotByFrente();
+    updatePreview(false);
+  });
+
+  // opcional: defina uma frente inicial
+  // document.getElementById('selFrente').value = 'Frente 01';
+  // setPilotByFrente();
+
+  recalcTotals();
+  updatePreview(false);
+})();
+</script>
+
 </body>
 </html>
