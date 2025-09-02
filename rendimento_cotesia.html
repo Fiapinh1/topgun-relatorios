@@ -276,7 +276,7 @@ const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Ygor Lucas' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
-const API_URL = 'https://script.google.com/a/macros/pulverizacoes.com/s/AKfycbyzM5P7itCGBCjGIPYfylja_c6ODdTcXrVP5sQ2e1tdljQOWKR6meRy62Put2xish0l8w/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbw2VQUIoe4PHR8MNcJ3dAeSf6gf_XjepYE6XdUvXP4d9MnEZ0yuNKP6uPEGwqN0_1lpUA/exec';
 const API_TOKEN = ''; // se proteger com token no Code.gs, coloque aqui
 
 async function lookupOS(os){
@@ -506,3 +506,4 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
