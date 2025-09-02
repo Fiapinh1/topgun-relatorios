@@ -276,7 +276,7 @@ const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Ygor Lucas' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbzdut04haLW4Bccoh5RKKkt3emXeZ2yf8TrRS9zNimmRwASUKEDSzaN2c2s8gkcnZjCig/exec';
+const API_URL = 'https://script.google.com/a/macros/pulverizacoes.com/s/AKfycbyzM5P7itCGBCjGIPYfylja_c6ODdTcXrVP5sQ2e1tdljQOWKR6meRy62Put2xish0l8w/exec';
 const API_TOKEN = ''; // se proteger com token no Code.gs, coloque aqui
 
 async function lookupOS(os){
@@ -328,8 +328,8 @@ function makeRow(prefill={}){
       <div class="row">
         <label>Status</label>
         <select class="status">
-          <option value="Finalizada">Finalizada</option>
-          <option value="Em andamento">Em andamento</option>
+          <option value="Finalizada">✅Finalizada </option>
+          <option value="Em andamento">🟠Em andamento</option>
         </select>
       </div>
     </div>
@@ -425,6 +425,11 @@ function buildMessage(){
     const obj  = (el.querySelector('.objetivo').value || '').trim();
     const st   = el.querySelector('.status').value || '—';
 
+    // Adiciona emoji conforme status
+    let statusStr = st;
+    if (st === "Finalizada") statusStr = "✅*Finalizada*";
+    else if (st === "Em andamento") statusStr = "🟠*Em andamento*";
+
     tHa  += ha; tCop += cp;
 
     msg += `\n*OS:* ${os || 'Preencher'}` +
@@ -433,7 +438,7 @@ function buildMessage(){
            `\n*Há:* ${fmtBR(ha)}` +
            `\n*Qtd. Copos:* ${cp ? fmtBR(cp,0) : 'Preencher'}` +
            `\n*Objetivo:* ${obj || '—'}` +
-           `\n*Status* ${st}` +
+           `\n*Status:* ${statusStr}` +
            `\n————————-`;
   });
 
@@ -501,4 +506,3 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
-
