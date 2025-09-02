@@ -153,7 +153,7 @@ function gerarPrevia(){
   const st = document.getElementById("selStatus").value;
   const obs= document.getElementById("txtObs").value;
 
-  let msg = `🪰*Status Operação*🪰\n\n`;
+  let msg = `*Status Operação (Cotésia🪰)*\n\n`;
   msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}\n\n`;
   msg += `*Status da operação:* ${st}`;
   if(st.includes("Ag. Condições") && obs){ msg += `\nObs.: ${obs}`; }
@@ -174,3 +174,4 @@ function abrirWhats(){
 </script>
 </body>
 </html>
+
