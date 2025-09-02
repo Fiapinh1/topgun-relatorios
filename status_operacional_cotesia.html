@@ -1,544 +1,176 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatizador TOPGUN</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #34d399;
-            --primary-dark: #22c55e;
-            --dark: #0f172a;
-            --darker: #0a0e1a;
-            --light: #1e293b;
-            --lighter: #334155;
-            --text: #f1f5f9;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--dark), var(--darker));
-            color: var(--text);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--light);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
-        
-        header {
-            background: var(--dark);
-            padding: 25px;
-            text-align: center;
-            border-bottom: 3px solid var(--primary);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .logo-icon {
-            font-size: 2.8rem;
-            color: var(--primary);
-        }
-        
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-        
-        .content {
-            padding: 25px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-        
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .form-section, .preview-section {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--lighter);
-        }
-        
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
-            font-size: 1.3rem;
-        }
-        
-        .section-title i {
-            font-size: 1.4rem;
-        }
-        
-        .toggle-container {
-            display: flex;
-            background: var(--dark);
-            border-radius: 10px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            border: 2px solid var(--lighter);
-        }
-        
-        .toggle-btn {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            color: var(--text);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .toggle-btn.active {
-            background: var(--primary);
-            color: var(--dark);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        label i {
-            font-size: 1.1rem;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--lighter);
-            border-radius: 8px;
-            background: var(--dark);
-            color: var(--text);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        input:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
-        }
-        
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .btn {
-            padding: 16px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: var(--dark);
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 211, 153, 0.4);
-        }
-        
-        .btn-secondary {
-            background: var(--lighter);
-            color: var(--text);
-        }
-        
-        .btn-secondary:hover {
-            background: #475569;
-            transform: translateY(-2px);
-        }
-        
-        .message-preview {
-            background: var(--dark);
-            border-radius: 8px;
-            padding: 20px;
-            min-height: 350px;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            border: 2px solid var(--lighter);
-            overflow-y: auto;
-            max-height: 400px;
-        }
-        
-        .copy-btn {
-            margin-top: 20px;
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .copy-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 211, 153, 0.4);
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: var(--primary);
-            color: var(--dark);
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateX(100%);
-            transition: transform 0.3s;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .pilot-info {
-            background: var(--dark);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            border-left: 4px solid var(--primary);
-            font-size: 0.9rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Status Operação - Top Gun</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  :root {
+    --primary: #16a34a;
+    --primary-dark: #15803d;
+    --primary-light: #dcfce7;
+    --border: #e2e8f0;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --radius: 12px;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  body { background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; margin:0; padding:20px; }
+  header { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+  header h1 { font-size:1.2rem; color:var(--primary); display:flex; gap:8px; align-items:center; }
+  .wrap { max-width:480px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
+  .card h2 { font-size:16px; color:var(--primary); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  label { font-size:1rem; color:var(--muted); margin-top:10px; display:block; }
+  input, select, textarea {
+    width:100%; padding:12px; border:1px solid #1e304b; border-radius:8px;
+    font-size:1rem; margin-top:6px;
+  }
+  .btn {
+    padding:14px; border-radius:10px; border:1px solid var(--border);
+    font-size:1rem; font-weight:600; cursor:pointer; display:flex; gap:6px; justify-content:center; align-items:center;
+  }
+  .btn.neon { background:var(--primary); color:#fff; }
+  .btn.neon:hover { background:var(--primary-dark); }
+  .btn.light { background:var(--primary-light); color:var(--primary-dark); }
+  .preview { white-space:pre-wrap; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); padding:16px; min-height:200px; font-family:'Courier New', monospace; font-size:1rem; }
+  .sep { height:1px; background:var(--border); margin:12px 0; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-jet-fighter logo-icon"></i>
-                <div class="logo-text">TOPGUN</div>
-            </div>
-            <h1>Status Operacional</h1>
-            <p class="subtitle">Gerencie e comunique suas operações de forma eficiente</p>
-        </header>
-        
-        <div class="content">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-pen-to-square"></i>
-                    <span>Dados da Operação</span>
-                </div>
-                
-                <div class="toggle-container">
-                    <button class="toggle-btn active" id="btn-inicio">
-                        <i class="fas fa-play-circle"></i> Início
-                    </button>
-                    <button class="toggle-btn" id="btn-fim">
-                        <i class="fas fa-flag-checkered"></i> Fim
-                    </button>
-                </div>
-                
-                <div class="form-group">
-                    <label for="unidade"><i class="fas fa-building"></i> Unidade:</label>
-                    <select id="unidade">
-                        <option value="">Selecione a unidade</option>
-                        <option value="Delta - Delta">Delta - Delta</option>
-                        <option value="Delta - Volta Grande">Delta - Volta Grande</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="frente"><i class="fas fa-route"></i> Frente:</label>
-                    <select id="frente">
-                        <option value="">Selecione a frente</option>
-                        <option value="Cotesia 01">Cotesia 01</option>
-                        <option value="Cotesia 02">Cotesia 02</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="piloto"><i class="fas fa-user"></i> Piloto:</label>
-                    <select id="piloto">
-                        <option value="">Selecione o piloto</option>
-                        <option value="Caio Brito">Caio Brito</option>
-                        <option value="Ygor Lucas">Ygor Lucas</option>
-                    </select>
-                    
-                    <div class="pilot-info">
-                        <i class="fas fa-info-circle"></i> 
-                        <span id="pilot-association">Piloto selecionado automaticamente</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="data"><i class="fas fa-calendar"></i> Data:</label>
-                    <input type="date" id="data">
-                </div>
-                
-                <div class="form-group">
-                    <label for="hora"><i class="fas fa-clock"></i> Hora:</label>
-                    <input type="time" id="hora">
-                </div>
-                
-                <div class="form-group">
-                    <label for="fazenda"><i class="fas fa-tractor"></i> Fazenda:</label>
-                    <input type="text" id="fazenda" placeholder="Nome da fazenda">
-                </div>
-                
-                <div class="form-group">
-                    <label for="codigo"><i class="fas fa-hashtag"></i> Código:</label>
-                    <input type="text" id="codigo" placeholder="Código da fazenda">
-                </div>
-                
-                <div class="form-group">
-                    <label for="os"><i class="fas fa-file-alt"></i> OS:</label>
-                    <input type="text" id="os" placeholder="Número da OS">
-                </div>
-                
-                <div class="form-group" id="status-group">
-                    <label for="status"><i class="fas fa-tasks"></i> Status:</label>
-                    <select id="status">
-                        <option value="Andamento"> 🟡 Andamento </option>
-                        <option value="Ag. Condições"> ⚠️ Ag. Condições</option>
-                    </select>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="generate-btn">
-                        <i class="fas fa-message"></i> Gerar Mensagem
-                    </button>
-                    <button class="btn btn-secondary" id="clear-btn">
-                        <i class="fas fa-broom"></i> Limpar
-                    </button>
-                </div>
-            </div>
-            
-            <div class="preview-section">
-                <div class="section-title">
-                    <i class="fas fa-eye"></i>
-                    <span>Visualização da Mensagem</span>
-                </div>
-                
-                <div class="message-preview" id="message-preview">
-                    A mensagem gerada aparecerá aqui...
-                </div>
-                
-                <button class="copy-btn" id="copy-btn">
-                    <i class="fas fa-copy"></i> Copiar Mensagem
-                </button>
-            </div>
-        </div>
+<header>
+  <a class="btn light" href="./"><i data-lucide="arrow-left"></i> Voltar</a>
+  <h1><i data-lucide="activity"></i> Status Operação</h1>
+</header>
+
+<div class="wrap">
+  <!-- Dados gerais -->
+  <section class="card">
+    <h2><i data-lucide="list"></i> Dados</h2>
+    <label>Data</label>
+    <input type="date" id="dtData">
+
+    <label>Frente</label>
+    <select id="selFrente">
+      <option value="">Selecione…</option>
+      <option value="Frente 01">Frente 01</option>
+      <option value="Frente 02">Frente 02</option>
+    </select>
+
+    <label>Piloto</label>
+    <input type="text" id="txtPiloto" readonly placeholder="Automático">
+
+    <label>OS</label>
+    <input type="text" id="txtOS" placeholder="Digite o número da OS">
+    <button class="btn light" id="btnBuscar"><i data-lucide="search"></i> Buscar</button>
+
+    <label>Fazenda</label>
+    <input type="text" id="txtFaz" readonly>
+
+    <label>Código</label>
+    <input type="text" id="txtCod" readonly>
+
+    <label>Horário</label>
+    <input type="text" id="txtHora" readonly>
+
+    <label>Unidade</label>
+    <input type="text" id="txtUnidade" readonly>
+
+    <label>Status da Operação</label>
+    <select id="selStatus" onchange="toggleObs()">
+      <option value="🟠 Em andamento">🟠 Em andamento</option>
+      <option value="🔵 Finalizada">🔵 Finalizada</option>
+      <option value="⚠️ Ag. Condições">⚠️ Ag. Condições</option>
+    </select>
+
+    <div id="obsBox" style="display:none;">
+      <label>Observação</label>
+      <textarea id="txtObs"></textarea>
     </div>
-    
-    <div class="notification" id="notification">
-        <i class="fas fa-check-circle"></i>
-        <span>Mensagem copiada para a área de transferência!</span>
-    </div>
+  </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elementos DOM
-            const btnInicio = document.getElementById('btn-inicio');
-            const btnFim = document.getElementById('btn-fim');
-            const statusGroup = document.getElementById('status-group');
-            const generateBtn = document.getElementById('generate-btn');
-            const clearBtn = document.getElementById('clear-btn');
-            const copyBtn = document.getElementById('copy-btn');
-            const notification = document.getElementById('notification');
-            const messagePreview = document.getElementById('message-preview');
-            const frenteSelect = document.getElementById('frente');
-            const pilotoSelect = document.getElementById('piloto');
-            
-            // Definir data e hora atuais
-            const now = new Date();
-            const data = now.toISOString().substring(0, 10);
-            const hora = now.toTimeString().substring(0, 5);
-            
-            document.getElementById('data').value = data;
-            document.getElementById('hora').value = hora;
-            
-            // Configurar seleção automática de piloto baseado na frente
-            frenteSelect.addEventListener('change', function() {
-                if (this.value === 'Cotesia 01') {
-                    pilotoSelect.value = 'Caio Brito';
-                } else if (this.value === 'Cotesia 02') {
-                    pilotoSelect.value = 'Ygor Lucas';
-                }
-            });
-            
-            // Alternar entre início e fim da operação
-            btnInicio.addEventListener('click', function() {
-                btnInicio.classList.add('active');
-                btnFim.classList.remove('active');
-                statusGroup.style.display = 'block';
-            });
-            
-            btnFim.addEventListener('click', function() {
-                btnFim.classList.add('active');
-                btnInicio.classList.remove('active');
-                statusGroup.style.display = 'none';
-            });
-            
-            // Gerar mensagem
-            generateBtn.addEventListener('click', function() {
-                const isInicio = btnInicio.classList.contains('active');
-                const unidade = document.getElementById('unidade').value;
-                const frente = document.getElementById('frente').value;
-                const piloto = document.getElementById('piloto').value;
-                const data = formatarData(document.getElementById('data').value);
-                const hora = document.getElementById('hora').value;
-                const fazenda = document.getElementById('fazenda').value;
-                const codigo = document.getElementById('codigo').value;
-                const os = document.getElementById('os').value;
-                const status = isInicio ? document.getElementById('status').value : 'Finalizada';
+  <!-- Prévia -->
+  <section class="card">
+    <h2><i data-lucide="eye"></i> Prévia WhatsApp</h2>
+    <div class="preview" id="preview"></div>
+    <div class="sep"></div>
+    <button class="btn neon" onclick="gerarPrevia()"><i data-lucide="refresh-cw"></i> Gerar Prévia</button>
+    <button class="btn" onclick="copiarMsg()"><i data-lucide="copy"></i> Copiar</button>
+    <button class="btn light" onclick="abrirWhats()"><i data-lucide="message-circle"></i> Abrir no WhatsApp</button>
+  </section>
+</div>
 
-                let statusEmoji = '';
-                if (status.includes('Andamento')) statusEmoji = '🟡 ';
-                if (status.includes('Ag. Condições')) statusEmoji = '⚠️ ';
-                if (status === 'Finalizada') statusEmoji = '🔵 ';
+<script>
+lucide.createIcons();
 
-                let mensagem = `*Status Operação*\n\n`;
-                mensagem += `*Frente* ${frente}\n`;
-                mensagem += `*Data:* ${data}\n`;
-                mensagem += `*Faz:* ${fazenda}\n`;
-                mensagem += `*Cod:* ${codigo}\n`;
-                mensagem += `*Horário:* ${hora}\n`;
-                mensagem += `*OS:* ${os}\n`;
-                mensagem += `*Unidade:* ${unidade}\n`;
-                mensagem += `*Piloto:* ${piloto}\n`;
-                mensagem += `*Status da operação:* ${statusEmoji}${status}\n`;
-                
-                if (!isInicio) {
-                    mensagem += `\n--- OPERAÇÃO FINALIZADA ✅ ---\n`;
-                }
-                
-                messagePreview.textContent = mensagem;
-            });
-            
-            // Copiar mensagem
-            copyBtn.addEventListener('click', function() {
-                const mensagem = messagePreview.textContent;
-                navigator.clipboard.writeText(mensagem)
-                    .then(() => {
-                        notification.classList.add('show');
-                        setTimeout(() => {
-                            notification.classList.remove('show');
-                        }, 3000);
-                    })
-                    .catch(err => {
-                        console.error('Erro ao copiar texto: ', err);
-                    });
-            });
-            
-            // Limpar formulário
-            clearBtn.addEventListener('click', function() {
-                document.querySelectorAll('input').forEach(input => {
-                    if (input.type !== 'button') {
-                        input.value = '';
-                    }
-                });
-                
-                document.querySelectorAll('select').forEach(select => {
-                    select.selectedIndex = 0;
-                });
-                
-                // Restaurar data e hora atuais
-                document.getElementById('data').value = data;
-                document.getElementById('hora').value = hora;
-                
-                messagePreview.textContent = 'A mensagem gerada aparecerá aqui...';
-                
-                // Restaurar para início
-                btnInicio.classList.add('active');
-                btnFim.classList.remove('active');
-                statusGroup.style.display = 'block';
-            });
-            
-            function formatarData(data) {
-                const partes = data.split('-');
-                return `${partes[2]}/${partes[1]}/${partes[0]}`;
-            }
-        });
-    </script>
+/* Frente → Piloto */
+const PILOTOS = { "Frente 01":"Caio Brito", "Frente 02":"Ygor Lucas" };
+document.getElementById("selFrente").addEventListener("change",()=>{
+  document.getElementById("txtPiloto").value = PILOTOS[document.getElementById("selFrente").value] || "";
+});
+
+/* Data + Hora auto */
+document.getElementById("dtData").value = new Date().toISOString().split("T")[0];
+document.getElementById("txtHora").value = new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+
+/* Buscar OS (via fetch ao Apps Script) */
+const API_URL = "https://script.google.com/macros/s/AKfycbx4JkGENMvPbqdcO2Id0qzRRobj6xrf_hW1FESTsZwktIj734pHsWm7DImvHIynObzCGg/exec"; // troque pelo seu /exec
+async function buscarOS(){
+  const os = document.getElementById("txtOS").value.trim();
+  if(!os){ alert("Digite a OS"); return; }
+  const url = `${API_URL}?action=lookup&os=${encodeURIComponent(os)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if(data.ok && data.found){
+    const it = data.items[0];
+    document.getElementById("txtFaz").value = it.fazenda||"";
+    document.getElementById("txtCod").value = it.codigo||"";
+    document.getElementById("txtUnidade").value = it.unidade||"";
+  } else {
+    alert("OS não encontrada.");
+  }
+}
+document.getElementById("btnBuscar").addEventListener("click",buscarOS);
+
+/* Mostrar/ocultar observação */
+function toggleObs(){
+  const val = document.getElementById("selStatus").value;
+  document.getElementById("obsBox").style.display = val.includes("Ag. Condições") ? "block" : "none";
+}
+
+/* Montar mensagem */
+function gerarPrevia(){
+  const dt = document.getElementById("dtData").value.split("-").reverse().join("/");
+  const fr = document.getElementById("selFrente").value;
+  const pi = document.getElementById("txtPiloto").value;
+  const os = document.getElementById("txtOS").value;
+  const faz= document.getElementById("txtFaz").value;
+  const cod= document.getElementById("txtCod").value;
+  const hr = document.getElementById("txtHora").value;
+  const uni= document.getElementById("txtUnidade").value;
+  const st = document.getElementById("selStatus").value;
+  const obs= document.getElementById("txtObs").value;
+
+  let msg = `🪰*Status Operação*🪰\n\n`;
+  msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}\n\n`;
+  msg += `*Status da operação:* ${st}`;
+  if(st.includes("Ag. Condições") && obs){ msg += `\nObs.: ${obs}`; }
+  if(st.includes("Finalizada")){ msg += `\n\n--- OPERAÇÃO FINALIZADA ✅ ---`; }
+
+  document.getElementById("preview").textContent = msg;
+}
+
+/* Copiar / WhatsApp */
+async function copiarMsg(){
+  await navigator.clipboard.writeText(document.getElementById("preview").textContent);
+  alert("Copiado!");
+}
+function abrirWhats(){
+  const txt = document.getElementById("preview").textContent;
+  window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank");
+}
+</script>
 </body>
 </html>
