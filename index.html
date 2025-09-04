@@ -25,19 +25,22 @@
     }
 
     .logo img {
-      width: 400px;
+      width: 500px;
       height: auto;
       transition: transform 0.3s ease, filter 0.3s ease;
     }
     .logo img:hover {
     transform: scale(1.08); /* aumenta levemente */
-    filter: drop-shadow(0px 0px 20px #34d399); /* sombra verde neon */
+    filter: drop-shadow(0px 0px 20px #000000); /* sombra verde neon */
     cursor: pointer;
     }
     h1 {
       font-size: 1.5rem;
       margin-bottom: 30px;
       color: #eff3f1;
+      transform: scale(1.08);
+      filter: drop-shadow(0px 0px 20px #000000);
+      cursor: pointer;
     }
 
     .btn-container {
@@ -51,10 +54,10 @@
     .btn {
       padding: 15px;
       font-size: 1.2rem;
-      background: #34d399;
+      background: #000000;
       border: none;
       border-radius: 8px;
-      color: #0f172a;
+      color: #e8efff;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
@@ -62,15 +65,17 @@
     }
 
     .btn:hover {
-      background: #22c55e;
+      background: #ffffff;
+      color: #02dc63;
     }
 
     .btn-interno {
-      background: #fefffd; /* azul */
-      color: #1a5735;
+      background:#000000fd; /* azul */
+      color: #ffffff;
     }
     .btn-interno:hover {
-      background: #34d399;
+      background: #ffffff;
+      color: #02dc63;
     }
 
     .btn-voltar {
@@ -79,6 +84,7 @@
     }
     .btn-voltar:hover {
       background: #c40c07;
+      color: #000000;
     }
 
     @media (max-width: 400px) {
@@ -97,7 +103,7 @@
     width: 100%;
     text-align: center;
     font-size: 0.95rem;
-    color: #94a3b8;
+    color: #ffffff;
     opacity: 0.7;
     letter-spacing: 0.5px;
   }
@@ -174,6 +180,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
