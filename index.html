@@ -57,7 +57,7 @@
 
         /* Hero Section */
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #000000 0%, #4d5a32 100%);
+            background: linear-gradient(135deg, #000000 0%, #202c2a 100%);
             position: relative;
             overflow: hidden;
         }
@@ -168,17 +168,17 @@
 
         .btn-primary {
           background-color: #0e1e2d;
-          border-color: #0b397d;
+          border-color: #000000;
           color: #fff;
         }
         .btn-success {
           background-color: #196c5b;
-          border-color: #153625;
+          border-color: #070707;
           color: #fff;
         }
         .btn-info {
-          background-color: #1075a4 !important;
-          border-color: #2e9ccf !important;
+          background-color: #bbc315 !important;
+          border-color: #010b0f !important;
           color: #fff !important;
         }
         .btn-info:hover, .btn-info:focus {
@@ -369,21 +369,19 @@
           align-items: center;
           justify-content: space-between;
           width: 100%;
-          padding: 0 16px;
-          gap: 16px;
+          padding: 0 32px; /* aumenta o espaço nas bordas */
+          gap: 24px;        /* aumenta o espaço entre os itens */
         }
-        .logo-selo-bandeira-row img {
-          display: block;
+        .logo-selo-bandeira-row img.logo-fixa {
+          height: 54px;     /* aumenta o tamanho da logo */
         }
-        @media (max-width: 600px) {
-          .logo-selo-bandeira-row {
-            gap: 8px;
-            padding: 0 6px;
-          }
-          .logo-selo-bandeira-row img {
-            height: 24px !important;
-          }
+        .logo-selo-bandeira-row img.selo-fixo {
+          height: 38px;
         }
+        .logo-selo-bandeira-row img.bandeira {
+          height: 36px;
+        }
+
     </style>
 </head>
 <body>
@@ -396,7 +394,7 @@
     <header class="header-fixo">
       <!-- Linha com logo, selo e bandeira -->
       <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px;">
-        <img src="logo_topgun.png" alt="Logo" style="height:40px;">
+        <img src="logo_atual.png" alt="Logo" style="height:30px;">
         <img src="setembro_amarelo.png" alt="Selo do Mês" style="height:36px;">
         <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px; margin-left:auto;">
       </div>
@@ -408,7 +406,7 @@
             <div class="row align-items-center min-vh-50">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4">Bem-vindo à Top Gun Pulverizações</h1>
-                    <p class="lead mb-4">Painel de Acesso, programação de trabalho e informe de rendimentos diários.</p>
+                    <p class="lead mb-4">Top Gun Pulverizações, é uma empresa especializada em pulverizações agrícolas via drones de última geração. Ajudamos nossos clientes a aumentarem o lucro e melhorarem a qualidade de sua produção. Utilizamos tecnologias avançadas para alcançar um objetivo simples: otimizar sua produção, reduzir riscos e aumentar sua produtividade de forma mais eficiente minimizando perdas e mantendo o compromisso com a sustentabilidade da sua lavoura.</p>
                 </div>
                 <div class="col-lg-6 text-center">
                     <div class="hero-illustration">
