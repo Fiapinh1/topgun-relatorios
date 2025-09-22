@@ -1,188 +1,916 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel - TOPGUN</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: url('fundodetela.png') no-repeat center center fixed; /* Troque pelo caminho da sua imagem */
-      background-size: cover;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial - Empresa</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0b397d;
+            --secondary-color: #6c757d;
+            --success-color: #0f9a54;
+            --info-color: #0dcaf0;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
 
-    .logo {
-      margin-bottom: 20px;
-      text-align: center;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .logo img {
-      width: 500px;
-      height: auto;
-      transition: transform 0.3s ease, filter 0.3s ease;
-    }
-    .logo img:hover {
-    transform: scale(1.08); /* aumenta levemente */
-    filter: drop-shadow(0px 0px 20px #000000); /* sombra verde neon */
-    cursor: pointer;
-    }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
-      color: #eff3f1;
-      transform: scale(1.08);
-      filter: drop-shadow(0px 0px 20px #000000);
-      cursor: pointer;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+        }
 
-    .btn-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      width: 80%;
-      max-width: 300px;
-    }
+        /* Header Styles */
+        .navbar {
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
 
-    .btn {
-      padding: 15px;
-      font-size: 1.2rem;
-      background: #000000;
-      border: none;
-      border-radius: 8px;
-      color: #e8efff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-      width: 100%;
-    }
+        .logo-container {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
 
-    .btn:hover {
-      background: #ffffff;
-      color: #02dc63;
-    }
+        .logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
 
-    .btn-interno {
-      background:#000000fd; /* azul */
-      color: #ffffff;
-    }
-    .btn-interno:hover {
-      background: #ffffff;
-      color: #02dc63;
-    }
+        .logo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
 
-    .btn-voltar {
-      background: #d33e34; /* vermelho */
-      color: #fff;
-    }
-    .btn-voltar:hover {
-      background: #c40c07;
-      color: #000000;
-    }
+        .logo-placeholder:hover {
+            transform: scale(1.05);
+        }
 
-    @media (max-width: 400px) {
-      h1 {
-        font-size: 1.2rem;
-      }
-      .btn {
-        font-size: 1rem;
-        padding: 12px;
-      }
-    }
+        /* Hero Section */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #000000 0%, #4d5a32 100%);
+            position: relative;
+            overflow: hidden;
+        }
 
-    .footer {
-    position: fixed;
-    bottom: 10px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.95rem;
-    color: #ffffff;
-    opacity: 0.7;
-    letter-spacing: 0.5px;
-  }
-  .footer a {
-    color: #34d399;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .footer a:hover {
-    text-decoration: underline;
-    color: #22c55e;
-  }
-  </style>
+        .bg-gradient-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .hero-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+
+        .hero-illustration {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Navigation Cards */
+        .main-nav {
+            margin-top: -50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-card {
+            background: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        }
+
+        .nav-card:hover::before {
+            left: 100%;
+        }
+
+        .nav-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-card:hover .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+          background-color: #0e1e2d;
+          border-color: #0b397d;
+          color: #fff;
+        }
+        .btn-success {
+          background-color: #196c5b;
+          border-color: #153625;
+          color: #fff;
+        }
+        .btn-info {
+          background-color: #1075a4 !important;
+          border-color: #2e9ccf !important;
+          color: #fff !important;
+        }
+        .btn-info:hover, .btn-info:focus {
+          background-color: #0284c7 !important;
+          border-color: #0284c7 !important;
+          color: #fff !important;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .feature-item {
+            padding: 2rem 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+        }
+
+        .social-links a {
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .social-links a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .display-4 {
+                font-size: 2.5rem;
+            }
+            
+            .display-5 {
+                font-size: 2rem;
+            }
+            
+            .nav-card {
+                margin-bottom: 1rem;
+            }
+            
+            .main-nav {
+                margin-top: -30px;
+            }
+            
+            .hero-section {
+                padding: 3rem 0;
+            }
+            
+            .logo-container {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .display-4 {
+                font-size: 2rem;
+            }
+            
+            .lead {
+                font-size: 1rem;
+            }
+            
+            .btn-lg {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .nav-card {
+                padding: 1.5rem !important;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading.active::after {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
+        }
+
+        /* Logo Flutuante */
+        .logo-flutuante {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0); /* opcional, para destaque */
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
+        }
+
+        @media (max-width: 600px) {
+            .logo-flutuante {
+                top: 10px;
+                right: 10px;
+                padding: 4px 8px;
+                border-radius: 8px;
+            }
+        }
+
+        /* Selo do Mês */
+        .selo-mes {
+          position: fixed;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 999;
+          background: rgba(255, 255, 255, 0); /* opcional */
+          border-radius: 50%;
+          padding: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
+          transition: transform 0.2s;
+        }
+        .selo-mes:hover {
+          transform: translateX(-50%) scale(1.08);
+        }
+        @media (max-width: 600px) {
+          .selo-mes {
+            top: 10px;
+            left: 50%;
+            padding: 4px;
+            height: 40px;
+            transform: translateX(-50%);
+          }
+        }
+    </style>
 </head>
 <body>
+    <!-- Logo Flutuante -->
+    <div class="logo-flutuante">
+      <img src="logo_topgun.png" alt="Logo da Empresa" style="height:200px;">
+    </div>
 
-  <div class="logo">
-    <!-- Substitua pelo caminho da logo -->
-    <img src="logo_topgun.png" alt="Logo TOPGUN">
-  </div>
+    <!-- Hero Section -->
+    <section class="hero-section bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Bem-vindo à Top Gun Pulverizações</h1>
+                    <p class="lead mb-4">Painel de Acesso, programação de trabalho e informe de rendimentos diários.</p>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="hero-illustration">
+                        <!-- Substitua o ícone de engrenagem por este SVG -->
+                        <svg width="77" height="77" viewBox="0 0 77 77" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <g>
+                            <rect x="22" y="22" width="33" height="33" rx="12" stroke="#495c2a" stroke-width="6" fill="none"/>
+                            <path d="M22 22 Q10 10 22 22" stroke="#495c2a" stroke-width="4" fill="none"/>
+                            <path d="M55 22 Q67 10 55 22" stroke="#495c2a" stroke-width="4" fill="none"/>
+                            <path d="M22 55 Q10 67 22 55" stroke="#495c2a" stroke-width="4" fill="none"/>
+                            <path d="M55 55 Q67 67 55 55" stroke="#495c2a" stroke-width="4" fill="none"/>
+                          </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <h1>Painel de Aplicações</h1>
+    <!-- Main Navigation Buttons -->
+    <section class="main-nav py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Pulverização -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
+                        <div class="nav-icon mb-3">
+                            <!-- Substitua o ícone da gota por este SVG -->
+                            <div class="icon" style="margin-bottom: 12px;">
+                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <circle cx="24" cy="24" r="6" stroke="#0b397d" stroke-width="2" fill="#fff"/>
+                                <rect x="22" y="10" width="4" height="8" rx="2" fill="#0b397d"/>
+                                <rect x="22" y="30" width="4" height="8" rx="2" fill="#0b397d"/>
+                                <rect x="10" y="22" width="8" height="4" rx="2" fill="#0b397d"/>
+                                <rect x="30" y="22" width="8" height="4" rx="2" fill="#0b397d"/>
+                                <circle cx="8" cy="8" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
+                                <circle cx="40" cy="8" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
+                                <circle cx="8" cy="40" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
+                                <circle cx="40" cy="40" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
+                                <line x1="12" y1="12" x2="20" y2="20" stroke="#0b397d" stroke-width="2"/>
+                                <line x1="36" y1="12" x2="28" y2="20" stroke="#0b397d" stroke-width="2"/>
+                                <line x1="12" y1="36" x2="20" y2="28" stroke="#0b397d" stroke-width="2"/>
+                                <line x1="36" y1="36" x2="28" y2="28" stroke="#0b397d" stroke-width="2"/>
+                              </svg>
+                            </div>
+                        </div>
+                        <h3 class="h4 mb-3">Pulverização</h3>
+                        <p class="text-muted mb-4">Programação de trabalho, e informe de rendimentos diarios.</p>
+                        <button class="btn btn-primary btn-lg w-100" onclick="toggleOpcoes('pulverizacao-opcoes')">
+                            <i class="bi bi-arrow-right me-2"></i>Acessar
+                        </button>
+                        <div id="pulverizacao-opcoes" class="opcoes" style="display:none; margin-top:10px;">
+                          <button class="btn btn-outline-primary" onclick="window.location.href='programacao_aplicacao.html'">Programação</button>
+                          <button class="btn btn-outline-primary" onclick="window.location.href='rendimento_aplicacao.html'">Rendimento</button>
+                        </div>
+                    </div>
+                </div>
 
-  <div class="btn-container" id="main-btns">
-    <button class="btn" onclick="showPulverizacao()">Pulverização</button>
-    <button class="btn" onclick="showCotesia()">Cotésia</button>
-  </div>
+                <!-- Cotésia -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
+                        <div class="nav-icon mb-3">
+                            <!-- Substitua o ícone da calculadora por este SVG -->
+                            <div class="icon" style="margin-bottom: 12px;">
+                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <ellipse cx="24" cy="32" rx="6" ry="12" fill="#222" />
+                                <ellipse cx="24" cy="18" rx="3" ry="5" fill="#222" />
+                                <line x1="24" y1="13" x2="24" y2="8" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="13" x2="20" y2="6" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="24" y1="13" x2="28" y2="6" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="18" y1="32" x2="8" y2="40" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="30" y1="32" x2="40" y2="40" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="18" y1="36" x2="10" y2="46" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+                                <line x1="30" y1="36" x2="38" y2="46" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </div>
+                        </div>
+                        <h3 class="h4 mb-3">Cotésia</h3>
+                        <p class="text-muted mb-4">Programação de trabalho, e informe de rendimentos diarios.</p>
+                        <button class="btn btn-success btn-lg w-100" onclick="toggleOpcoes('cotesia-opcoes')">
+                            <i class="bi bi-arrow-right me-2"></i>Acessar
+                        </button>
+                        <div id="cotesia-opcoes" class="opcoes" style="display:none; margin-top:10px;">
+                          <button class="btn btn-outline-success" onclick="window.location.href='programacao_cotesia.html'">Programação</button>
+                          <button class="btn btn-outline-success" onclick="window.location.href='rendimento_cotesia.html'">Rendimento</button>
+                        </div>
+                    </div>
+                </div>
 
-  <div class="btn-container" id="pulverizacao-btns" style="display:none;">
-    <button class="btn btn-interno" onclick="window.location.href='programacao_aplicacao.html'">
-      Programação Aplicação Pulverização
-    </button>
-    <button class="btn btn-interno" onclick="window.location.href='rendimento_aplicacao.html'">
-      Rendimento Aplicação Pulverização
-    </button>
-    <button class="btn btn-voltar" onclick="backToMain()">Voltar</button>
-  </div>
+                <!-- Relatórios -->
+                <div class="col-lg-4 col-md-6 mx-auto">
+                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
+                        <div class="nav-icon mb-3">
+                            <!-- Ícone de relatório com drone -->
+                            <div class="icon" style="margin-bottom: 12px;">
+                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <!-- Drone (vista superior estilizada) -->
+                                <rect x="18" y="8" width="12" height="12" rx="4" fill="#0ea5e9" stroke="#0ea5e9" stroke-width="2"/>
+                                <rect x="22" y="2" width="4" height="8" rx="2" fill="#0ea5e9"/>
+                                <rect x="22" y="18" width="4" height="8" rx="2" fill="#0ea5e9"/>
+                                <rect x="2" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
+                                <rect x="38" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
+                                <!-- Folha/relatório -->
+                                <rect x="14" y="28" width="20" height="16" rx="3" fill="#fff" stroke="#0ea5e9" stroke-width="2"/>
+                                <line x1="18" y1="34" x2="30" y2="34" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="18" y1="38" x2="28" y2="38" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+                              </svg>
+                            </div>
+                        </div>
+                        <h3 class="h4 mb-3">Relatórios</h3>
+                        <p class="text-muted mb-4">Relatórios detalhados para acompanhar seus resultados.</p>
+                        <button class="btn btn-info btn-lg w-100" onclick="navigateTo('relatorios')">
+                            <i class="bi bi-arrow-right me-2"></i>Acessar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <div class="btn-container" id="cotesia-btns" style="display:none;">
-    <button class="btn btn-interno" onclick="window.location.href='programação_cotesia.html'">
-      Programação Aplicação Cotésia
-    </button>
-    <button class="btn btn-interno" onclick="window.location.href='status_operacional_cotesia.html'">
-      Status Operacional
-    </button>
-    <button class="btn btn-interno" onclick="window.location.href='rendimento_cotesia.html'">
-      Rendimento Aplicação Cotésia
-    </button>
-    <button class="btn btn-voltar" onclick="backToMain()">Voltar</button>
-  </div>
+    <!-- Features Section -->
+    <section class="features-section bg-light py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Por que escolher nossa empresa?</h2>
+                    <p class="lead text-muted">Oferecemos soluções completas e personalizadas para o seu negócio</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-shield-check display-4 text-primary"></i>
+                        </div>
+                        <h4>Qualidade Garantida</h4>
+                        <p class="text-muted">Serviços com padrão de excelência e garantia de qualidade.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-clock display-4 text-success"></i>
+                        </div>
+                        <h4>Agilidade</h4>
+                        <p class="text-muted">Processos otimizados para entregas rápidas e eficientes.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-people display-4 text-info"></i>
+                        </div>
+                        <h4>Suporte Especializado</h4>
+                        <p class="text-muted">Equipe qualificada para atender suas necessidades.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-graph-up display-4 text-warning"></i>
+                        </div>
+                        <h4>Resultados Comprovados</h4>
+                        <p class="text-muted">Histórico de sucesso e satisfação dos clientes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <script>
-  function showPulverizacao() {
-    document.getElementById('main-btns').style.display = 'none';
-    document.getElementById('pulverizacao-btns').style.display = 'flex';
-    document.getElementById('cotesia-btns').style.display = 'none';
-  }
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 Pulvion Tech. Todos os direitos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                       <!--/<a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a> -->
+                        <a href="https://www.instagram.com/topgunpulverizacoes/" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                        <a href="https://www.linkedin.com/company/top-gun-pulveriza%C3%A7%C3%B5es/" class="text-white me-3"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-  function showCotesia() {
-    document.getElementById('main-btns').style.display = 'none';
-    document.getElementById('cotesia-btns').style.display = 'flex';
-    document.getElementById('pulverizacao-btns').style.display = 'none';
-  }
+    <!-- Selo do Mês -->
+    <div class="selo-mes">
+      <img src="setembro_amarelo.png" alt="Selo do Mês" style="height:200px;">
+    </div>
 
-  function backToMain() {
-    document.getElementById('main-btns').style.display = 'flex';
-    document.getElementById('pulverizacao-btns').style.display = 'none';
-    document.getElementById('cotesia-btns').style.display = 'none';
-  }
-  </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Variáveis globais
+        let isLoading = false;
 
-  <footer class="footer">
-    Desenvolvido por <a href="https://pulviontech.com.br" target="_blank">Pulvion Tech</a>
-  </footer>
+        // Função para navegação entre seções
+        function navigateTo(section) {
+            if (isLoading) return;
+            
+            const button = event.target.closest('button');
+            showLoading(button);
+            
+            // Simular navegação (aqui você pode adicionar a lógica real de navegação)
+            setTimeout(() => {
+                hideLoading(button);
+                
+                // Exemplo de ações baseadas na seção
+                switch(section) {
+                    case 'pulverizacao':
+                        showNotification('Redirecionando para Pulverização...', 'info');
+                        // window.location.href = 'pulverizacao.html';
+                        break;
+                    case 'cotesia':
+                        showNotification('Redirecionando para Cotésia...', 'success');
+                        // window.location.href = 'cotesia.html';
+                        break;
+                    case 'relatorios':
+                        showNotification('Redirecionando para Relatórios...', 'info');
+                        // window.location.href = 'relatorios.html';
+                        break;
+                    default:
+                        showNotification('Seção não encontrada', 'error');
+                }
+            }, 1500);
+        }
+
+        // Função para mostrar loading no botão
+        function showLoading(button) {
+            if (!button) return;
+            isLoading = true;
+            button.classList.add('loading', 'active');
+            button.disabled = true;
+            button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Carregando...';
+        }
+
+        // Função para esconder loading do botão
+        function hideLoading(button) {
+            if (!button) return;
+            isLoading = false;
+            button.classList.remove('loading', 'active');
+            button.disabled = false;
+            
+            // Restaurar texto original baseado no contexto
+            const parent = button.closest('.nav-card');
+            if (parent) {
+                const title = parent.querySelector('h3').textContent;
+                button.innerHTML = '<i class="bi bi-arrow-right me-2"></i>Acessar';
+            }
+        }
+
+        // Sistema de notificações
+        function showNotification(message, type = 'info') {
+            // Remover notificação existente
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            // Criar nova notificação
+            const notification = document.createElement('div');
+            notification.className = `notification alert alert-${getBootstrapClass(type)} alert-dismissible fade show`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                border: none;
+                border-radius: 8px;
+            `;
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-${getIcon(type)} me-2"></i>
+                    <span>${message}</span>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto remover após 4 segundos
+            setTimeout(() => {
+                if (notification && notification.parentNode) {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 150);
+                }
+            }, 4000);
+        }
+
+        // Função auxiliar para classes Bootstrap
+        function getBootstrapClass(type) {
+            const classes = {
+                'success': 'success',
+                'error': 'danger',
+                'warning': 'warning',
+                'info': 'info'
+            };
+            return classes[type] || 'info';
+        }
+
+        // Função auxiliar para ícones
+        function getIcon(type) {
+            const icons = {
+                'success': 'check-circle-fill',
+                'error': 'exclamation-triangle-fill',
+                'warning': 'exclamation-triangle-fill',
+                'info': 'info-circle-fill'
+            };
+            return icons[type] || 'info-circle-fill';
+        }
+
+        // Função para upload de logo
+        function uploadLogo() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const logoImg = document.getElementById('companyLogo');
+                        const logoPlaceholder = document.getElementById('logoPlaceholder');
+                        
+                        logoImg.src = e.target.result;
+                        logoImg.classList.remove('d-none');
+                        logoPlaceholder.classList.add('d-none');
+                        
+                        showNotification('Logo carregada com sucesso!', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Animações de entrada
+        function initAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observar elementos para animação
+            document.querySelectorAll('.nav-card, .feature-item').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Função para scroll suave para seções
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Efeito parallax simples no hero
+        function initParallax() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const heroSection = document.querySelector('.hero-section');
+                if (heroSection) {
+                    const speed = scrolled * 0.5;
+                    heroSection.style.transform = `translateY(${speed}px)`;
+                }
+            });
+        }
+
+        // Função para detectar dispositivo móvel
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // Função para otimizar performance em mobile
+        function optimizeForMobile() {
+            if (isMobile()) {
+                // Desabilitar algumas animações em mobile para melhor performance
+                document.body.classList.add('mobile-optimized');
+                
+                // Adicionar CSS específico para mobile
+                const mobileCSS = `
+                    .mobile-optimized .hero-illustration {
+                        animation: none;
+                    }
+                    .mobile-optimized .nav-card:hover {
+                        transform: none;
+                    }
+                `;
+                
+                const style = document.createElement('style');
+                style.textContent = mobileCSS;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar animações
+            initAnimations();
+            
+            // Otimizar para mobile
+            optimizeForMobile();
+            
+            // Inicializar parallax (apenas em desktop)
+            if (!isMobile()) {
+                initParallax();
+            }
+            
+            // Adicionar evento de clique no placeholder da logo
+            const logoPlaceholder = document.getElementById('logoPlaceholder');
+            if (logoPlaceholder) {
+                logoPlaceholder.addEventListener('click', uploadLogo);
+                logoPlaceholder.style.cursor = 'pointer';
+                logoPlaceholder.title = 'Clique para adicionar sua logo';
+            }
+            
+            // Adicionar tooltips nos ícones sociais
+            document.querySelectorAll('.social-links a').forEach(link => {
+                const icon = link.querySelector('i');
+                if (icon) {
+                    if (icon.classList.contains('bi-facebook')) {
+                        link.title = 'Facebook';
+                    } else if (icon.classList.contains('bi-instagram')) {
+                        link.title = 'Instagram';
+                    } else if (icon.classList.contains('bi-linkedin')) {
+                        link.title = 'LinkedIn';
+                    } else if (icon.classList.contains('bi-envelope')) {
+                        link.title = 'Email';
+                    }
+                }
+            });
+            
+            // Mostrar notificação de boas-vindas
+            setTimeout(() => {
+                showNotification('Bem-vindo! Clique nos botões para navegar.', 'info');
+            }, 1000);
+        });
+
+        // Redimensionamento da janela
+        window.addEventListener('resize', function() {
+            optimizeForMobile();
+        });
+
+        // Prevenção de erros
+        window.addEventListener('error', function(e) {
+            console.error('Erro capturado:', e.error);
+            showNotification('Ocorreu um erro inesperado. Tente novamente.', 'error');
+        });
+
+        // Função para debug (pode ser removida em produção)
+        function debugInfo() {
+            console.log('Página carregada com sucesso!');
+            console.log('Dispositivo móvel:', isMobile());
+            console.log('Versão do navegador:', navigator.userAgent);
+        }
+
+        // Chamar debug info quando a página carregar
+        document.addEventListener('DOMContentLoaded', debugInfo);
+
+        // Função para alternar opções (programação/rendimento) nos cards
+        function toggleOpcoes(id) {
+          // Fecha todos os outros
+          document.querySelectorAll('.opcoes').forEach(div => {
+            if (div.id !== id) div.style.display = 'none';
+          });
+          // Alterna o atual
+          var opcoes = document.getElementById(id);
+          opcoes.style.display = opcoes.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>
-
-
-
-
-
-
