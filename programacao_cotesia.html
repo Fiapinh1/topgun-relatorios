@@ -275,7 +275,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Ygor Lucas' };
+const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Piloto não cadastrado!' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -416,13 +416,13 @@ function buildMessage(){
   const uni  = document.getElementById('selUnidade').value || '—';
   const objG = document.getElementById('txtObjetivo').value || '';
 
-  let msg = `Programação (Cotesia 🪰)Top Gun
+  let msg = `🗓️*_Programação (Cotesia 🪰)Top Gun_*🗓️
 
-Data: ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}
-Frente: ${fr}
-Piloto: ${pil}
-Drone: ${dr}
-Unidade: ${uni}`;
+*Data:* ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}
+*Frente:* ${fr}
+*Piloto:* ${pil}
+*Drone:* ${dr}
+*Unidade:* ${uni}`;
   if (objG) msg += `\nObjetivo: ${objG}`;
   msg += `\n_________`;
 
@@ -438,12 +438,12 @@ Unidade: ${uni}`;
 
     tHa  += ha; tCop += cp;
 
-    msg += `\nOS: ${os || '—'}\nFaz: ${faz || '—'}\nCod: ${cod || '—'}\nHá: ${fmtBR(ha)}\nQtd. Copos: ${fmtBR(cp,0)}`;
-    if (obj) msg += `\nObjetivo: ${obj}`;
+    msg += `\n*OS:* ${os || '—'}\n*Faz:* ${faz || '—'}\n*Cod:* ${cod || '—'}\n*Ha:* ${fmtBR(ha)}\n*Qtd. Copos:* ${fmtBR(cp,0)}`;
+    if (obj) msg += `\n*Objetivo:* ${obj}`;
     msg += `\n————————-`;
   });
 
-  msg += `\nTotal de copos: ${fmtBR(tCop,0)}\nTotal hectares: ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
+  msg += `\n*Total de copos:* ${fmtBR(tCop,0)}\n*Total hectares:* ${fmtBR(tHa)}\n\n*Relatorio gerado:* ${nowStrSP()}`;
   return msg;
 }
 function updatePreview(andScroll=true){
@@ -499,4 +499,5 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
