@@ -1,916 +1,501 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial - Empresa</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-color: #0b397d;
-            --secondary-color: #6c757d;
-            --success-color: #0f9a54;
-            --info-color: #0dcaf0;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-        }
+<meta charset="UTF-8">
+<title>Programação (Cotesia) - Top Gun</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Ícones Lucide -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  :root {
+    --primary: #16a34a;
+    --primary-light: #dcfce7;
+    --primary-dark: #15803d;
+    --background: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --success: #10b981;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
 
-        * {
-            box-sizing: border-box;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-color);
-        }
+  body {
+    background: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 20px;
+  }
 
-        /* Header Styles */
-        .navbar {
-            padding: 1rem 0;
-            transition: all 0.3s ease;
-        }
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: var(--shadow);
+    min-height: 64px;
+  }
+  header .btn.light {
+    margin-left: 16px;
+    margin-right: 0;
+    width: auto;
+    min-width: 90px;
+    padding: 0 16px;
+    height: 48px;
+    font-size: 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+  }
+  header h1 {
+    flex: 1;
+    text-align: center;
+    margin: 0 auto 0 0;
+    font-size: 1.2rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+  @media (max-width: 790px) {
+    header { min-height: 56px; padding: 0; }
+    header .btn.light { margin-left: 8px; height: 40px; font-size: 0.98rem; padding: 0 10px; }
+    header h1 { font-size: 1rem; margin: 0 auto 0 0; gap: 6px; }
+  }
 
-        .logo-container {
-            width: 60px;
-            height: 60px;
-            position: relative;
-        }
+  /* Botões */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 16px 0;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+    margin-bottom: 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
+  .btn.neon:hover { background: var(--primary-dark); }
+  .btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+  .btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
 
-        .logo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
+  /* Layout principal */
+  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; margin: 0 auto; width: 100%; }
 
-        .logo-placeholder:hover {
-            transform: scale(1.05);
-        }
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); width: 100%; max-width: 100%; }
+  .card h2 { margin: 0 0 16px 0; font-size: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
 
-        /* Hero Section */
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #000000 0%, #202c2a 100%);
-            position: relative;
-            overflow: hidden;
-        }
+  /* Formulários */
+  .grid { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; flex-direction: column; gap: 6px; }
 
-        .bg-gradient-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            pointer-events: none;
-        }
+  label { color: #2f361f; font-size: 1rem; font-weight: 500; display: block; margin-top: 0; }
 
-        .hero-section {
-            position: relative;
-            z-index: 1;
-        }
+  input, select, textarea {
+    width: 100%;
+    background: #f8fafc;
+    color: var(--text);
+    border: 1px solid #1e304b;
+    border-radius: 8px;
+    padding: 16px 12px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    margin-bottom: 10px;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+  input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
 
-        .min-vh-50 {
-            min-height: 50vh;
-        }
+  .preview {
+    white-space: pre-wrap;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius);
+    padding: 18px;
+    min-height: 200px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    overflow: auto;
+    max-height: 300px;
+  }
 
-        .hero-illustration {
-            animation: float 6s ease-in-out infinite;
-        }
+  @media (max-width: 790px) {
+    .small-input { max-width: 110px; }
+    .btn { padding: 14px 16px; }
+  }
+  .sep { height: 1px; background: var(--border); margin: 16px 0; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); background: var(--background); margin-top: 8px; text-align: center; justify-content: center; }
+  .warn { color: var(--warning); }
+  .success { color: var(--success); }
 
-        /* Navigation Cards */
-        .main-nav {
-            margin-top: -50px;
-            position: relative;
-            z-index: 2;
-        }
+  .flex-1 { flex: 1; }
+  .mt-2 { margin-top: 8px; }
+  .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .small-input { max-width: 120px; }
 
-        .nav-card {
-            background: white;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.1) !important;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
-        }
-
-        .nav-card:hover::before {
-            left: 100%;
-        }
-
-        .nav-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .nav-card:hover .nav-icon {
-            transform: scale(1.1);
-        }
-
-        .btn {
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s ease, height 0.3s ease;
-        }
-
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-
-        .btn-primary {
-          background-color: #0e1e2d;
-          border-color: #000000;
-          color: #fff;
-        }
-        .btn-success {
-          background-color: #196c5b;
-          border-color: #070707;
-          color: #fff;
-        }
-        .btn-info {
-          background-color: #bbc315 !important;
-          border-color: #010b0f !important;
-          color: #fff !important;
-        }
-        .btn-info:hover, .btn-info:focus {
-          background-color: #0284c7 !important;
-          border-color: #0284c7 !important;
-          color: #fff !important;
-        }
-
-        /* Features Section */
-        .features-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        }
-
-        .feature-item {
-            padding: 2rem 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .feature-item:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-        }
-
-        .social-links a {
-            transition: all 0.3s ease;
-            padding: 8px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-        }
-
-        .social-links a:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .display-4 {
-                font-size: 2.5rem;
-            }
-            
-            .display-5 {
-                font-size: 2rem;
-            }
-            
-            .nav-card {
-                margin-bottom: 1rem;
-            }
-            
-            .main-nav {
-                margin-top: -30px;
-            }
-            
-            .hero-section {
-                padding: 3rem 0;
-            }
-            
-            .logo-container {
-                width: 50px;
-                height: 50px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .display-4 {
-                font-size: 2rem;
-            }
-            
-            .lead {
-                font-size: 1rem;
-            }
-            
-            .btn-lg {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-            
-            .nav-card {
-                padding: 1.5rem !important;
-            }
-        }
-
-        /* Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            position: relative;
-        }
-
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .loading.active::after {
-            opacity: 1;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0056b3;
-        }
-
-        /* Header Fixo */
-        .header-fixo {
-          width: 100%;
-          background: #020202;
-          display: block;
-          justify-content: center; /* ou space-between para logo à esquerda e selo à direita */
-          align-items: center;
-          padding: 10px 0 0 0;
-          position: static; /* ou fixed se quiser sempre visível */
-          z-index: 10;
-        }
-        .logo-fixa {
-          height: 40px;
-          margin-right: 16px;
-        }
-        .selo-fixo {
-          height: 36px;
-        }
-
-        /* Estilos para a linha com logo, selo e bandeira */
-        .logo-selo-bandeira-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          padding: 0 32px; /* aumenta o espaço nas bordas */
-          gap: 24px;        /* aumenta o espaço entre os itens */
-        }
-        .logo-selo-bandeira-row img.logo-fixa {
-          height: 54px;     /* aumenta o tamanho da logo */
-        }
-        .logo-selo-bandeira-row img.selo-fixo {
-          height: 38px;
-        }
-        .logo-selo-bandeira-row img.bandeira {
-          height: 36px;
-        }
-
-    </style>
+  @media (max-width: 790px) {
+    .small-input { max-width: 110px; }
+    .btn { padding: 12px 14px; }
+  }
+</style>
 </head>
 <body>
-    <!-- Logo Flutuante 
-    <div class="logo-flutuante">
-      <img src="logo_topgun.png" alt="Logo da Empresa" style="height:200px;">
-    </div> -->
 
-    <!-- Header Fixo -->
-    <header class="header-fixo">
-      <!-- Linha com logo, selo e bandeira -->
-      <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px;">
-        <img src="logo_atual.png" alt="Logo" style="height:30px;">
-        <img src="setembro_amarelo.png" alt="Selo do Mês" style="height:36px;">
-        <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px; margin-left:auto;">
+<header>
+  <a class="btn light" href="./"><i data-lucide="arrow-left" width="16" height="16"></i> Voltar</a>
+  <h1><i data-lucide="bug" width="20" height="20"></i> Programação (Cotesia) – Top Gun</h1>
+</header>
+
+<div class="wrap">
+  <!-- Dados gerais -->
+  <section class="card">
+    <h2><i data-lucide="clipboard-list" width="18" height="18"></i> Dados gerais</h2>
+    <div class="grid">
+      <div class="row">
+        <label for="dtData">Data</label>
+        <input type="date" id="dtData">
       </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section bg-gradient-primary text-white py-5">
-        <div class="container">
-            <div class="row align-items-center min-vh-50">
-                <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Bem-vindo à Top Gun Pulverizações</h1>
-                    <p class="lead mb-4">Top Gun Pulverizações, é uma empresa especializada em pulverizações agrícolas via drones de última geração. Ajudamos nossos clientes a aumentarem o lucro e melhorarem a qualidade de sua produção. Utilizamos tecnologias avançadas para alcançar um objetivo simples: otimizar sua produção, reduzir riscos e aumentar sua produtividade de forma mais eficiente minimizando perdas e mantendo o compromisso com a sustentabilidade da sua lavoura.</p>
-                </div>
-                <div class="col-lg-6 text-center">
-                    <div class="hero-illustration">
-                        <!-- Substitua o ícone de engrenagem por este SVG -->
-                        <svg width="77" height="77" viewBox="0 0 77 77" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <rect x="22" y="22" width="33" height="33" rx="12" stroke="#495c2a" stroke-width="6" fill="none"/>
-                            <path d="M22 22 Q10 10 22 22" stroke="#495c2a" stroke-width="4" fill="none"/>
-                            <path d="M55 22 Q67 10 55 22" stroke="#495c2a" stroke-width="4" fill="none"/>
-                            <path d="M22 55 Q10 67 22 55" stroke="#495c2a" stroke-width="4" fill="none"/>
-                            <path d="M55 55 Q67 67 55 55" stroke="#495c2a" stroke-width="4" fill="none"/>
-                          </g>
-                        </svg>
-                    </div>
-                </div>
-            </div>
+      <div class="row">
+        <label for="selFrente">Frente</label>
+        <select id="selFrente">
+          <option value="" selected>Selecione…</option>
+          <option value="Frente 01">Frente 01</option>
+          <option value="Frente 02">Frente 02</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="txtPiloto">Piloto</label>
+        <input type="text" id="txtPiloto" placeholder="Selecione a Frente" readonly title="Preenchido automaticamente pela Frente">
+      </div>
+
+      <div class="row">
+        <label for="txtDrone">Drone</label>
+        <input type="text" id="txtDrone" value="X 800">
+      </div>
+
+      <div class="row">
+        <label for="selUnidade">Unidade</label>
+        <select id="selUnidade">
+          <option>Delta - Delta</option>
+          <option>Delta - Volta Grande</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="txtObjetivo" class="muted">Observação (opcional)</label>
+        <input type="text" id="txtObjetivo" placeholder="Ex.: Dois">
+      </div>
+    </div>
+  </section>
+
+  <!-- Fazendas -->
+  <section class="card">
+    <h2><i data-lucide="tractor" width="18" height="18"></i> Fazendas (por OS)</h2>
+
+    <div class="rows" id="rows"></div>
+
+    <div class="inline mt-2">
+      <button class="btn" id="btnAdd"><i data-lucide="plus" width="16" height="16"></i> Adicionar fazenda</button>
+      <span class="muted">Preencha a <b>OS</b> e clique "Buscar" para auto-preencher.</span>
+    </div>
+
+    <div class="totals">
+      <div class="row">
+        <label>Total hectares</label>
+        <input id="totHa" type="text" readonly>
+      </div>
+      <div class="row">
+        <label>Total de copos</label>
+        <input id="totCopos" type="text" readonly>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prévia e ações -->
+  <section class="card">
+    <h2><i data-lucide="eye" width="18" height="18"></i> Prévia WhatsApp</h2>
+    <div class="preview" id="preview"></div>
+
+    <div class="sep"></div>
+
+    <div class="action-buttons">
+      <button class="btn neon" id="btnGerar"><i data-lucide="refresh-cw" width="16" height="16"></i> Gerar prévia</button>
+      <button class="btn" id="btnCopiar"><i data-lucide="copy" width="16" height="16"></i> Copiar mensagem</button>
+      <button class="btn light" id="btnWhats"><i data-lucide="message-circle" width="16" height="16"></i> Abrir no WhatsApp</button>
+      <span class="badge" id="lblInfo"></span>
+    </div>
+  </section>
+</div>
+
+<script>
+// Inicializar ícones Lucide
+lucide.createIcons();
+
+/* ===== Util ===== */
+const pad2 = n => String(n).padStart(2,'0');
+function todaySP(){ const now = new Date(); return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`; }
+function fmtBR(n, d=2){ return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:d, maximumFractionDigits:d}); }
+function toNumBR(s){ if (typeof s === 'number') return s; const t = String(s||'').replace(/\./g,'').replace(',','.'); const n = parseFloat(t); return isNaN(n) ? 0 : n; }
+function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,d] = yyyy_mm_dd.split('-'); return `${d}/${m}/${y}`; }
+function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
+
+/* ===== Frente → Piloto ===== */
+const PILOTOS = { 'Frente 01': 'Caio Brito', 'Frente 02': 'Ygor Lucas' };
+function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
+
+/* ===== API (Apps Script Web App) ===== */
+const API_URL = 'https://script.google.com/a/macros/pulverizacoes.com/s/AKfycbwIHGvAWHSz6_By21ik45z79ZD6qyfex0V4DULNUAMW2rhQZw71v7MP8Ou0-3RY-tSfyA/exec';
+const API_TOKEN = ''; // opcional: se você proteger com token no servidor, coloque aqui
+
+async function lookupOS(os){
+  const params = new URLSearchParams({ action:'lookup', os, ...(API_TOKEN ? {token:API_TOKEN} : {}) });
+  const url = `${API_URL}?${params.toString()}`;
+  const res = await fetch(url, { method:'GET' }); // GET evita preflight/CORS chato
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+/* ===== Linha de fazenda (OS) ===== */
+const rowsEl = document.getElementById('rows');
+
+function makeRow(prefill={}){
+  const el = document.createElement('div');
+  el.className = 'farm';
+  el.innerHTML = `
+    <div class="top">
+      <div class="inline">
+        <div class="inline-row">
+          <input type="text" class="os small-input" placeholder="Nº OS">
+          <button class="btn light buscar"><i data-lucide="search" width="14" height="14"></i> Buscar</button>
         </div>
-    </section>
+        <button class="btn warning remover" title="Remover"><i data-lucide="trash-2" width="14" height="14"></i> Remover fazenda</button>
+      </div>
+      <div class="muted msg" style="min-height: 20px;"></div>
+    </div>
+    <div class="grid">
+      <div class="row">
+        <label>Fazenda</label>
+        <input type="text" class="faz">
+      </div>
+      <div class="row">
+        <label>Código</label>
+        <input type="text" class="cod">
+      </div>
+      <div class="row">
+        <label>Hectares (ha)</label>
+        <input type="text" class="ha">
+      </div>
+      <div class="row">
+        <label>Qtd. Copos</label>
+        <input type="text" class="copos">
+      </div>
+      <div class="row">
+        <label class="muted">Objetivo (opcional)</label>
+        <input type="text" class="objetivo">
+      </div>
+      <div class="row">
+        <label class="muted">Piloto (opcional)</label>
+        <input type="text" class="piloto">
+      </div>
+    </div>
+  `;
+  rowsEl.appendChild(el);
+  lucide.createIcons();
 
-    <!-- Main Navigation Buttons -->
-    <section class="main-nav py-5">
-        <div class="container">
-            <div class="row g-4">
-                <!-- Pulverização -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
-                        <div class="nav-icon mb-3">
-                            <!-- Substitua o ícone da gota por este SVG -->
-                            <div class="icon" style="margin-bottom: 12px;">
-                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                                <circle cx="24" cy="24" r="6" stroke="#0b397d" stroke-width="2" fill="#fff"/>
-                                <rect x="22" y="10" width="4" height="8" rx="2" fill="#0b397d"/>
-                                <rect x="22" y="30" width="4" height="8" rx="2" fill="#0b397d"/>
-                                <rect x="10" y="22" width="8" height="4" rx="2" fill="#0b397d"/>
-                                <rect x="30" y="22" width="8" height="4" rx="2" fill="#0b397d"/>
-                                <circle cx="8" cy="8" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
-                                <circle cx="40" cy="8" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
-                                <circle cx="8" cy="40" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
-                                <circle cx="40" cy="40" r="3" stroke="#0b397d" stroke-width="2" fill="#fff"/>
-                                <line x1="12" y1="12" x2="20" y2="20" stroke="#0b397d" stroke-width="2"/>
-                                <line x1="36" y1="12" x2="28" y2="20" stroke="#0b397d" stroke-width="2"/>
-                                <line x1="12" y1="36" x2="20" y2="28" stroke="#0b397d" stroke-width="2"/>
-                                <line x1="36" y1="36" x2="28" y2="28" stroke="#0b397d" stroke-width="2"/>
-                              </svg>
-                            </div>
-                        </div>
-                        <h3 class="h4 mb-3">Pulverização</h3>
-                        <p class="text-muted mb-4">Programação de trabalho, e informe de rendimentos diarios.</p>
-                        <button class="btn btn-primary btn-lg w-100" onclick="toggleOpcoes('pulverizacao-opcoes')">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </button>
-                        <div id="pulverizacao-opcoes" class="opcoes" style="display:none; margin-top:10px;">
-                          <button class="btn btn-outline-primary" onclick="window.location.href='programacao_aplicacao.html'">Programação</button>
-                          <button class="btn btn-outline-primary" onclick="window.location.href='rendimento_aplicacao.html'">Rendimento</button>
-                        </div>
-                    </div>
-                </div>
+  const $os = el.querySelector('.os');
+  const $msg = el.querySelector('.msg');
+  const $faz = el.querySelector('.faz');
+  const $cod = el.querySelector('.cod');
+  const $ha  = el.querySelector('.ha');
+  const $cop = el.querySelector('.copos');
 
-                <!-- Cotésia -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
-                        <div class="nav-icon mb-3">
-                            <!-- Substitua o ícone da calculadora por este SVG -->
-                            <div class="icon" style="margin-bottom: 12px;">
-                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                                <ellipse cx="24" cy="32" rx="6" ry="12" fill="#222" />
-                                <ellipse cx="24" cy="18" rx="3" ry="5" fill="#222" />
-                                <line x1="24" y1="13" x2="24" y2="8" stroke="#222" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="24" y1="13" x2="20" y2="6" stroke="#222" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="24" y1="13" x2="28" y2="6" stroke="#222" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="18" y1="32" x2="8" y2="40" stroke="#222" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="30" y1="32" x2="40" y2="40" stroke="#222" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="18" y1="36" x2="10" y2="46" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
-                                <line x1="30" y1="36" x2="38" y2="46" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
-                              </svg>
-                            </div>
-                        </div>
-                        <h3 class="h4 mb-3">Cotésia</h3>
-                        <p class="text-muted mb-4">Programação de trabalho, e informe de rendimentos diarios.</p>
-                        <button class="btn btn-success btn-lg w-100" onclick="toggleOpcoes('cotesia-opcoes')">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </button>
-                        <div id="cotesia-opcoes" class="opcoes" style="display:none; margin-top:10px;">
-                          <button class="btn btn-outline-success" onclick="window.location.href='programacao_cotesia.html'">Programação</button>
-                          <button class="btn btn-outline-success" onclick="window.location.href='status_operacional_cotesia.html'">Status Operacional</button>
-                          <button class="btn btn-outline-success" onclick="window.location.href='rendimento_cotesia.html'">Rendimento</button>
-                        </div>
-                    </div>
-                </div>
+  if (prefill.os)  $os.value  = prefill.os;
+  if (prefill.faz) $faz.value = prefill.faz;
+  if (prefill.cod) $cod.value = prefill.cod;
+  if (prefill.ha)  $ha.value  = prefill.ha;
+  if (prefill.copos) $cop.value = prefill.copos;
 
-                <!-- Relatórios -->
-                <div class="col-lg-4 col-md-6 mx-auto">
-                    <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
-                        <div class="nav-icon mb-3">
-                            <!-- Ícone de relatório com drone -->
-                            <div class="icon" style="margin-bottom: 12px;">
-                              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                                <!-- Drone (vista superior estilizada) -->
-                                <rect x="18" y="8" width="12" height="12" rx="4" fill="#0ea5e9" stroke="#0ea5e9" stroke-width="2"/>
-                                <rect x="22" y="2" width="4" height="8" rx="2" fill="#0ea5e9"/>
-                                <rect x="22" y="18" width="4" height="8" rx="2" fill="#0ea5e9"/>
-                                <rect x="2" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
-                                <rect x="38" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
-                                <!-- Folha/relatório -->
-                                <rect x="14" y="28" width="20" height="16" rx="3" fill="#fff" stroke="#0ea5e9" stroke-width="2"/>
-                                <line x1="18" y1="34" x2="30" y2="34" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="18" y1="38" x2="28" y2="38" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-                              </svg>
-                            </div>
-                        </div>
-                        <h3 class="h4 mb-3">Relatórios</h3>
-                        <p class="text-muted mb-4">Relatórios detalhados para acompanhar seus resultados.</p>
-                        <button class="btn btn-info btn-lg w-100" onclick="navigateTo('relatorios')">
-                            <i class="bi bi-arrow-right me-2"></i>Acessar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  el.querySelector('.remover').addEventListener('click', ()=>{ el.remove(); recalcTotals(); updatePreview(false); });
+  el.querySelector('.buscar').addEventListener('click', ()=> doLookup(el));
+  $os.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doLookup(el); });
+  [$ha,$cop,$faz,$cod,el.querySelector('.objetivo'),el.querySelector('.piloto')].forEach(inp=>{
+    inp.addEventListener('input', ()=>{ recalcTotals(); updatePreview(false); });
+  });
 
-    <!-- Features Section -->
-    <section class="features-section bg-light py-5">
-        <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col-lg-8 mx-auto">
-                    <h2 class="display-5 fw-bold mb-3">Por que escolher nossa empresa?</h2>
-                    <p class="lead text-muted">Oferecemos soluções completas e personalizadas para o seu negócio</p>
-                </div>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-item text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="bi bi-shield-check display-4 text-primary"></i>
-                        </div>
-                        <h4>Qualidade Garantida</h4>
-                        <p class="text-muted">Serviços com padrão de excelência e garantia de qualidade.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-item text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="bi bi-clock display-4 text-success"></i>
-                        </div>
-                        <h4>Agilidade</h4>
-                        <p class="text-muted">Processos otimizados para entregas rápidas e eficientes.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-item text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="bi bi-people display-4 text-info"></i>
-                        </div>
-                        <h4>Suporte Especializado</h4>
-                        <p class="text-muted">Equipe qualificada para atender suas necessidades.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-item text-center">
-                        <div class="feature-icon mb-3">
-                            <i class="bi bi-graph-up display-4 text-warning"></i>
-                        </div>
-                        <h4>Resultados Comprovados</h4>
-                        <p class="text-muted">Histórico de sucesso e satisfação dos clientes.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  return el;
+}
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 Pulvion Tech. Todos os direitos reservados.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="social-links">
-                       <!--/<a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a> -->
-                        <a href="https://www.instagram.com/topgunpulverizacoes.com/" class="text-white me-3"><i class="bi bi-instagram"></i></a>
-                        <a href="https://www.linkedin.com/company/top-gun-pulveriza%C3%A7%C3%B5es/" class="text-white me-3"><i class="bi bi-linkedin"></i></a>
-                        <a href="mailto:tgagro@pulverizacoes.com" class="text-white">
-                          <i class="bi bi-envelope"></i>
-                        </a>
-                        <a href="https://wa.me/5534998033258" class="text-white" target="_blank">
-                          <i class="bi bi-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+async function doLookup(el){
+  const $os = el.querySelector('.os');
+  const os = String($os.value || '').trim();
+  const $msg = el.querySelector('.msg');
+  if (!os){ $msg.innerHTML = '<span class="warn">Informe a OS.</span>'; return; }
 
-    <!-- Selo do Mês
-    <div class="selo-mes">
-      <img src="setembro_amarelo.png" alt="Selo do Mês" style="height:200px;">
-    </div> -->
+  $msg.textContent = 'Buscando...';
+  try{
+    const res = await lookupOS(os);
+    if (!res || !res.ok || !res.found || !res.items || res.items.length === 0){
+      $msg.innerHTML = '<span class="warn">OS não encontrada na planilha. Preencha manualmente.</span>';
+      return;
+    }
+    const items = res.items.slice().sort((a,b)=>{
+      const pa = (a.data||'').split('/'), pb = (b.data||'').split('/');
+      const da = pa.length===3 ? new Date(+pa[2], +pa[1]-1, +pa[0]) : new Date(0);
+      const db = pb.length===3 ? new Date(+pb[2], +pb[1]-1, +pb[0]) : new Date(0);
+      return db - da;
+    });
+    const it = items[0];
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Variáveis globais
-        let isLoading = false;
+    el.querySelector('.faz').value = it.fazenda || '';
+    el.querySelector('.cod').value = it.codigo  || '';
+    el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
+    el.querySelector('.copos').value = it.copos ? String(it.copos).replace('.', ',') : '';
+    el.querySelector('.piloto').value   = it.piloto   || '';
+    el.querySelector('.objetivo').value = it.objetivo || '';
 
-        // Função para navegação entre seções
-        function navigateTo(section) {
-            if (isLoading) return;
-            
-            const button = event.target.closest('button');
-            showLoading(button);
-            
-            // Simular navegação (aqui você pode adicionar a lógica real de navegação)
-            setTimeout(() => {
-                hideLoading(button);
-                
-                // Exemplo de ações baseadas na seção
-                switch(section) {
-                    case 'pulverizacao':
-                        showNotification('Redirecionando para Pulverização...', 'info');
-                        // window.location.href = 'pulverizacao.html';
-                        break;
-                    case 'cotesia':
-                        showNotification('Redirecionando para Cotésia...', 'success');
-                        // window.location.href = 'cotesia.html';
-                        break;
-                    case 'relatorios':
-                        showNotification('Redirecionando para Relatórios...', 'info');
-                        // window.location.href = 'relatorios.html';
-                        break;
-                    default:
-                        showNotification('Seção não encontrada', 'error');
-                }
-            }, 1500);
-        }
+    $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
+    recalcTotals();
+    updatePreview(false);
+  }catch(err){
+    $msg.innerHTML = `<span class="warn">Falha no lookup: ${err && err.message ? err.message : err}</span>`;
+  }
+}
 
-        // Função para mostrar loading no botão
-        function showLoading(button) {
-            if (!button) return;
-            isLoading = true;
-            button.classList.add('loading', 'active');
-            button.disabled = true;
-            button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Carregando...';
-        }
+/* ===== Totais ===== */
+function recalcTotals(){
+  let tHa = 0, tCop = 0;
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    tHa  += toNumBR(el.querySelector('.ha').value);
+    tCop += toNumBR(el.querySelector('.copos').value);
+  });
+  document.getElementById('totHa').value    = fmtBR(tHa);
+  document.getElementById('totCopos').value = fmtBR(tCop,0);
+}
 
-        // Função para esconder loading do botão
-        function hideLoading(button) {
-            if (!button) return;
-            isLoading = false;
-            button.classList.remove('loading', 'active');
-            button.disabled = false;
-            
-            // Restaurar texto original baseado no contexto
-            const parent = button.closest('.nav-card');
-            if (parent) {
-                const title = parent.querySelector('h3').textContent;
-                button.innerHTML = '<i class="bi bi-arrow-right me-2"></i>Acessar';
-            }
-        }
+/* ===== Mensagem ===== */
+function buildMessage(){
+  const dt   = document.getElementById('dtData').value;
+  const fr   = document.getElementById('selFrente').value || '—';
+  const pil  = document.getElementById('txtPiloto').value || '—';
+  const dr   = document.getElementById('txtDrone').value  || '—';
+  const uni  = document.getElementById('selUnidade').value || '—';
+  const objG = document.getElementById('txtObjetivo').value || '';
 
-        // Sistema de notificações
-        function showNotification(message, type = 'info') {
-            // Remover notificação existente
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
+  let msg = `Programação (Cotesia 🪰)Top Gun
 
-            // Criar nova notificação
-            const notification = document.createElement('div');
-            notification.className = `notification alert alert-${getBootstrapClass(type)} alert-dismissible fade show`;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                min-width: 300px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                border: none;
-                border-radius: 8px;
-            `;
-            
-            notification.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-${getIcon(type)} me-2"></i>
-                    <span>${message}</span>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                </div>
-            `;
+Data: ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}
+Frente: ${fr}
+Piloto: ${pil}
+Drone: ${dr}
+Unidade: ${uni}`;
+  if (objG) msg += `\nObjetivo: ${objG}`;
+  msg += `\n_________`;
 
-            document.body.appendChild(notification);
+  let tHa = 0, tCop = 0;
 
-            // Auto remover após 4 segundos
-            setTimeout(() => {
-                if (notification && notification.parentNode) {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.remove();
-                        }
-                    }, 150);
-                }
-            }, 4000);
-        }
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    const os  = (el.querySelector('.os').value || '').trim();
+    const faz = (el.querySelector('.faz').value || '').trim();
+    const cod = (el.querySelector('.cod').value || '').trim();
+    const ha  = toNumBR(el.querySelector('.ha').value);
+    const cp  = toNumBR(el.querySelector('.copos').value);
+    const obj = (el.querySelector('.objetivo').value || '').trim();
 
-        // Função auxiliar para classes Bootstrap
-        function getBootstrapClass(type) {
-            const classes = {
-                'success': 'success',
-                'error': 'danger',
-                'warning': 'warning',
-                'info': 'info'
-            };
-            return classes[type] || 'info';
-        }
+    tHa  += ha; tCop += cp;
 
-        // Função auxiliar para ícones
-        function getIcon(type) {
-            const icons = {
-                'success': 'check-circle-fill',
-                'error': 'exclamation-triangle-fill',
-                'warning': 'exclamation-triangle-fill',
-                'info': 'info-circle-fill'
-            };
-            return icons[type] || 'info-circle-fill';
-        }
+    msg += `\nOS: ${os || '—'}\nFaz: ${faz || '—'}\nCod: ${cod || '—'}\nHá: ${fmtBR(ha)}\nQtd. Copos: ${fmtBR(cp,0)}`;
+    if (obj) msg += `\nObjetivo: ${obj}`;
+    msg += `\n————————-`;
+  });
 
-        // Função para upload de logo
-        function uploadLogo() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const logoImg = document.getElementById('companyLogo');
-                        const logoPlaceholder = document.getElementById('logoPlaceholder');
-                        
-                        logoImg.src = e.target.result;
-                        logoImg.classList.remove('d-none');
-                        logoPlaceholder.classList.add('d-none');
-                        
-                        showNotification('Logo carregada com sucesso!', 'success');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
+  msg += `\nTotal de copos: ${fmtBR(tCop,0)}\nTotal hectares: ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
+  return msg;
+}
+function updatePreview(andScroll=true){
+  const p = document.getElementById('preview');
+  p.textContent = buildMessage();
+  if (andScroll) p.scrollTop = p.scrollHeight;
+}
 
-        // Animações de entrada
-        function initAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
+/* ===== Init & eventos ===== */
+(function init(){
+  document.getElementById('dtData').value = todaySP();
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
+  makeRow();
 
-            // Observar elementos para animação
-            document.querySelectorAll('.nav-card, .feature-item').forEach(el => {
-                observer.observe(el);
-            });
-        }
+  document.getElementById('btnAdd').addEventListener('click', ()=>{ makeRow(); updatePreview(false); });
 
-        // Função para scroll suave para seções
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
+  document.getElementById('btnGerar').addEventListener('click', ()=>{
+    updatePreview();
+    const lblInfo = document.getElementById('lblInfo');
+    lblInfo.innerHTML = '<i data-lucide="check" width="12" height="12"></i> Prévia atualizada';
+    lucide.createIcons();
+    setTimeout(()=> lblInfo.textContent = '', 1800);
+  });
 
-        // Efeito parallax simples no hero
-        function initParallax() {
-            window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
-                const heroSection = document.querySelector('.hero-section');
-                if (heroSection) {
-                    const speed = scrolled * 0.5;
-                    heroSection.style.transform = `translateY(${speed}px)`;
-                }
-            });
-        }
+  document.getElementById('btnCopiar').addEventListener('click', async ()=>{
+    const txt = buildMessage();
+    try{
+      await navigator.clipboard.writeText(txt);
+      const lblInfo = document.getElementById('lblInfo');
+      lblInfo.innerHTML = '<i data-lucide="check" width="12" height="12"></i> Copiado';
+      lucide.createIcons();
+    }catch(_e){
+      document.getElementById('lblInfo').textContent = 'Falhou ao copiar';
+    }
+    setTimeout(()=> document.getElementById('lblInfo').textContent = '', 1800);
+  });
 
-        // Função para detectar dispositivo móvel
-        function isMobile() {
-            return window.innerWidth <= 768;
-        }
+  document.getElementById('btnWhats').addEventListener('click', ()=>{
+    const url = 'https://wa.me/?text=' + encodeURIComponent(buildMessage());
+    window.open(url, '_blank');
+  });
 
-        // Função para otimizar performance em mobile
-        function optimizeForMobile() {
-            if (isMobile()) {
-                // Desabilitar algumas animações em mobile para melhor performance
-                document.body.classList.add('mobile-optimized');
-                
-                // Adicionar CSS específico para mobile
-                const mobileCSS = `
-                    .mobile-optimized .hero-illustration {
-                        animation: none;
-                    }
-                    .mobile-optimized .nav-card:hover {
-                        transform: none;
-                    }
-                `;
-                
-                const style = document.createElement('style');
-                style.textContent = mobileCSS;
-                document.head.appendChild(style);
-            }
-        }
+  ['dtData','selFrente','txtPiloto','txtDrone','selUnidade','txtObjetivo'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
+  });
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar animações
-            initAnimations();
-            
-            // Otimizar para mobile
-            optimizeForMobile();
-            
-            // Inicializar parallax (apenas em desktop)
-            if (!isMobile()) {
-                initParallax();
-            }
-            
-            // Adicionar evento de clique no placeholder da logo
-            const logoPlaceholder = document.getElementById('logoPlaceholder');
-            if (logoPlaceholder) {
-                logoPlaceholder.addEventListener('click', uploadLogo);
-                logoPlaceholder.style.cursor = 'pointer';
-                logoPlaceholder.title = 'Clique para adicionar sua logo';
-            }
-            
-            // Adicionar tooltips nos ícones sociais
-            document.querySelectorAll('.social-links a').forEach(link => {
-                const icon = link.querySelector('i');
-                if (icon) {
-                    if (icon.classList.contains('bi-facebook')) {
-                        link.title = 'Facebook';
-                    } else if (icon.classList.contains('bi-instagram')) {
-                        link.title = 'Instagram';
-                    } else if (icon.classList.contains('bi-linkedin')) {
-                        link.title = 'LinkedIn';
-                    } else if (icon.classList.contains('bi-envelope')) {
-                        link.title = 'Email';
-                    }
-                }
-            });
-            
-            // Mostrar notificação de boas-vindas
-            setTimeout(() => {
-                showNotification('Bem-vindo! Clique nos botões para navegar.', 'info');
-            }, 1000);
-        });
+  document.getElementById('selFrente').addEventListener('change', ()=>{ setPilotByFrente(); updatePreview(false); });
 
-        // Redimensionamento da janela
-        window.addEventListener('resize', function() {
-            optimizeForMobile();
-        });
+  recalcTotals();
+  updatePreview(false);
+})();
+</script>
 
-        // Prevenção de erros
-        window.addEventListener('error', function(e) {
-            console.error('Erro capturado:', e.error);
-            showNotification('Ocorreu um erro inesperado. Tente novamente.', 'error');
-        });
-
-        // Função para debug (pode ser removida em produção)
-        function debugInfo() {
-            console.log('Página carregada com sucesso!');
-            console.log('Dispositivo móvel:', isMobile());
-            console.log('Versão do navegador:', navigator.userAgent);
-        }
-
-        // Chamar debug info quando a página carregar
-        document.addEventListener('DOMContentLoaded', debugInfo);
-
-        // Função para alternar opções (programação/rendimento) nos cards
-        function toggleOpcoes(id) {
-          // Fecha todos os outros
-          document.querySelectorAll('.opcoes').forEach(div => {
-            if (div.id !== id) div.style.display = 'none';
-          });
-          // Alterna o atual
-          var opcoes = document.getElementById(id);
-          opcoes.style.display = opcoes.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
 </body>
 </html>
