@@ -416,7 +416,7 @@ function buildMessage(){
   const uni  = document.getElementById('selUnidade').value || '—';
   const objG = document.getElementById('txtObjetivo').value || '';
 
-  let msg = `Programação (Cotesia 🪰)Top Gun
+  let msg = `*Programação Cotesia 🪰 Top Gun*
 
 Data: ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}
 Frente: ${fr}
@@ -438,12 +438,12 @@ Unidade: ${uni}`;
 
     tHa  += ha; tCop += cp;
 
-    msg += `\nOS: ${os || '—'}\nFaz: ${faz || '—'}\nCod: ${cod || '—'}\nHá: ${fmtBR(ha)}\nQtd. Copos: ${fmtBR(cp,0)}`;
+    msg += `\n*OS:* ${os || '—'}\n*Faz:* ${faz || '—'}\n*Cod:* ${cod || '—'}\n*Ha:* ${fmtBR(ha)}\n*Qtd. Copos:* ${fmtBR(cp,0)}`;
     if (obj) msg += `\nObjetivo: ${obj}`;
     msg += `\n————————-`;
   });
 
-  msg += `\nTotal de copos: ${fmtBR(tCop,0)}\nTotal hectares: ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
+  msg += `\n*Total de copos:* ${fmtBR(tCop,0)}\n*Total hectares:* ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
   return msg;
 }
 function updatePreview(andScroll=true){
@@ -499,4 +499,3 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
-
