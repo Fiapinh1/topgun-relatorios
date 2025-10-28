@@ -57,6 +57,7 @@
       <option value="">Selecione…</option>
       <option value="Frente 01">Frente 01</option>
       <option value="Frente 02">Frente 02</option>
+      <option value="Frente 03">Frente 03</option>
     </select>
 
     <label>Piloto</label>
@@ -106,7 +107,7 @@
 lucide.createIcons();
 
 /* Frente → Piloto */
-const PILOTOS = { "Frente 01":"Victor Hugo", "Frente 02":"Maicon Silva" };
+const PILOTOS = { "Frente 01":"Victor Hugo", "Frente 02":"Rafael", "Frente 03":"Tiago" };
 document.getElementById("selFrente").addEventListener("change",()=>{
   document.getElementById("txtPiloto").value = PILOTOS[document.getElementById("selFrente").value] || "";
 });
@@ -153,7 +154,7 @@ function gerarPrevia(){
   const st = document.getElementById("selStatus").value;
   const obs= document.getElementById("txtObs").value;
 
-  let msg = `*Status Operação (Cotésia🪰)*\n\n`;
+  let msg = `*Status Operação Cotésia*\n\n`;
   msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}\n\n`;
   msg += `*Status da operação:* ${st}`;
   if(st.includes("Ag. Condições") && obs){ msg += `\nObs.: ${obs}`; }
@@ -174,4 +175,5 @@ function abrirWhats(){
 </script>
 </body>
 </html>
+
 
