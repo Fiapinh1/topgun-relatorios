@@ -197,6 +197,7 @@
           <option value="" selected>Selecione…</option>
           <option value="Frente 01">Frente 01</option>
           <option value="Frente 02">Frente 02</option>
+          <option value="Frente 03">Frente 03</option>  
         </select>
       </div>
 
@@ -272,7 +273,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', dateStyle:'short', timeStyle:'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Maicon Silva' };
+const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Rafael', 'Frente 03': 'Thiago' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -406,7 +407,7 @@ function buildMessage(){
   const dr   = document.getElementById('txtDrone').value  || '—';
   const uni  = document.getElementById('selUnidade').value || '—';
 
-  let msg = `*Rendimento (Cotesia 🪰)Top Gun*\n\n` +
+  let msg = `*Rendimento _Cotesia_Top Gun*\n\n` +
             `*Data:* ${dt ? fmtDateBRfromInput(dt) : 'Preencher'}\n` +
             `*Frente:* ${fr}\n` +
             `*Piloto:* ${pil}\n` +
@@ -506,6 +507,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
