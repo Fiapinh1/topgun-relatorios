@@ -155,11 +155,11 @@
       <div class="row g-3 mt-1">
         <div class="col-md-4">
           <label>Frente:</label>
-          <select id="frente" class="form-select">
+          <select id="frente" class="form-select" onchange="vincularPiloto()">
             <option value="">Selecione</option>
             <option>Frente 1</option><option>Frente 2</option><option>Frente 3</option>
             <option>Frente 4</option><option>Frente 5</option><option>Frente 6</option>
-            <option>Frente 7</option><option>Frente 8</option>
+            <option>Frente 7</option>
           </select>
         </div>
         <div class="col-md-4">
@@ -175,8 +175,9 @@
           <label>Auxiliar:</label>
           <select id="auxiliar" class="form-select">
             <option value="">Selecione</option>
-            <option>Antonio Soares</option><option>Jefferson Lopes</option>
-            <option>Ailton Gabriel</option><option>Victor Hugo</option>
+            <option>Ailton Gabriel</option><option>Jefferson Lopes</option>
+            <option>Yuri Joudran</option><option>Jonathan Vieira</option>
+            <option>Pedro Henrique</option><option>Luiz Gustavo</option>
           </select>
         </div>
       </div>
@@ -186,7 +187,8 @@
           <label>Drone:</label>
           <select id="drone" class="form-select">
             <option value="">Selecione</option>
-            <option>DJI Agras T20</option><option>DJI Agras T40</option>
+            <option>DJI Agras T20</option><option>DJI Agras T40</option><option>DJI Agras T70</option>
+            <option>DJI Agras T100</option>
           </select>
         </div>
         <div class="col-md-4">
@@ -277,6 +279,17 @@
   </div>
 
   <script>
+    // Mapeamento de piloto por frente
+    const pilotoPorFrente = {
+      "Frente 1": "Matheus Pias",
+      "Frente 2": "Maicon Silva",
+      "Frente 3": "Alexandre Alves",
+      "Frente 4": "Felipe Santos",
+      "Frente 5": "Luiz Paulo",
+      "Frente 6": "Sem Piloto Cadastrado na Frente",
+      "Frente 7": "Heitor Ferreira"
+    };
+
     const unidadesPorEstado = {
       "MG": [
         "Delta - Delta",
@@ -312,6 +325,27 @@
           unidadeSelect.appendChild(opt);
         });
       }
+    }
+
+    function vincularPiloto() {
+      const frente = document.getElementById("frente").value;
+      const pilotoSelect = document.getElementById("piloto");
+
+      if (!frente) {
+        pilotoSelect.value = "";
+        return;
+      }
+
+      const piloto = pilotoPorFrente[frente];
+      if (!piloto) return;
+
+      // Verifica se a opção já existe; se não, adiciona
+      let opt = Array.from(pilotoSelect.options).find(o => o.value === piloto || o.textContent === piloto);
+      if (!opt) {
+        opt = new Option(piloto, piloto);
+        pilotoSelect.add(opt);
+      }
+      pilotoSelect.value = piloto;
     }
 
     function adicionarFazenda() {
@@ -381,3 +415,4 @@
   </script>
 </body>
 </html>
+
