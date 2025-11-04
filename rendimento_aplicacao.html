@@ -1,695 +1,556 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Relatório Drone - TOPGUN</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/clipboard-polyfill@3.0.0/dist/clipboard-polyfill.min.js"></script>
-  <style>
-    body {
-      min-height: 100vh;
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      color: #090909;
-      background: linear-gradient(145deg, #1e293b, #111827);
-      position: relative;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programação de Aplicação — Top Gun</title>
 
-    .shape {
-      position: absolute;
-      width: 60vw;
-      height: 60vw;
-      max-width: 400px;
-      max-height: 400px;
-      background: transparent;
-      border-radius: 50%;
-      border: 18vw solid #fff;
-      opacity: 0.12;
-      z-index: 0;
-      filter: blur(2px);
-    }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    .shape.top-left {
-      top: -30vw;
-      left: -30vw;
-      transform: rotate(20deg);
-    }
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%230d6efd"/><path d="M16 40l16-24 16 24H16z" fill="white"/></svg>'>
 
-    .shape.bottom-right {
-      bottom: -30vw;
-      right: -30vw;
-      transform: rotate(-15deg);
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-      position: relative;
-      z-index: 1;
-    }
-
-    h2, h3 {
-      color: #1f2937;
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      color: #2f361f;
-      font-weight: 500;
-    }
-
-    input, select {
-      width: 98%;
-      padding: 12px;
-      margin-top: 6px;
-      border: 1px solid #1e304b;
-      border-radius: 8px;
-      background-color: #f8fafc;
-      font-size: 1rem;
-      transition: border 0.3s;
-    }
-
-    input:focus, select:focus {
-      border-color: #3b82f6;
-      outline: none;
-    }
-
-    .btn {
-      margin-top: 15px;
-      padding: 14px 16px;
-      background-color: #1e304b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      width: 100%;
-      font-weight: 600;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn:hover {
-      background-color: #1e40af;
-      transform: translateY(-2px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-remove {
-      background: #ef4444 !important;
-      margin-top: 10px;
-      width: auto !important;
-      padding: 8px 12px !important;
-      font-size: 0.9rem !important;
-    }
-        /* Botões de voltar */
-    .btn-voltar {
-      background-color: #0e131c;
-      margin-bottom: 20px;
-    }
-
-    .btn-voltar:hover {
-      background-color: #0e131c;
-    }
-
-    .btn-voltar-rodape {
-      background-color: #0e131c;
-      margin-top: 8px;
-    }
-    
-    .btn-voltar-rodape:hover {
-      background-color: #0e131c;
-    }
-
-    .box-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .fazenda-box {
-      background: #f3f4f6;
-      padding: 18px;
-      margin-top: 20px;
-      border-radius: 10px;
-      position: relative;
-      border: 1px solid #e5e7eb;
-    }
-
-    .talhao-group, .insumo-group {
-      margin: 8px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .talhao-group input, .insumo-group input {
-      width: auto;
-      flex: 1;
-      min-width: 100px;
-    }
-
-    pre {
-      background: #f8fafc;
-      padding: 18px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      border-radius: 10px;
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 1rem;
-      border: 1px solid #e5e7eb;
-      line-height: 1.5;
-      margin: 20px 0;
-    }
-
-    .botao-copiar {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .botao-copiar:hover {
-      background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
-      transform: translateY(-2px);
-    }
-
-    .botao-copiar:active {
-      transform: translateY(0);
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
-      padding: 14px 28px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    #toast.show {
-      opacity: 1;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        margin: 15px;
-        padding: 18px;
-      }
-
-      input, select {
-        padding: 14px;
-      }
-
-      .btn, .botao-copiar {
-        padding: 16px;
-      }
-
-      .fazenda-box {
-        padding: 15px;
-      }
-    }
-  </style>
+<style>
+  body { background:#f8f9fa; }
+  .card { border-radius:.75rem; }
+  .form-section-title{font-weight:600;font-size:1rem;color:#0d6efd;display:flex;align-items:center;gap:.5rem;}
+  pre#preview{white-space:pre-wrap;min-height:260px;}
+  label { display:inline-block; margin-bottom:.25rem; }
+  .fazenda-card{border:1px solid #e9ecef;border-radius:.75rem;padding:1rem;margin-bottom:.75rem;background:#fff}
+  .fazenda-card + .fazenda-card{border-top:2px dashed #dee2e6; margin-top:.5rem; padding-top:1rem}
+  .badge-counter{font-weight:600}
+  .talhoes-wrap .row + .row{margin-top:.5rem}
+</style>
 </head>
 <body>
-  <div class="shape top-left"></div>
-  <div class="shape bottom-right"></div>
-  
-  <div class="container">
-      <!-- Botão Voltar no topo -->
-    <button class="btn btn-voltar" onclick="window.location.href='index.html'">
-      <i data-lucide="arrow-left"></i> Voltar
-    </button>
-    <h2><i data-lucide="drone"></i> Rendimento Aplicação - TOP GUN PULVERIZAÇÕES</h2>
-    
-    <label>Data de aplicação:</label>
-    <input id="data_aplicacao" type="date" />
-    
-    <label>Estado:</label>
-    <select id="estado" onchange="carregarUnidades()">
-      <option value="">Selecione o estado</option>
-      <option value="SP">São Paulo (SP)</option>
-      <option value="MG">Minas Gerais (MG)</option>
-    </select>
-    
-    <label>Unidade:</label>
-    <select id="unidade">
-      <option value="">Selecione primeiro o estado</option>
-    </select>
-    
-    <label>Frente:</label>
-    <select id="frente">
-      <option value="">Selecione a frente</option>
-      <option value="01">Frente 1</option>
-      <option value="02">Frente 2</option>
-      <option value="03">Frente 3</option>
-      <option value="04">Frente 4</option>
-      <option value="05">Frente 5</option>
-      <option value="06">Frente 6</option>
-      <option value="07">Frente 7</option>
-      <option value="08">Frente 8</option>
-    </select>
+<div class="container py-4">
 
-    <label>Piloto:</label>
-    <select id="piloto">
-      <option value="">Selecione o Piloto</option>
-      <option value="Alexandre Alves">Alexandre Alves</option>
-      <option value="Felipe Santos">Felipe Santos</option>
-      <option value="Luiz Paulo">Luiz Paulo</option>
-      <option value="Heitor Ferreira">Heitor Ferreira</option>
-      <option value="Maicon Silva">Maicon Silva</option>
-      <option value="Matheus Pias">Matheus Pias</option>
-      
-    </select>
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-calendar-check text-primary fs-4"></i>
+      <h1 class="h4 mb-0">Programação de Aplicação — Top Gun</h1>
+      <span class="badge text-bg-light border">v3 (com rendimento)</span>
+    </div>
+    <a href="index.html" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar para o Início
+    </a>
+  </div>
 
-    <label>Auxiliar:</label>
-    <select id="auxiliar">
-      <option value="">Selecione o auxiliar</option>
-      <option value="Antonio Soares">Antonio Soares</option>
-      <option value="Jefferson Lopes">Jefferson Lopes</option>
-      <option value="Ailton Gabriel">Ailton Gabriel</option>
-      <option value="Victor Hugo">Victor Hugo</option>
-    </select>
+  <div class="row g-3">
+    <!-- FORM PRINCIPAL -->
+    <div class="col-12 col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-section-title mb-3"><i class="bi bi-ui-checks-grid"></i> Preenchimento</div>
 
-    <div id="fazendas"></div>
-    <button class="btn" onclick="addFazenda()"><i data-lucide="plus"></i> Adicionar Fazenda</button>
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <label for="dataAplicacao" class="form-label">Data para aplicação</label>
+              <input type="date" id="dataAplicacao" class="form-control">
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="estado" class="form-label">Estado</label>
+              <select id="estado" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="MG">Minas Gerais (MG)</option>
+                <option value="SP">São Paulo (SP)</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="unidade" class="form-label">Unidade</label>
+              <select id="unidade" class="form-select" disabled>
+                <option value="">Selecione o Estado</option>
+              </select>
+            </div>
 
-    <div class="box-actions">
-      <button class="btn" onclick="gerarRelatorio()"><i data-lucide="file-text"></i> Gerar Relatório</button>
-      <button class="btn" onclick="salvarPDF()"><i data-lucide="file-down"></i> Salvar em PDF</button>
+            <div class="col-12 col-md-4">
+              <label for="frente" class="form-label">Frente</label>
+              <select id="frente" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="Frente 1">Frente 1</option>
+                <option value="Frente 2">Frente 2</option>
+                <option value="Frente 3">Frente 3</option>
+                <option value="Frente 4">Frente 4</option>
+                <option value="Frente 5">Frente 5</option>
+                <option value="Frente 6">Frente 6</option>
+                <option value="Frente 7">Frente 7</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="piloto" class="form-label">Piloto</label>
+              <input id="piloto" class="form-control" placeholder="Preenchido pela Frente" readonly>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="auxiliar" class="form-label">Auxiliar</label>
+              <select id="auxiliar" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Ailton Gabriel</option>
+                <option>Yuri Joudran</option>
+                <option>Pedro Henrique</option>
+                <option>Jefferson Lopes</option>
+                <option>Jonathan Vieira</option>
+                <option>Luiz Gustavo</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="drone" class="form-label">Drone</label>
+              <select id="drone" class="form-select">
+                <option value="">Selecione...</option>
+                <option>DJI AGRAS T20</option>
+                <option>DJI AGRAS T40</option>
+                <option>DJI AGRAS T70</option>
+                <option>DJI AGRAS T100</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="objetivo" class="form-label">Objetivo</label>
+              <select id="objetivo" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Área Total</option>
+                <option>Catação</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="tipoProduto" class="form-label">Tipo de Produto</label>
+              <select id="tipoProduto" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Herbicida</option>
+                <option>Inseticida</option>
+                <option>Fungicida</option>
+                <option>Fertilizante</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="form-section-title mb-0"><i class="bi bi-building"></i> Fazendas</div>
+          </div>
+
+          <!-- Container dinâmico de fazendas -->
+          <div id="fazendasContainer"></div>
+
+          <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+            <button id="btnGerar" class="btn btn-primary"><i class="bi bi-chat-left-text"></i> Gerar texto</button>
+            <button id="btnCopiar" class="btn btn-outline-secondary"><i class="bi bi-clipboard"></i> Copiar</button>
+            <a id="btnWhats" class="btn btn-success" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <h3><i data-lucide="map-pin"></i> Resultado</h3>
-    <pre id="relatorio">Preencha os campos e clique em gerar relatório.</pre>
-    <button class="botao-copiar" id="copiarBtn" onclick="copiarRelatorio()">
-      <i data-lucide="copy"></i> Copiar Relatório
-    </button>
-        <!-- Botão Voltar no rodapé -->
-    <button class="btn btn-voltar-rodape" onclick="window.location.href='index.html'">
-      <i data-lucide="arrow-left"></i> Voltar para Página Inicial
-    </button>
-
+    <!-- PRÉVIA -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="form-section-title mb-2"><i class="bi bi-file-earmark-text"></i> Prévia do texto</div>
+          <pre id="preview" class="border rounded p-3 bg-light">Preencha e adicione as fazendas. Depois clique em “Gerar texto”.</pre>
+          <div class="mt-2">
+            <span class="badge text-bg-light border me-1 badge-counter" id="badgeFaz">Fazendas: 0</span>
+            <span class="badge text-bg-light border badge-counter" id="badgeArea">Área: 0 ha</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="toast">
-    <i data-lucide="check-circle"></i>
-    <span>Relatório copiado com sucesso!</span>
+  <div class="text-center mt-4">
+    <a href="index.html" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar para o Início
+    </a>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    // Inicializa ícones
-    lucide.createIcons();
-    
-    // Dados das unidades por estado
-    const unidadesPorEstado = {
-      "MG": [
-        "Delta - Delta (Delta - MG)",
-        "Delta - Volta Grande (Conceição das Alagoas - MG)",
-        "Florestadora - Santa Cecília (João Pinheiro - MG)",
-        "Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)"
-      ],
-      "SP": [
-        "Usina Gasa (Andradina - SP)",
-        "Usina Rafard (Rafard - SP)",
-        "Usina São Francisco (Elias Fausto - SP)",
-        "Usina Barra Bonita (Barra Bonita - SP)",
-        "Usina Costa Pinto (Piracicaba - SP)",
-        "Usina Leme (Leme - SP)",
-        "Usina Destivale (Araçatuba - SP)",
-        "Usina Mundial (Mirandópolis - SP)",
-        "Usina Ipaussu (Ipaussu - SP)",
-        "Usina Diamante (Jaú - SP)",
-        "Usina Univalem (Valparaiso - SP)",
-        "Usina Benálcool (Bento de Abreu - SP)"
-      ]
-    };
-    
-    // Carrega as unidades com base no estado selecionado
-    function carregarUnidades() {
-      const estadoSelect = document.getElementById("estado");
-      const unidadeSelect = document.getElementById("unidade");
-      const estado = estadoSelect.value;
-      
-      unidadeSelect.innerHTML = '<option value="">Selecione a unidade</option>';
-      
-      if (estado && unidadesPorEstado[estado]) {
-        unidadesPorEstado[estado].forEach(unidade => {
-          const option = document.createElement("option");
-          option.value = unidade;
-          option.textContent = unidade;
-          unidadeSelect.appendChild(option);
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
+    <div id="toastCopiado" class="toast align-items-center text-bg-success border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body"><i class="bi bi-check-circle me-2"></i>Texto copiado!</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ===== CONFIG =====
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0wYo2B8wXXv_SqVwVayNkDtG_UsroXNXfLk970sHff6cIXnayykA3DYqtrt0ldefP/exec';
+
+  const FRentesPilotos = {
+    'Frente 1':'Matheus Pias','Frente 2':'Maicon Silva','Frente 3':'Alexandre Alves',
+    'Frente 4':'Felipe Santos','Frente 5':'Luiz Paulo','Frente 6':'Sem Piloto Cadastrado na Frente','Frente 7':'Heitor Ferreira'
+  };
+  const UnidadesPorEstado = {
+    'MG':['Delta - Delta','Delta - Volta Grande','Florestadora - Santa Cecília (João Pinheiro - MG)','Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)'],
+    'SP':['Usina Gasa (Andradina - SP)','Usina Rafard (Rafard - SP)','Usina São Francisco (Elias Fausto - SP)','Usina Barra Bonita (Barra Bonita - SP)','Usina Costa Pinto (Piracicaba - SP)','Usina Leme (Leme - SP)','Usina Destivale (Araçatuba - SP)','Usina Mundial (Mirandópolis - SP)','Usina Ipaussu (Ipaussu - SP)','Usina Diamante (Jaú - SP)','Usina Univalem (Valparaíso - SP)','Usina Benálcool (Bento de Abreu - SP)']
+  };
+
+  // Estado → Unidade
+  const estadoSel = document.getElementById('estado');
+  const unidadeSel = document.getElementById('unidade');
+  estadoSel.addEventListener('change', function() {
+    unidadeSel.innerHTML = '';
+    const uf = this.value;
+    if (!uf) {
+      unidadeSel.disabled = true;
+      unidadeSel.innerHTML = '<option>Selecione o Estado</option>';
+      return;
+    }
+    unidadeSel.disabled = false;
+    unidadeSel.insertAdjacentHTML('beforeend', '<option value="">Selecione...</option>');
+    (UnidadesPorEstado[uf] || []).forEach(u => {
+      const o = document.createElement('option'); o.value = u; o.textContent = u; unidadeSel.appendChild(o);
+    });
+  });
+
+  // Frente → Piloto
+  document.getElementById('frente').addEventListener('change',function(){
+    document.getElementById('piloto').value = this.value ? (FRentesPilotos[this.value]||'') : '';
+  });
+
+  // ===== JSONP =====
+  function jsonp(urlString){
+    const url = new URL(urlString);
+    const cb  = '__jsonp_' + Math.random().toString(36).slice(2);
+    url.searchParams.set('callback', cb);
+    const src = url.toString();
+    return new Promise((resolve, reject)=>{
+      const s = document.createElement('script');
+      s.src = src;
+      window[cb] = (data)=>{ resolve(data); cleanup(); };
+      s.onerror = ()=>{ reject(new Error('Falha no JSONP')); cleanup(); };
+      function cleanup(){ delete window[cb]; s.remove(); }
+      document.body.appendChild(s);
+    });
+  }
+
+  // ===== FAZENDAS DINÂMICAS =====
+  const fazendasContainer = document.getElementById('fazendasContainer');
+
+  // cria 1 bloco inicial
+  addFazenda();
+
+  function addFazenda(prefillOS=''){
+    const idx = Date.now().toString(36);
+    const el = document.createElement('div');
+    el.className = 'fazenda-card';
+    el.dataset.idx = idx;
+    el.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-semibold text-secondary"><i class="bi bi-geo-alt"></i> Fazenda</div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-add="${idx}">
+            <i class="bi bi-plus-circle"></i> Adicionar
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-remove="${idx}">
+            <i class="bi bi-x-lg"></i> Remover
+          </button>
+        </div>
+      </div>
+
+      <!-- PROGRAMAÇÃO (OS / Código / etc.) -->
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="os_${idx}">OS</label>
+          <div class="input-group">
+            <input id="os_${idx}" class="form-control" placeholder="Digite a OS">
+            <button class="btn btn-outline-primary" data-buscar="${idx}" title="Buscar OS"><i class="bi bi-search"></i></button>
+          </div>
+          <div class="form-text">Busca automática na planilha.</div>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label" for="codigo_${idx}">Código</label>
+          <input id="codigo_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label" for="fazenda_${idx}">Fazenda</label>
+          <input id="fazenda_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label" for="area_${idx}">Área (ha)</label>
+          <input id="area_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label" for="operacao_${idx}">Operação</label>
+          <input id="operacao_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="insumos_${idx}">Insumos</label>
+          <textarea id="insumos_${idx}" class="form-control" rows="2" readonly></textarea>
+        </div>
+      </div>
+
+      <!-- RENDIMENTO -->
+      <hr>
+      <div class="form-section-title mb-2"><i class="bi bi-speedometer2"></i> Rendimento</div>
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="status_${idx}">Status</label>
+          <select id="status_${idx}" class="form-select">
+            <option value="">Selecione...</option>
+            <option>Em andamento</option>
+            <option>Finalizado</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Sobrou produto?</label>
+          <div class="input-group">
+            <select id="sobrou_${idx}" class="form-select">
+              <option>Não</option>
+              <option>Sim</option>
+            </select>
+            <input id="sobrou_qtd_${idx}" class="form-control" placeholder="Quantidade (ex: 5 L)" style="display:none;">
+          </div>
+          <div class="form-text">Se marcar "Sim", informe a quantidade.</div>
+        </div>
+      </div>
+
+      <!-- TALHÕES -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="form-section-title mb-0"><i class="bi bi-diagram-3"></i> Talhões</div>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-add-talhao="${idx}">
+          <i class="bi bi-plus"></i> Adicionar talhão
+        </button>
+      </div>
+      <div class="talhoes-wrap" id="talhoes_${idx}">
+        <!-- linhas de talhão entram aqui -->
+      </div>
+    `;
+    fazendasContainer.appendChild(el);
+
+    // eventos do bloco
+    el.querySelector(`[data-remove="${idx}"]`).addEventListener('click', ()=>{ el.remove(); updateResumo(); gerarTexto(); });
+    el.querySelector(`[data-add="${idx}"]`).addEventListener('click', ()=>{ addFazenda(); });
+    el.querySelector(`[data-buscar="${idx}"]`).addEventListener('click', ()=> buscarOS(idx));
+    el.querySelector(`[data-add-talhao="${idx}"]`).addEventListener('click', ()=> addTalhao(idx));
+
+    const osInput = el.querySelector(`#os_${idx}`);
+    osInput.addEventListener('input', ()=>{
+      clearOne(idx);
+      const v = osInput.value.trim();
+      if (!v) return;
+      debounce(()=> buscarOS(idx), 350);
+    });
+
+    // mostrar/ocultar quantidade de sobra
+    const sobrouSel = el.querySelector(`#sobrou_${idx}`);
+    const sobrouQtd = el.querySelector(`#sobrou_qtd_${idx}`);
+    sobrouSel.addEventListener('change', ()=>{
+      const show = sobrouSel.value === 'Sim';
+      sobrouQtd.style.display = show ? '' : 'none';
+      if (!show) sobrouQtd.value = '';
+      gerarTexto();
+    });
+
+    if (prefillOS) { osInput.value = prefillOS; buscarOS(idx); }
+  }
+
+  function addTalhao(idx){
+    const wrap = document.getElementById(`talhoes_${idx}`);
+    const rowId = Date.now().toString(36);
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end';
+    row.dataset.row = rowId;
+    row.innerHTML = `
+      <div class="col-6 col-md-3">
+        <label class="form-label" for="talhao_${idx}_${rowId}">Talhão</label>
+        <input id="talhao_${idx}_${rowId}" class="form-control" placeholder="Nº">
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="form-label" for="qtd_${idx}_${rowId}">Qtd. aplicada (ha)</label>
+        <input id="qtd_${idx}_${rowId}" class="form-control" placeholder="ex: 3.50">
+      </div>
+      <div class="col-12 col-md-3">
+        <button type="button" class="btn btn-outline-danger mt-4" data-del="${rowId}">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    `;
+    wrap.appendChild(row);
+
+    row.querySelector(`[data-del="${rowId}"]`).addEventListener('click', ()=>{
+      row.remove(); gerarTexto();
+    });
+
+    // atualizar preview quando digitar
+    row.querySelector(`#talhao_${idx}_${rowId}`).addEventListener('input', gerarTexto);
+    row.querySelector(`#qtd_${idx}_${rowId}`).addEventListener('input', gerarTexto);
+  }
+
+  function clearOne(idx){
+    getEl(`#codigo_${idx}`).value='';
+    getEl(`#fazenda_${idx}`).value='';
+    getEl(`#area_${idx}`).value='';
+    getEl(`#operacao_${idx}`).value='';
+    getEl(`#insumos_${idx}`).value='';
+  }
+
+  function getEl(sel){ return document.querySelector(sel); }
+
+  let debTimer;
+  function debounce(fn, t){ clearTimeout(debTimer); debTimer=setTimeout(fn, t); }
+
+  async function buscarOS(idx){
+    try{
+      const osVal = getEl(`#os_${idx}`).value.trim();
+      if(!osVal){ clearOne(idx); updateResumo(); return; }
+      const js = await jsonp(APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osVal));
+      if(!js.ok || !js.rows || !js.rows.length){ clearOne(idx); updateResumo(); return; }
+
+      const row = js.rows.find(x => String(x.OS)===String(osVal)) || js.rows[0];
+      const get = k => row[k] ?? row[k?.toUpperCase()] ?? '';
+
+      getEl(`#codigo_${idx}`).value   = get('CODIGO');
+      getEl(`#fazenda_${idx}`).value  = get('FAZENDA');
+      getEl(`#area_${idx}`).value     = (get('AREA (HA)') || '').toString().replace(',','.');
+      getEl(`#operacao_${idx}`).value = get('OPERACAO');
+      getEl(`#insumos_${idx}`).value  = get('INSUMOS');
+
+      const objetivoSel = document.getElementById('objetivo');
+      const objetivoStr = get('OBJETIVO');
+      if (objetivoStr) {
+        [...objetivoSel.options].forEach(o=>{
+          if (o.value.toUpperCase() === String(objetivoStr).toUpperCase())
+            objetivoSel.value = o.value;
         });
       }
+
+      updateResumo();
+      gerarTexto();
+    }catch(e){
+      console.error(e);
+      clearOne(idx); updateResumo();
     }
-    
-    // Adiciona uma fazenda ao iniciar
-    window.onload = function() {
-      addFazenda();
-    };
+  }
 
-    function addFazenda() {
-      const container = document.createElement("div");
-      container.className = "fazenda-box";
-      container.innerHTML = `
-        <label>Fazenda:</label>
-        <input name="fazenda" placeholder="Nome da fazenda" />
-        
-        <label>Código:</label>
-        <input name="codigo" placeholder="Código da fazenda" />
-        
-        <label>OS:</label>
-        <input name="os" placeholder="Número da OS" />
+  function updateResumo(){
+    const cards = [...fazendasContainer.querySelectorAll('.fazenda-card')];
+    let totalFaz = 0, totalArea = 0;
+    cards.forEach(c=>{
+      const faz = c.querySelector('[id^="fazenda_"]').value.trim();
+      const areaStr = c.querySelector('[id^="area_"]').value.trim();
+      if (faz) totalFaz++;
+      const v = parseFloat((areaStr||'').toString().replace(',','.'));
+      if (!isNaN(v)) totalArea += v;
+    });
+    document.getElementById('badgeFaz').textContent  = `Fazendas: ${totalFaz}`;
+    const totalAreaFixed = Number(totalArea.toFixed(2));
+    const totalAreaFmt = totalAreaFixed.toFixed(2).replace('.',',') + ' ha';
+    document.getElementById('badgeArea').textContent = `Área: ${totalAreaFmt}`;
+  }
 
-        <label>Área OS (ha):</label>
-        <input name="area-os" placeholder="Área da OS" type="number" min="0" step="0.1" />
+  // ===== GERAÇÃO DO TEXTO/WHATS/COPIAR =====
+  const preview=document.getElementById('preview');
+  document.getElementById('btnGerar').addEventListener('click', gerarTexto);
+  document.getElementById('btnCopiar').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(preview.textContent||'').then(()=>{
+      new bootstrap.Toast(document.getElementById('toastCopiado')).show();
+    });
+  });
 
-        <label>Objetivo:</label>
-        <select name="objetivo">
-          <option value="">Selecione</option>
-          <option value="Área total">Área total</option>
-          <option value="Catação">Catação</option>
-          <option value="Mapeamento">Mapeamento</option>
-          <option value="Monitoramento">Monitoramento</option>
-        </select>
-        
-        <label>Tipo de Produto:</label>
-        <select name="produto">
-          <option value="">Selecione</option>
-          <option value="Herbicida">Herbicida</option>
-          <option value="Inseticida">Inseticida</option>
-          <option value="Fungicida">Fungicida</option>
-          <option value="Fertilizante">Fertilizante</option>
-          <option value="Maturador">Maturador</option>
-        </select>
-        
-        <label>Status:</label>
-        <select name="status">
-          <option value="Finalizada">Finalizada</option>
-          <option value="Em andamento">Em andamento</option>
-        </select>
-        
-        <label>Sobrou produto?</label>
-        <select name="sobrou-produto" onchange="toggleProdutoRestante(this)">
-          <option value="nao">Não</option>
-          <option value="sim">Sim</option>
-        </select>
-        
-        <div class="container-restante" style="display:none;">
-          <label>Produto restante (litros):</label>
-          <input name="restante" placeholder="0" type="number" min="0" step="0.1" />
-        </div>
-        
-        <div style="margin-top: 15px;">
-          <label>Insumos utilizados:</label>
-          <div class="insumos" style="margin: 10px 0;"></div>
-          <button class="btn btn-remove" type="button" onclick="addInsumo(this.parentNode.querySelector('.insumos'))">
-            <i data-lucide="plus"></i> Adicionar Insumo
-          </button>
-        </div>
-        
-        <div style="margin-top: 15px;">
-          <label>Talhões:</label>
-          <div class="talhoes" style="margin: 10px 0;"></div>
-          <button class="btn btn-remove" type="button" onclick="addTalhao(this.parentNode.querySelector('.talhoes'))">
-            <i data-lucide="plus"></i> Adicionar Talhão
-          </button>
-        </div>
-        
-        <button class="btn btn-remove" type="button" onclick="removerFazenda(this)">
-          <i data-lucide="trash-2"></i> Remover Fazenda
-        </button>
-      `;
-      document.getElementById("fazendas").appendChild(container);
+  function gerarTexto(){
+    const data=(document.getElementById('dataAplicacao').value||'').split('-').reverse().join('/');
+    const unidade=document.getElementById('unidade').value;
+    const frente =document.getElementById('frente').value;
+    const piloto =document.getElementById('piloto').value;
+    const auxiliar=document.getElementById('auxiliar').value;
+    const drone  =document.getElementById('drone').value;
+    const objetivo=document.getElementById('objetivo').value;
+    const tipoProduto=document.getElementById('tipoProduto').value;
 
-      // Esconde o botão de remover da primeira fazenda
-      const fazendas = document.querySelectorAll('.fazenda-box');
-      if (fazendas.length === 1) {
-        container.querySelector('button[onclick="removerFazenda(this)"]').style.display = 'none';
-      }
-      
-      // Atualiza ícones
-      lucide.createIcons();
-    }
+    const cards = [...fazendasContainer.querySelectorAll('.fazenda-card')];
+    let blocos = [];
+    let totalFaz = 0, totalAreaProg = 0, totalAreaApl = 0;
 
-    function toggleProdutoRestante(select) {
-      const container = select.parentNode.querySelector('.container-restante');
-      container.style.display = select.value === 'sim' ? 'block' : 'none';
-    }
+    cards.forEach(c=>{
+      const os       = c.querySelector('[id^="os_"]').value.trim();
+      const codigo   = c.querySelector('[id^="codigo_"]').value.trim();
+      const fazenda  = c.querySelector('[id^="fazenda_"]').value.trim();
+      const areaStr  = c.querySelector('[id^="area_"]').value.trim();
+      const operacao = c.querySelector('[id^="operacao_"]').value.trim();
+      const insumos  = c.querySelector('[id^="insumos_"]').value.trim();
+      const status   = c.querySelector('[id^="status_"]').value.trim();
+      const sobrou   = c.querySelector('[id^="sobrou_"]').value.trim();
+      const sobrouQtd= c.querySelector('[id^="sobrou_qtd_"]').value.trim();
 
-    function addInsumo(container) {
-      const insumo = document.createElement("div");
-      insumo.className = "insumo-group";
-      insumo.innerHTML = `
-        <input placeholder="Nome do insumo" class="insumo-nome" />
-        <input placeholder="Dose/quantidade" class="insumo-dose" />
-        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
-          <i data-lucide="trash-2"></i>
-        </button>
-      `;
-      container.appendChild(insumo);
-      lucide.createIcons();
-    }
+      if (fazenda) totalFaz++;
+      const vProg = parseFloat((areaStr||'').toString().replace(',','.'));
+      if (!isNaN(vProg)) totalAreaProg += vProg;
 
-    function addTalhao(container) {
-      const talhao = document.createElement("div");
-      talhao.className = "talhao-group";
-      talhao.innerHTML = `
-        <input placeholder="Número do talhão" style="width: 100px;" />
-        <input placeholder="Área aplicada (ha)" type="number" step="0.01" />
-        <button type="button" onclick="this.parentNode.remove()" class="btn btn-remove">
-          <i data-lucide="trash-2"></i>
-        </button>
-      `;
-      container.appendChild(talhao);
-      lucide.createIcons();
-    }
-
-    function removerFazenda(btn) {
-      const fazendas = document.querySelectorAll('.fazenda-box');
-      if (fazendas.length > 1) {
-        btn.parentNode.remove();
-      } else {
-        alert("Você precisa ter pelo menos uma fazenda!");
-      }
-    }
-
-    function gerarRelatorio() {
-      const frente = document.getElementById("frente").value;
-      const piloto = document.getElementById("piloto").value;
-      const auxiliar = document.getElementById("auxiliar").value;
-      const estado = document.getElementById("estado").value;
-      const unidade = document.getElementById("unidade").value;
-      const dataAplicacaoRaw = document.getElementById("data_aplicacao").value;
-      
-      let dataAplicacao = "";
-      if (dataAplicacaoRaw) {
-        const [ano, mes, dia] = dataAplicacaoRaw.split("-");
-        dataAplicacao = `${dia}/${mes}/${ano}`;
-      }
-      
-      const data = new Date();
-      const dataEnvio = data.toLocaleDateString('pt-BR');
-      const horaEnvio = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      let relatorio = `📄 *Rendimento aplicação Drone - TOPGUN*\n📅 *Data de aplicação:* ${dataAplicacao}\n\n`;
-      relatorio += `📍 *Unidade:* ${unidade}\n`;
-      relatorio += ` *Frente:* ${frente}\n`;
-      relatorio += ` *Piloto:* ${piloto}\n`;
-      relatorio += ` *Auxiliar:* ${auxiliar}\n\n`;
-      relatorio += "────────\n\n";
-
-      const fazendas = document.querySelectorAll(".fazenda-box");
-      let totalGeral = 0;
-
-      fazendas.forEach((fazenda, index) => {
-        const nome = fazenda.querySelector("input[name='fazenda']").value;
-        const codigo = fazenda.querySelector("input[name='codigo']").value;
-        const os = fazenda.querySelector("input[name='os']").value;
-        const objetivo = fazenda.querySelector("select[name='objetivo']").value;
-        const produto = fazenda.querySelector("select[name='produto']").value;
-        const status = fazenda.querySelector("select[name='status']").value;
-        const sobrouProduto = fazenda.querySelector("select[name='sobrou-produto']").value;
-        const restante = sobrouProduto === 'sim' ? fazenda.querySelector("input[name='restante']").value : '0';
-        const talhoes = fazenda.querySelectorAll(".talhoes .talhao-group");
-        
-        relatorio += ` *FAZENDA ${index + 1}:* ${nome}\n`;
-        relatorio += ` *Código:* ${codigo}\n`;
-        relatorio += ` *OS:* ${os}\n`;
-        relatorio += ` *Área OS:* ${fazenda.querySelector("input[name='area-os']").value} ha\n`;
-        relatorio += ` *Objetivo:* ${objetivo}\n`;
-        relatorio += ` *Produto:* ${produto}\n`;
-        relatorio += ` *Status:* ${status === "Finalizada" ? "✅ Finalizada" : "🟡 Em andamento"}\n\n`;
-        
-        let subtotal = 0;
-        if (talhoes.length > 0) {
-          relatorio += `📌 *TALHÕES:*\n`;
-          talhoes.forEach(t => {
-            const num = t.querySelectorAll("input")[0].value;
-            const areaAplicada = parseFloat(t.querySelectorAll("input")[1].value) || 0;
-            relatorio += `- Talhão ${num} | Área Aplicada: ${areaAplicada.toFixed(2)} ha\n`;
-            subtotal += areaAplicada;
-          });
-        }
-        
-        relatorio += `\n📊 *Total aplicado na fazenda:* ${subtotal.toFixed(2)} ha\n`;
-        
-        if (sobrouProduto === 'sim' && restante > 0) {
-          relatorio += `🧴 *Produto restante:* ${restante} lts\n`;
-        }
-        
-        totalGeral += subtotal;
-
-        const insumos = fazenda.querySelectorAll(".insumos .insumo-group");
-        if (insumos.length > 0) {
-          relatorio += `\n *Insumos utilizados:*\n`;
-          insumos.forEach(i => {
-            const nome = i.querySelector(".insumo-nome").value;
-            const dose = i.querySelector(".insumo-dose").value;
-            relatorio += `- ${nome} (${dose})\n`;
-          });
-        }
-
-        if (index < fazendas.length - 1) {
-          relatorio += "\n────────\n\n";
+      // talhões
+      const talhoesWrap = c.querySelector('.talhoes-wrap');
+      const linhas = [...talhoesWrap.querySelectorAll('.row')];
+      let talhoesTxt = [];
+      let somaApl = 0;
+      linhas.forEach(r=>{
+        const t = r.querySelector('[id^="talhao_"]')?.value.trim();
+        const q = r.querySelector('[id^="qtd_"]')?.value.trim();
+        if (t || q){
+          const qNum = parseFloat((q||'').toString().replace(',','.'));
+          if (!isNaN(qNum)) somaApl += qNum;
+          const qFmt = q ? `${q} ha` : '-';
+          talhoesTxt.push(`- Talhão ${t||'-'}: ${qFmt}`);
         }
       });
+      totalAreaApl += somaApl;
 
-      relatorio += "\n────────\n\n";
-      relatorio += `📈 *ÁREA TOTAL APLICADA:* ${totalGeral.toFixed(2)} ha\n\n`;
-      relatorio += `⏱️ *Relatório gerado em:* ${dataEnvio} às ${horaEnvio}`;
-      
-      document.getElementById("relatorio").textContent = relatorio;
-    }
+      const areaClean = (areaStr || '').toString().replace(/\s*ha$/i, '').trim();
+      const areaFmt = areaClean ? `${areaClean} ha` : '-';
 
-    function salvarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      
-      // Adiciona título
-      doc.setFontSize(18);
-      doc.text("Relatório de Aplicação - TOPGUN", 10, 15);
-      
-      // Adiciona conteúdo
-      doc.setFontSize(12);
-      const texto = document.getElementById("relatorio").textContent;
-      const linhas = doc.splitTextToSize(texto, 180);
-      doc.text(linhas, 10, 25);
-      
-      // Salva o PDF
-      doc.save(`Relatório_TOPGUN_${new Date().toLocaleDateString('pt-BR')}.pdf`);
-    }
-
-    // Função principal de cópia otimizada para iOS
-    async function copiarRelatorio() {
-      const texto = document.getElementById("relatorio").textContent;
-      
-      try {
-        // 1. Tenta Clipboard API moderno
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 2. Tenta polyfill se disponível
-        if (window.clipboardPolyfill?.writeText) {
-          await clipboardPolyfill.writeText(texto);
-          mostrarToast();
-          return;
-        }
-        
-        // 3. Fallback tradicional para iOS
-        const textarea = document.createElement('textarea');
-        textarea.value = texto;
-        textarea.style.position = 'fixed';
-        textarea.style.top = '0';
-        textarea.style.left = '0';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        
-        // Seleção especial para iOS
-        if (navigator.userAgent.match(/ipad|iphone/i)) {
-          const range = document.createRange();
-          range.selectNodeContents(textarea);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          textarea.setSelectionRange(0, 999999);
-        } else {
-          textarea.select();
-        }
-        
-        // Executa a cópia
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        
-        mostrarToast();
-      } catch (err) {
-        // Fallback final - seleciona o texto para copiar manualmente
-        const relatorioEl = document.getElementById("relatorio");
-        selecionarTexto(relatorioEl);
-        alert("Toque prolongado no texto acima e selecione 'Copiar'");
+      // Ícones para status
+      let statusIcon = '';
+      if (status === 'Finalizado') {
+        statusIcon = '✅'; // Check
+      } else if (status === 'Em andamento') {
+        statusIcon = '🟡'; // Bolinha amarela
       }
-    }
 
-    function selecionarTexto(elemento) {
-      const range = document.createRange();
-      range.selectNodeContents(elemento);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+      const bloco =
+`*📋 OS:* ${os || '-'}
+*Código:* ${codigo || '-'}
+*Fazenda:* ${fazenda || '-'}
+*Área (ha):* ${areaFmt}
+*Operação:* ${operacao || '-'}
+*Insumos:* ${insumos || '-'}
+*Status:* ${statusIcon ? statusIcon + ' ' : ''}${status || '-'}
 
-    function mostrarToast() {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-  </script>
+*Talhões:*
+${talhoesTxt.length ? talhoesTxt.join('\n') : '-'}
+*Subtotal aplicado (ha):* ${somaApl ? somaApl.toFixed(2).replace('.',',') + ' ha' : '0,00 ha'}
+*Sobrou produto:* ${sobrou === 'Sim' ? (sobrouQtd || '-') : 'Não'}`;
+
+      blocos.push(bloco);
+    });
+
+    const header =
+`📅 *Programação para aplicação:* ${data}
+
+*Unidade:* ${unidade||'-'}
+*Frente:* ${frente||'-'}
+*Piloto:* ${piloto||'-'}
+*Auxiliar:* ${auxiliar||'-'}
+*Drone:* ${drone||'-'}
+*Objetivo:* ${objetivo||'-'}
+*Tipo de Produto:* ${tipoProduto||'-'}`;
+
+  const resumo =
+`\n*Resumo Geral:*
+*Qtd. Fazendas:* ${totalFaz}
+*Área programada:* ${totalAreaProg.toFixed(2).replace('.',',')} ha
+*Área aplicada:* ${totalAreaApl.toFixed(2).replace('.',',')} ha`;
+
+    const sepLine = '_______';
+    const blocosTexto = blocos.length ? blocos.map(b => b + '\n' + sepLine).join('\n\n') : '';
+
+    const textoFinal = header + (blocosTexto ? ('\n\n' + blocosTexto + '\n\n') : '\n\n') + resumo;
+
+    preview.textContent = textoFinal;
+    document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(textoFinal);
+    updateResumo();
+  }
+</script>
 </body>
 </html>
-
-
-
-
 
