@@ -1,307 +1,298 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Status de Operação | Top Gun Pulverizações</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status da Operação — Top Gun</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Lucide (versão fixa para evitar aviso de sourcemap 404) -->
-  <script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.js"></script>
-
-  <!-- Fonte Orbitron (título) -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --topgun-green:#16a34a;
-      --topgun-green-dark:#15803d;
-      --topgun-ink:#1e293b;
-      --topgun-dark:#1e304b;
-    }
-    body{
-      background:#f8fafc;
-      font-family:'Segoe UI', Arial, sans-serif;
-      color:var(--topgun-ink);
-    }
-    .navbar{ background:var(--topgun-dark); }
-    .navbar-brand{ font-family:'Orbitron', sans-serif; letter-spacing:.5px; }
-    .btn-topgun{ background:var(--topgun-green); color:#fff; border:none; }
-    .btn-topgun:hover{ background:var(--topgun-green-dark); color:#fff; }
-    .status-chip{
-      display:inline-flex; align-items:center; gap:.5rem;
-      padding:.5rem .75rem; border-radius:50rem; font-weight:600;
-      border:1px solid rgba(0,0,0,.06); background:#fff;
-    }
-    .status-ag{ border-color:#facc15; }   /* amarelo */
-    .status-em{ border-color:#fb923c; }   /* laranja */
-    .status-fi{ border-color:#93c5fd; }   /* azul */
-    pre{
-      background:#ecfdf5; border-left:4px solid var(--topgun-green);
-      padding:1rem; border-radius:8px;
-      white-space:pre-wrap; word-wrap:break-word; font-size:1rem;
-    }
-  </style>
+<style>
+  body { background:#f8f9fa; }
+  .card { border-radius:.75rem; }
+  .form-section-title{font-weight:600;font-size:1rem;color:#0d6efd;display:flex;align-items:center;gap:.5rem;}
+  pre#preview{white-space:pre-wrap;min-height:260px;}
+  .status-card{border:1px solid #e9ecef;border-radius:.75rem;padding:1rem;margin-bottom:.75rem;background:#fff}
+  .status-card + .status-card{border-top:2px dashed #dee2e6; margin-top:.5rem; padding-top:1rem}
+</style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark shadow-sm">
-    <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1">
-        <i data-lucide="activity" class="me-2"></i> Status de Operação — Top Gun Pulverizações
-      </span>
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-activity text-primary fs-4"></i>
+      <h1 class="h4 mb-0">Status da Operação — Top Gun</h1>
+      <span class="badge text-bg-light border">v2</span>
     </div>
-  </nav>
-
-  <div class="container my-4">
-
-    <!-- Voltar -->
-    <button class="btn btn-outline-dark mb-3" onclick="window.location.href='index.html'">
-      <i data-lucide="arrow-left" class="me-1"></i> Voltar
-    </button>
-
-    <!-- Card principal -->
-    <div class="card shadow-sm p-4 mb-4">
-      <h4 class="mb-3">
-        <i data-lucide="clipboard-check" class="me-2"></i>
-        Dados da Operação
-      </h4>
-
-      <div class="row g-3">
-        <div class="col-sm-3">
-          <label class="form-label">Frente</label>
-          <select id="frente" class="form-select">
-            <option value="">Selecione</option>
-            <option>Frente 1</option>
-            <option>Frente 2</option>
-            <option>Frente 3</option>
-            <option>Frente 4</option>
-            <option>Frente 5</option>
-            <option>Frente 6</option>
-            <option>Frente 7</option>
-          </select>
-        </div>
-        <div class="col-sm-3">
-          <label class="form-label">Piloto</label>
-          <!-- Mantém editável para permitir override -->
-          <select id="piloto" class="form-select">
-            <option value="">Selecione</option>
-            <option>Matheus</option>
-            <option>Maicon</option>
-            <option>Alexandre</option>
-            <option>Felipe</option>
-            <option>Luiz Paulo</option>
-            <option>Heitor</option>
-          </select>
-        </div>
-        <div class="col-sm-3">
-          <label class="form-label">Data</label>
-          <input id="data" type="date" class="form-control">
-        </div>
-        <div class="col-sm-3">
-          <label class="form-label">Horário (auto)</label>
-          <input id="hora" type="text" class="form-control" placeholder="--:--:--" readonly>
-        </div>
-      </div>
-
-      <div class="row g-3 mt-1">
-        <div class="col-sm-2">
-          <label class="form-label">OS</label>
-          <input id="os" class="form-control" placeholder="Número da OS">
-        </div>
-        <div class="col-sm-2">
-          <label class="form-label">Cód.</label>
-          <input id="cod" class="form-control" placeholder="Código">
-        </div>
-        <div class="col-sm-4">
-          <label class="form-label">Fazenda</label>
-          <input id="faz" class="form-control" placeholder="Nome da fazenda">
-        </div>
-        <div class="col-sm-4">
-          <label class="form-label">Unidade</label>
-          <input id="unidade" class="form-control" placeholder="Ex.: Delta - Volta Grande">
-        </div>
-      </div>
-
-      <div class="mt-3">
-        <label class="form-label">Observação (opcional)</label>
-        <textarea id="obs" class="form-control" rows="2" placeholder="Adicione observações relevantes..."></textarea>
-      </div>
-
-      <hr class="my-4">
-
-      <h6 class="text-muted mb-2"><i data-lucide="traffic-cone" class="me-2"></i>Status da operação</h6>
-
-      <!-- Status: botões rápidos -->
-      <div class="d-flex flex-wrap gap-2 mb-3">
-        <button class="btn btn-outline-warning" onclick="setStatus('AG')">⚠️ Ag. Condições</button>
-        <button class="btn btn-outline-warning" style="--bs-btn-color:#f97316; --bs-btn-border-color:#f97316" onclick="setStatus('EM')">🟠 Em andamento</button>
-        <button class="btn btn-outline-primary" onclick="setStatus('FI')">🔵 Finalizada</button>
-      </div>
-
-      <!-- Status selecionado (chip) -->
-      <div id="statusChip" class="status-chip status-ag">
-        <span id="statusEmoji">⚠️</span>
-        <span id="statusLabel">Ag. Condições</span>
-      </div>
-
-      <div class="mt-4 d-grid gap-2 d-sm-flex">
-        <button class="btn btn-topgun" onclick="gerarStatus()">
-          <i data-lucide="file-text" class="me-1"></i> Gerar Texto
-        </button>
-        <button class="btn btn-outline-secondary" onclick="limparTudo()">
-          <i data-lucide="rotate-ccw" class="me-1"></i> Limpar
-        </button>
-      </div>
-    </div>
-
-    <!-- Saída -->
-    <pre id="saida">Preencha os campos e clique em "Gerar Texto".</pre>
-
-    <button class="btn btn-topgun w-100 mt-2" onclick="copiarSaida()">
-      <i data-lucide="copy"></i> Copiar
-    </button>
-
-    <!-- Voltar -->
-    <button class="btn btn-outline-dark w-100 mt-3" onclick="window.location.href='index.html'">
-      <i data-lucide="arrow-left"></i> Voltar à Página Inicial
-    </button>
+    <a href="index.html" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
   </div>
 
-  <!-- Toast -->
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="toastOk" class="toast text-bg-success border-0" role="alert">
+  <div class="row g-3">
+    <!-- FORM -->
+    <div class="col-12 col-lg-8">
+      <div class="card">
+        <div class="card-body">
+
+          <div class="form-section-title mb-3"><i class="bi bi-ui-checks"></i> Preenchimento</div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label" for="frente">Frente</label>
+              <select id="frente" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Frente 1</option>
+                <option>Frente 2</option>
+                <option>Frente 3</option>
+                <option>Frente 4</option>
+                <option>Frente 5</option>
+                <option>Frente 6</option>
+                <option>Frente 7</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="piloto">Piloto</label>
+              <input id="piloto" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="auxiliar">Auxiliar</label>
+              <select id="auxiliar" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Ailton Gabriel</option>
+                <option>Yuri Joudran</option>
+                <option>Pedro Henrique</option>
+                <option>Jefferson Lopes</option>
+                <option>Jonathan Vieira</option>
+                <option>Luiz Gustavo</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="drone">Drone</label>
+              <select id="drone" class="form-select">
+                <option value="">Selecione...</option>
+                <option>DJI AGRAS T20</option>
+                <option>DJI AGRAS T40</option>
+                <option>DJI AGRAS T70</option>
+                <option>DJI AGRAS T100</option>
+              </select>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="form-section-title mb-0"><i class="bi bi-clipboard-data"></i> Ordens de Serviço</div>
+            <button type="button" id="btnAdd" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-circle"></i> Adicionar OS</button>
+          </div>
+
+          <div id="osContainer"></div>
+
+          <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+            <button id="btnGerar" class="btn btn-primary"><i class="bi bi-chat-left-text"></i> Gerar texto</button>
+            <button id="btnCopiar" class="btn btn-outline-secondary"><i class="bi bi-clipboard"></i> Copiar</button>
+            <a id="btnWhats" class="btn btn-success" target="_blank"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRÉVIA -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="form-section-title mb-2"><i class="bi bi-file-earmark-text"></i> Prévia</div>
+          <pre id="preview" class="border rounded p-3 bg-light">Preencha e clique em “Gerar texto”.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
+    <div id="toastCopiado" class="toast align-items-center text-bg-success border-0" role="alert">
       <div class="d-flex">
-        <div class="toast-body">
-          <i data-lucide="check-circle" class="me-2"></i> Copiado com sucesso!
-        </div>
+        <div class="toast-body"><i class="bi bi-check-circle me-2"></i>Texto copiado!</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    // ======= Mapeamento Frente -> Piloto =======
-    const MAP_FRENTE_PILOTO = {
-      'Frente 1': 'Matheus',
-      'Frente 2': 'Maicon',
-      'Frente 3': 'Alexandre',
-      'Frente 4': 'Felipe',
-      'Frente 5': '',            // sem piloto padrão
-      'Frente 6': 'Luiz Paulo',
-      'Frente 7': 'Heitor'
-    };
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0wYo2B8wXXv_SqVwVayNkDtG_UsroXNXfLk970sHff6cIXnayykA3DYqtrt0ldefP/exec';
 
-    // Estado do status selecionado
-    let STATUS = 'AG'; // AG = Ag. Condições | EM = Em andamento | FI = Finalizada
+const FRentesPilotos = {
+  'Frente 1':'Matheus Pias','Frente 2':'Maicon Silva','Frente 3':'Alexandre Alves',
+  'Frente 4':'Felipe Santos','Frente 5':'Luiz Paulo','Frente 6':'Sem Piloto Cadastrado','Frente 7':'Heitor Ferreira'
+};
 
-    // Prefill data de hoje e relógio automático
-    function prefillDataHoje(){
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
-      document.getElementById('data').value = `${yyyy}-${mm}-${dd}`;
-    }
-    function startClock(){
-      setInterval(()=>{
-        const d = new Date();
-        const hh = String(d.getHours()).padStart(2,'0');
-        const mm = String(d.getMinutes()).padStart(2,'0');
-        const ss = String(d.getSeconds()).padStart(2,'0');
-        document.getElementById('hora').value = `${hh}:${mm}:${ss}`;
-      }, 300);
-    }
+document.getElementById('frente').addEventListener('change',e=>{
+  document.getElementById('piloto').value = FRentesPilotos[e.target.value] || '';
+});
 
-    // Troca visual do status
-    function setStatus(code){
-      STATUS = code;
-      const chip = document.getElementById('statusChip');
-      const emoji = document.getElementById('statusEmoji');
-      const label = document.getElementById('statusLabel');
+// ===== JSONP Helper =====
+function jsonp(url){
+  const cb='__jsonp_'+Math.random().toString(36).slice(2);
+  url += (url.includes('?')?'&':'?')+'callback='+cb;
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src=url;
+    window[cb]=(data)=>{resolve(data);cleanup();};
+    s.onerror=()=>{reject(new Error('Falha no JSONP'));cleanup();};
+    function cleanup(){delete window[cb];s.remove();}
+    document.body.appendChild(s);
+  });
+}
 
-      chip.classList.remove('status-ag','status-em','status-fi');
+// ===== BLOCO OS =====
+const osContainer = document.getElementById('osContainer');
+addOS();
 
-      if(code==='AG'){ emoji.textContent='⚠️'; label.textContent='Ag. Condições'; chip.classList.add('status-ag'); }
-      if(code==='EM'){ emoji.textContent='🟠'; label.textContent='Em andamento'; chip.classList.add('status-em'); }
-      if(code==='FI'){ emoji.textContent='🔵'; label.textContent='Finalizada'; chip.classList.add('status-fi'); }
-    }
+function addOS(){
+  const idx = Date.now().toString(36);
+  const now = new Date();
+  const data = now.toLocaleDateString('pt-BR');
+  const hora = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const el = document.createElement('div');
+  el.className='status-card';
+  el.dataset.idx=idx;
+  el.innerHTML=`
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="fw-semibold text-secondary"><i class="bi bi-list-task"></i> OS</div>
+      <button type="button" class="btn btn-sm btn-outline-danger" data-remove="${idx}"><i class="bi bi-x-lg"></i> Remover</button>
+    </div>
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">OS</label>
+        <div class="input-group">
+          <input id="os_${idx}" class="form-control" placeholder="Digite a OS">
+          <button class="btn btn-outline-primary" data-buscar="${idx}"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Cód.</label>
+        <input id="cod_${idx}" class="form-control" readonly>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Faz.</label>
+        <input id="faz_${idx}" class="form-control" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Data</label>
+        <input id="data_${idx}" class="form-control" value="${data}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Horário</label>
+        <input id="hora_${idx}" class="form-control" value="${hora}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Status Operação.</label>
+        <select id="status_${idx}" class="form-select">
+          <option value="">Selecione...</option>
+          <option>🛻 Deslocamento...</option>
+          <option>🛢️ Fila de Dosagem</option>
+          <option>⚠️ Ag. Condições</option>
+          <option>🟠 Em andamento</option>
+          <option>🔵 Finalizada</option>
+        </select>
+      </div>
+      <div class="col-12" id="obsWrap_${idx}" style="display:none;">
+        <label class="form-label">Motivo (aguardando condições)</label>
+        <textarea id="obs_${idx}" class="form-control" rows="2" placeholder="Informe o motivo..."></textarea>
+      </div>
+    </div>
+  `;
+  osContainer.appendChild(el);
 
-    // Autopreencher piloto ao selecionar frente
-    function handleFrenteChange(){
-      const frente = document.getElementById('frente').value;
-      const pilotoSelect = document.getElementById('piloto');
-      const piloto = MAP_FRENTE_PILOTO[frente] ?? '';
-      let found = false;
-      Array.from(pilotoSelect.options).forEach(opt=>{
-        if(opt.value === piloto && piloto){
-          pilotoSelect.value = piloto;
-          found = true;
-        }
-      });
-      if(!found){ pilotoSelect.value = ''; } // sem padrão ou não encontrado
-    }
+  el.querySelector(`[data-remove="${idx}"]`).addEventListener('click',()=>{el.remove();gerarTexto();});
+  el.querySelector(`[data-buscar="${idx}"]`).addEventListener('click',()=>buscarOS(idx));
+  el.querySelector(`#status_${idx}`).addEventListener('change',()=>{
+    const s=el.querySelector(`#status_${idx}`).value;
+    const obsW=el.querySelector(`#obsWrap_${idx}`);
+    obsW.style.display = s.includes('Ag.') ? '' : 'none';
+    gerarTexto();
+  });
+  el.querySelector(`#os_${idx}`).addEventListener('input',()=>{
+    clearFields(idx);
+    debounce(()=>buscarOS(idx),300);
+  });
+}
 
-    // Geração do texto — ORDEM NOVA
-    function gerarStatus(){
-      const unidade = document.getElementById('unidade').value || '';
-      const frente = document.getElementById('frente').value || '';
-      const piloto = document.getElementById('piloto').value || '';
-      const os = document.getElementById('os').value || '';
-      const cod = document.getElementById('cod').value || '';
-      const faz = document.getElementById('faz').value || '';
-      const data = document.getElementById('data').value || '';
-      const hora = document.getElementById('hora').value || '';
-      const obs = (document.getElementById('obs').value || '').trim();
+document.getElementById('btnAdd').addEventListener('click',()=>addOS());
 
-      // Data BR
-      const dataBR = data ? data.split('-').reverse().join('/') : '';
+let debounceTimer;
+function debounce(fn,delay){clearTimeout(debounceTimer);debounceTimer=setTimeout(fn,delay);}
 
-      // Linha de status conforme pedido
-      let statusLinha = '';
-      if(STATUS==='EM') statusLinha = '🟠 Em andamento';
-      else if(STATUS==='FI') statusLinha = '🔵 Finalizada';
-      else statusLinha = '⚠️ Ag. Condições';
+function clearFields(idx){
+  document.getElementById(`cod_${idx}`).value='';
+  document.getElementById(`faz_${idx}`).value='';
+}
 
-      let txt = '';
-      txt += `*Status Operação*\n\n`;
-      txt += `*Unidade:* ${unidade}\n`;
-      txt += `*Frente:* ${frente}\n`;
-      txt += `*Piloto:* ${piloto}\n`;
-      txt += `_______________\n`;
-      txt += `*OS:* ${os}\n`;
-      txt += `*Cód.:* ${cod}\n`;
-      txt += `*Faz:* ${faz}\n`;
-      txt += `*Data:* ${dataBR}\n`;
-      txt += `*Horário:* ${hora}\n`;
-      if (obs) txt += `\n*Observação:* ${obs}\n`;
-      txt += `\n*Status da operação:* ${statusLinha}`;
+async function buscarOS(idx){
+  const osValue=document.getElementById(`os_${idx}`).value.trim();
+  if(!osValue)return;
+  try{
+    const js=await jsonp(APPS_SCRIPT_URL+'?os='+encodeURIComponent(osValue));
+    if(!js.ok||!js.rows||!js.rows.length)return;
+    const row=js.rows.find(x=>String(x.OS)===String(osValue))||js.rows[0];
+    const get=k=>row[k]??row[k?.toUpperCase()]??'';
+    document.getElementById(`cod_${idx}`).value=get('CODIGO');
+    document.getElementById(`faz_${idx}`).value=get('FAZENDA');
+    gerarTexto();
+  }catch(e){console.error(e);}
+}
 
-      document.getElementById('saida').textContent = txt;
-    }
+// ===== GERAR TEXTO =====
+const preview=document.getElementById('preview');
+document.getElementById('btnGerar').addEventListener('click',gerarTexto);
+document.getElementById('btnCopiar').addEventListener('click',()=>{
+  navigator.clipboard.writeText(preview.textContent||'').then(()=>{
+    new bootstrap.Toast(document.getElementById('toastCopiado')).show();
+  });
+});
 
-    // Copiar
-    function copiarSaida(){
-      const texto = document.getElementById('saida').textContent;
-      navigator.clipboard.writeText(texto).then(()=>{
-        const toast = new bootstrap.Toast(document.getElementById('toastOk'));
-        toast.show();
-      });
-    }
+function gerarTexto(){
+  const frente=document.getElementById('frente').value;
+  const piloto=document.getElementById('piloto').value;
+  const aux=document.getElementById('auxiliar').value;
+  const drone=document.getElementById('drone').value;
 
-    // Limpar
-    function limparTudo(){
-      ['frente','piloto','os','faz','cod','unidade','obs'].forEach(id=>document.getElementById(id).value='');
-      prefillDataHoje(); // mantém a data de hoje
-      setStatus('AG');   // volta para Ag. Condições
-      document.getElementById('saida').textContent = 'Preencha os campos e clique em "Gerar Texto".';
-    }
+  const header=`*Status Pulverização*  
 
-    // Init
-    prefillDataHoje(); startClock(); setStatus('AG'); lucide.createIcons();
-    document.getElementById('frente').addEventListener('change', handleFrenteChange);
-  </script>
+*Frente:* ${frente||'-'}  
+*Piloto:* ${piloto||'-'}  
+*Auxiliar:* ${aux||'-'}  
+*Drone:* ${drone||'-'}  
+
+_______________`;
+
+  const blocos=[...osContainer.querySelectorAll('.status-card')].map(c=>{
+    const os=c.querySelector('[id^="os_"]').value;
+    const cod=c.querySelector('[id^="cod_"]').value;
+    const faz=c.querySelector('[id^="faz_"]').value;
+    const data=c.querySelector('[id^="data_"]').value;
+    const hora=c.querySelector('[id^="hora_"]').value;
+    const status=c.querySelector('[id^="status_"]').value;
+    const obs=c.querySelector('[id^="obs_"]').value.trim();
+    const obsTxt=status.includes('Ag.')&&obs?`\n*Motivo:* ${obs}`:'';
+    return `
+*OS:* ${os||'-'}  
+*Cód.:* ${cod||'-'}  
+*Faz:* ${faz||'-'}  
+*Data:* ${data||'-'}  
+*Horário:* ${hora||'-'}  
+
+*Status da operação:* ${status||'-'}${obsTxt}`;
+  }).join('\n\n');
+
+  const textoFinal = header + '\n\n' + blocos;
+  preview.textContent = textoFinal;
+  document.getElementById('btnWhats').href='https://wa.me/?text='+encodeURIComponent(textoFinal);
+}
+</script>
 </body>
 </html>
