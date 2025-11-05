@@ -259,6 +259,9 @@
             <button class="btn btn-outline-primary" data-buscar="${idx}" title="Buscar OS"><i class="bi bi-search"></i></button>
           </div>
           <div class="form-text">Busca automática na planilha.</div>
+          <div id="manual_${idx}" class="form-text text-danger" style="display:none;">
+            <strong>OS não encontrada.</strong> Campos liberados para preenchimento manual. <button class="btn btn-sm btn-link p-0" data-manual-cancel="${idx}">Cancelar</button>
+          </div>
         </div>
         <div class="col-6 col-md-3">
           <label class="form-label" for="codigo_${idx}">Código</label>
@@ -279,6 +282,21 @@
         <div class="col-12">
           <label class="form-label" for="insumos_${idx}">Insumos</label>
           <textarea id="insumos_${idx}" class="form-control" rows="2" readonly></textarea>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="motivo_${idx}">Motivo de observação (se não aplicou)</label>
+          <div class="input-group">
+            <select id="motivo_${idx}" class="form-select">
+              <option value="">Nenhum</option>
+              <option>Árvore</option>
+              <option>Rede Elétrica</option>
+              <option>Mata</option>
+              <option>Poste</option>
+              <option>Outro</option>
+            </select>
+            <input id="motivo_outro_${idx}" class="form-control" placeholder="Descrever outro motivo" style="display:none;">
+          </div>
+          <div class="form-text">Marque o motivo caso não tenha sido possível aplicar o talhão inteiro.</div>
         </div>
       </div>
 
@@ -326,6 +344,31 @@
     el.querySelector(`[data-buscar="${idx}"]`).addEventListener('click', ()=> buscarOS(idx));
     el.querySelector(`[data-add-talhao="${idx}"]`).addEventListener('click', ()=> addTalhao(idx));
 
+    // motivo select: mostrar campo outro quando selecionado
+    const motivoSel = el.querySelector(`#motivo_${idx}`);
+    const motivoOutro = el.querySelector(`#motivo_outro_${idx}`);
+    if (motivoSel){
+      motivoSel.addEventListener('change', ()=>{
+        const show = motivoSel.value === 'Outro';
+        if(motivoOutro) motivoOutro.style.display = show ? '' : 'none';
+        if(!show && motivoOutro) motivoOutro.value = '';
+        gerarTexto();
+      });
+    }
+    if (motivoOutro){ motivoOutro.addEventListener('input', gerarTexto); }
+
+    // manual mode cancel button (in case manual was activated)
+    const manualCancel = el.querySelector(`[data-manual-cancel="${idx}"]`);
+    if (manualCancel) {
+      manualCancel.addEventListener('click', (e)=>{
+        e.preventDefault();
+        setManualMode(idx, false);
+        clearOne(idx);
+        updateResumo();
+        gerarTexto();
+      });
+    }
+
     const osInput = el.querySelector(`#os_${idx}`);
     osInput.addEventListener('input', ()=>{
       clearOne(idx);
@@ -345,6 +388,20 @@
     });
 
     if (prefillOS) { osInput.value = prefillOS; buscarOS(idx); }
+  }
+
+  // ativa/desativa modo manual para um bloco (permite edição dos campos que são readonly)
+  function setManualMode(idx, enabled){
+    const sel = (s) => document.querySelector(s);
+    const fields = ['#codigo_', '#fazenda_', '#area_', '#operacao_', '#insumos_'];
+    fields.forEach(pref=>{
+      const el = sel(`${pref}${idx}`);
+      if(!el) return;
+      if(enabled){ el.removeAttribute('readonly'); }
+      else { el.setAttribute('readonly',''); }
+    });
+    const manualDiv = sel(`#manual_${idx}`);
+    if(manualDiv) manualDiv.style.display = enabled ? '' : 'none';
   }
 
   function addTalhao(idx){
@@ -385,6 +442,11 @@
     getEl(`#area_${idx}`).value='';
     getEl(`#operacao_${idx}`).value='';
     getEl(`#insumos_${idx}`).value='';
+    // limpar motivo de observação
+    const msel = getEl(`#motivo_${idx}`);
+    if(msel) msel.value = '';
+    const mout = getEl(`#motivo_outro_${idx}`);
+    if(mout) { mout.value = ''; mout.style.display = 'none'; }
   }
 
   function getEl(sel){ return document.querySelector(sel); }
@@ -397,7 +459,13 @@
       const osVal = getEl(`#os_${idx}`).value.trim();
       if(!osVal){ clearOne(idx); updateResumo(); return; }
       const js = await jsonp(APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osVal));
-      if(!js.ok || !js.rows || !js.rows.length){ clearOne(idx); updateResumo(); return; }
+      if(!js.ok || !js.rows || !js.rows.length){
+        // não encontrou: limpar campos e ativar preenchimento manual
+        clearOne(idx);
+        setManualMode(idx, true);
+        updateResumo();
+        return;
+      }
 
       const row = js.rows.find(x => String(x.OS)===String(osVal)) || js.rows[0];
       const get = k => row[k] ?? row[k?.toUpperCase()] ?? '';
@@ -407,6 +475,9 @@
       getEl(`#area_${idx}`).value     = (get('AREA (HA)') || '').toString().replace(',','.');
       getEl(`#operacao_${idx}`).value = get('OPERACAO');
       getEl(`#insumos_${idx}`).value  = get('INSUMOS');
+
+  // dados encontrados -> garantir modo automático (readonly)
+  setManualMode(idx, false);
 
       const objetivoSel = document.getElementById('objetivo');
       const objetivoStr = get('OBJETIVO');
@@ -421,7 +492,10 @@
       gerarTexto();
     }catch(e){
       console.error(e);
-      clearOne(idx); updateResumo();
+      // em caso de erro na busca, permitir preenchimento manual
+      clearOne(idx);
+      setManualMode(idx, true);
+      updateResumo();
     }
   }
 
@@ -465,12 +539,15 @@
     let totalFaz = 0, totalAreaProg = 0, totalAreaApl = 0;
 
     cards.forEach(c=>{
-      const os       = c.querySelector('[id^="os_"]').value.trim();
-      const codigo   = c.querySelector('[id^="codigo_"]').value.trim();
-      const fazenda  = c.querySelector('[id^="fazenda_"]').value.trim();
-      const areaStr  = c.querySelector('[id^="area_"]').value.trim();
-      const operacao = c.querySelector('[id^="operacao_"]').value.trim();
-      const insumos  = c.querySelector('[id^="insumos_"]').value.trim();
+      const idx = c.dataset.idx;
+      const os       = c.querySelector(`[id^="os_"]`).value.trim();
+      const codigo   = c.querySelector(`[id^="codigo_"]`).value.trim();
+      const fazenda  = c.querySelector(`[id^="fazenda_"]`).value.trim();
+      const areaStr  = c.querySelector(`[id^="area_"]`).value.trim();
+      const operacao = c.querySelector(`[id^="operacao_"]`).value.trim();
+      const insumos  = c.querySelector(`[id^="insumos_"]`).value.trim();
+      const motivo   = (c.querySelector(`#motivo_${idx}`)?.value || '').trim();
+      const motivoOutro = (c.querySelector(`#motivo_outro_${idx}`)?.value || '').trim();
       const status   = c.querySelector('[id^="status_"]').value.trim();
       const sobrou   = c.querySelector('[id^="sobrou_"]').value.trim();
       const sobrouQtd= c.querySelector('[id^="sobrou_qtd_"]').value.trim();
@@ -507,6 +584,21 @@
         statusIcon = '🟡'; // Bolinha amarela
       }
 
+  const motivoTxt = motivo ? (motivo === 'Outro' ? (motivoOutro || 'Outro') : motivo) : '-';
+
+      // formatar quantidade de sobra com unidade (ex: "20 Litros")
+      let sobrouFmt = 'Não';
+      if (sobrou === 'Sim') {
+        if (sobrouQtd) {
+          let sq = sobrouQtd.toString().trim();
+          // se já contiver indicação de litro/ L / litros, usa como está, caso contrário adiciona ' Litros'
+          if (!/litro|litros|\bL\b|l$/i.test(sq)) sq = sq + ' Litros';
+          sobrouFmt = sq;
+        } else {
+          sobrouFmt = '-';
+        }
+      }
+
       const bloco =
 `*📋 OS:* ${os || '-'}
 *Código:* ${codigo || '-'}
@@ -516,12 +608,14 @@
 *Insumos:* ${insumos || '-'}
 *Status:* ${statusIcon ? statusIcon + ' ' : ''}${status || '-'}
 
+*Motivo Observação:* ${motivoTxt}
+
 *Talhões:*
 ${talhoesTxt.length ? talhoesTxt.join('\n') : '-'}
 *Subtotal aplicado (ha):* ${somaApl ? somaApl.toFixed(2).replace('.',',') + ' ha' : '0,00 ha'}
-*Sobrou produto:* ${sobrou === 'Sim' ? (sobrouQtd || '-') : 'Não'}`;
-
-      blocos.push(bloco);
+*Sobrou produto:* ${sobrouFmt}`;
+      
+  blocos.push(bloco);
     });
 
     const header =
@@ -553,5 +647,6 @@ ${talhoesTxt.length ? talhoesTxt.join('\n') : '-'}
 </script>
 </body>
 </html>
+
 
 
