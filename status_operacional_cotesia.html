@@ -26,7 +26,7 @@
   label { font-size:1rem; color:var(--muted); margin-top:10px; display:block; }
   input, select, textarea {
     width:100%; padding:12px; border:1px solid #1e304b; border-radius:8px;
-    font-size:1rem; margin-top:6px;
+    font-size:1rem; margin-top:6px; box-sizing:border-box;
   }
   .btn {
     padding:14px; border-radius:10px; border:1px solid var(--border);
@@ -37,6 +37,22 @@
   .btn.light { background:var(--primary-light); color:var(--primary-dark); }
   .preview { white-space:pre-wrap; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); padding:16px; min-height:200px; font-family:'Courier New', monospace; font-size:1rem; }
   .sep { height:1px; background:var(--border); margin:12px 0; }
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: none;
+    animation: slideIn 0.3s ease-out;
+  }
+  @keyframes slideIn {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -79,10 +95,14 @@
     <label>Unidade</label>
     <input type="text" id="txtUnidade" readonly>
 
+    <label>Quantidade de Tubetes</label>
+    <input type="text" id="txtTubetes" readonly>
+
     <label>Status da Operação</label>
     <select id="selStatus" onchange="toggleObs()">
       <option value="🟠 Em andamento">🟠 Em andamento</option>
-      <option value="🔵 Finalizada">🔵 Finalizada</option>
+      <option value="🚗 Em deslocamento">🚗 Em deslocamento</option>
+      <option value=" Finalizada">🔵 Finalizada</option>
       <option value="⚠️ Ag. Condições">⚠️ Ag. Condições</option>
     </select>
 
@@ -102,6 +122,8 @@
     <button class="btn light" onclick="abrirWhats()"><i data-lucide="message-circle"></i> Abrir no WhatsApp</button>
   </section>
 </div>
+
+<div class="notification" id="notification">✅ Copiado com sucesso!</div>
 
 <script>
 lucide.createIcons();
@@ -129,6 +151,17 @@ async function buscarOS(){
     document.getElementById("txtFaz").value = it.fazenda||"";
     document.getElementById("txtCod").value = it.codigo||"";
     document.getElementById("txtUnidade").value = it.unidade||"";
+    
+    // Busca quantidade de tubetes em vários campos possíveis
+    const possible = ['copos','tubetes','tubete','qtd_copos','qtd_tubetes','qtcopos','qtd_tubete','copos_qtd','tubetes_qtd'];
+    let qtdTubetes = "";
+    for(const field of possible) {
+      if(it[field] && !isNaN(it[field])) {
+        qtdTubetes = it[field];
+        break;
+      }
+    }
+    document.getElementById("txtTubetes").value = qtdTubetes;
   } else {
     alert("OS não encontrada.");
   }
@@ -151,11 +184,12 @@ function gerarPrevia(){
   const cod= document.getElementById("txtCod").value;
   const hr = document.getElementById("txtHora").value;
   const uni= document.getElementById("txtUnidade").value;
+  const tub= document.getElementById("txtTubetes").value;
   const st = document.getElementById("selStatus").value;
   const obs= document.getElementById("txtObs").value;
 
   let msg = `*Status Operação Cotésia*\n\n`;
-  msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}\n\n`;
+  msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}${tub ? '\n*Qtd. Tubetes:* ' + tub : ''}\n\n`;
   msg += `*Status da operação:* ${st}`;
   if(st.includes("Ag. Condições") && obs){ msg += `\nObs.: ${obs}`; }
   if(st.includes("Finalizada")){ msg += `\n\n--- OPERAÇÃO FINALIZADA ✅ ---`; }
@@ -166,7 +200,11 @@ function gerarPrevia(){
 /* Copiar / WhatsApp */
 async function copiarMsg(){
   await navigator.clipboard.writeText(document.getElementById("preview").textContent);
-  alert("Copiado!");
+  const notification = document.getElementById("notification");
+  notification.style.display = "block";
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 2000);
 }
 function abrirWhats(){
   const txt = document.getElementById("preview").textContent;
@@ -175,5 +213,6 @@ function abrirWhats(){
 </script>
 </body>
 </html>
+
 
 
