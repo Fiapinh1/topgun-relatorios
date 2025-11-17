@@ -500,31 +500,39 @@
                     </div>
                 </div>
 
-                <!-- Relatórios -->
+                <!-- Trichogramma -->
                 <div class="col-lg-4 col-md-6 mx-auto">
                     <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
                         <div class="nav-icon mb-3">
-                            <!-- Ícone de relatório com drone -->
+                            <!-- Icone representando ovos microbiologicos -->
                             <div class="icon" style="margin-bottom: 12px;">
                               <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                                <!-- Drone (vista superior estilizada) -->
-                                <rect x="18" y="8" width="12" height="12" rx="4" fill="#0ea5e9" stroke="#0ea5e9" stroke-width="2"/>
-                                <rect x="22" y="2" width="4" height="8" rx="2" fill="#0ea5e9"/>
-                                <rect x="22" y="18" width="4" height="8" rx="2" fill="#0ea5e9"/>
-                                <rect x="2" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
-                                <rect x="38" y="22" width="8" height="4" rx="2" fill="#0ea5e9"/>
-                                <!-- Folha/relatório -->
-                                <rect x="14" y="28" width="20" height="16" rx="3" fill="#fff" stroke="#0ea5e9" stroke-width="2"/>
-                                <line x1="18" y1="34" x2="30" y2="34" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="18" y1="38" x2="28" y2="38" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+                                <defs>
+                                  <linearGradient id="eggShell" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#fef6e4"/>
+                                    <stop offset="100%" stop-color="#f3d8a7"/>
+                                  </linearGradient>
+                                </defs>
+                                <!-- Ovo principal -->
+                                <path d="M24 8c-6 0-11 8-11 15s4.9 13 11 13 11-6 11-13S30 8 24 8z" fill="url(#eggShell)" stroke="#caa06a" stroke-width="2"/>
+                                <!-- Ovo secundario -->
+                                <path d="M34 16c-3 0-6 5-6 9s2.5 8 6 8 6-3.7 6-8-3-9-6-9z" fill="#fff3d6" stroke="#caa06a" stroke-width="1.5"/>
+                                <!-- Pequeninos ovos -->
+                                <circle cx="16" cy="30" r="5" fill="#fffbf0" stroke="#caa06a" stroke-width="1.5"/>
+                                <circle cx="12" cy="36" r="3" fill="#fff5dd" stroke="#caa06a" stroke-width="1.2"/>
                               </svg>
                             </div>
                         </div>
-                        <h3 class="h4 mb-3">Relatórios</h3>
-                        <p class="text-muted mb-4">Relatórios detalhados para acompanhar seus resultados.</p>
-                        <button class="btn btn-info btn-lg w-100" onclick="navigateTo('relatorios')">
+                        <h3 class="h4 mb-3">Trichogramma</h3>
+                        <p class="text-muted mb-4">Painel completo com programacao, status e rendimento.</p>
+                        <button class="btn btn-info btn-lg w-100" onclick="toggleOpcoes('trichogramma-opcoes')">
                             <i class="bi bi-arrow-right me-2"></i>Acessar
                         </button>
+                        <div id="trichogramma-opcoes" class="opcoes" style="display:none; margin-top:10px;">
+                            <button class="btn btn-outline-info" onclick="window.location.href='programacao_trichogramma.html'">Programacao</button>
+                            <button class="btn btn-outline-info" onclick="window.location.href='status_operacional_trichogramma.html'">Status Operacional</button>
+                            <button class="btn btn-outline-info" onclick="window.location.href='rendimento_trichogramma.html'">Rendimento</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -917,5 +925,6 @@
     </script>
 </body>
 </html>
+
 
 
