@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial - Empresa</title>
+    <title>Página Inicial - Natal Top Gun 🎄</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,14 +12,14 @@
     
     <style>
         :root {
-            --primary-color: #0b397d;
-            --secondary-color: #6c757d;
-            --success-color: #0f9a54;
-            --info-color: #0dcaf0;
+            --primary-color: #c41e3a;
+            --secondary-color: #165b33;
+            --success-color: #c41e3a;
+            --info-color: #ffd700;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --dark-color: #0f3d1a;
         }
 
         * {
@@ -57,7 +57,7 @@
 
         /* Hero Section */
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #042c58 0%, #202c2a 100%);
+            background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
             position: relative;
             overflow: hidden;
         }
@@ -69,7 +69,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="2" fill="white" opacity="0.15"/><circle cx="75" cy="75" r="2" fill="white" opacity="0.15"/><circle cx="50" cy="10" r="2" fill="white" opacity="0.15"/><circle cx="10" cy="60" r="2" fill="white" opacity="0.15"/><circle cx="90" cy="40" r="2" fill="white" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: snowFall 20s linear infinite;
             pointer-events: none;
         }
 
@@ -87,8 +88,36 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        @keyframes snowFall {
+            0% { transform: translateY(-10px) translateX(0px); }
+            100% { transform: translateY(100vh) translateX(100px); }
+        }
+
+        /* Efeito de neve caindo */
+        .snowflakes {
+            position: fixed;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1.5em;
+            font-family: Arial;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            animation: snowFall linear infinite;
+            z-index: 0;
         }
 
         /* Navigation Cards */
@@ -167,29 +196,39 @@
         }
 
         .btn-primary {
-          background-color: #0e1e2d;
-          border-color: #000000;
+          background-color: #c41e3a;
+          border-color: #a01729;
+          color: #fff;
+        }
+        .btn-primary:hover {
+          background-color: #a01729;
+          border-color: #7d1220;
           color: #fff;
         }
         .btn-success {
-          background-color: #196c5b;
-          border-color: #070707;
+          background-color: #165b33;
+          border-color: #0f3d1a;
+          color: #fff;
+        }
+        .btn-success:hover {
+          background-color: #0f3d1a;
+          border-color: #052417;
           color: #fff;
         }
         .btn-info {
-          background-color: #a6b513 !important;  /* Rosa vibrante */
-          border-color: #000000  !important;
-          color: #fff !important;
+          background-color: #ffd700 !important;
+          border-color: #ffed4e !important;
+          color: #000 !important;
         }
         .btn-info:hover, .btn-info:focus {
-          background-color: #c2185b !important;
-          border-color: #c2185b !important;
-          color: #fff !important;
+          background-color: #ffed4e !important;
+          border-color: #fff94c !important;
+          color: #000 !important;
         }
 
         /* Features Section */
         .features-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #fef8f0 0%, #e8f5e9 100%);
         }
 
         .feature-item {
@@ -211,7 +250,7 @@
 
         /* Footer */
         footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+            background: linear-gradient(135deg, #0f3d1a 0%, #165b33 100%) !important;
         }
 
         .social-links a {
@@ -347,12 +386,12 @@
         /* Header Fixo */
         .header-fixo {
           width: 100%;
-          background: #020202;
+          background: linear-gradient(90deg, #0f3d1a 0%, #165b33 100%);
           display: block;
-          justify-content: center; /* ou space-between para logo à esquerda e selo à direita */
+          justify-content: center;
           align-items: center;
           padding: 10px 0 0 0;
-          position: static; /* ou fixed se quiser sempre visível */
+          position: static;
           z-index: 10;
         }
         .logo-fixa {
@@ -387,16 +426,15 @@
     </style>
 </head>
 <body>
-    <!-- Logo Flutuante 
-    <div class="logo-flutuante">
-      <img src="logo_topgun.png" alt="Logo da Empresa" style="height:200px;">
-    </div> -->
+    <!-- Efeito de Neve -->
+    <div id="snowContainer"></div>
 
     <!-- Header Fixo -->
     <header class="header-fixo">
-      <!-- Linha com logo, selo e bandeira -->
-      <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px;">
+      <!-- Linha com logo, toca do papai noel, selo e bandeira -->
+      <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px; gap: 10px;">
         <img src="logo_atual.png" alt="Logo" style="height:30px;">
+        <img src="toca_papai_noel.png" alt="Toca Papai Noel" style="height:36px; filter: drop-shadow(0 0 10px #ffd700);">
         <img src="novembro_azul.png" alt="Selo do Mês" style="height:36px;">
         <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px; margin-left:auto;">
       </div>
@@ -407,20 +445,39 @@
         <div class="container">
             <div class="row align-items-center min-vh-50">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Bem-vindo à Top Gun Pulverizações</h1>
-                    <p class="lead mb-4">Top Gun Pulverizações apoia o Novembro Azul. Este mês é um lembrete de que cuidar da saúde também faz parte da boa gestão no campo. Assim como monitoramos cada talhão para prevenir perdas, a prevenção do câncer de próstata salva vidas quando o diagnóstico é feito cedo. Incentivamos colaboradores, parceiros e clientes a conversarem com um profissional de saúde e a manterem seus exames em dia. Cuidar de quem produz é tão importante quanto cuidar da lavoura.</p>
+                    <h1 class="display-4 fw-bold mb-4">🎄 Bem-vindo ao Natal Top Gun! 🎄</h1>
+                    <p class="lead mb-4">Nesta época festiva, a Top Gun Pulverizações deseja a todos um Natal cheio de alegria, paz e reunião com quem amamos! Assim como cuidamos das lavouras durante todo o ano, esperamos que neste natal vocês colham a felicidade e a harmonia que plantaram. Que a magia do Natal renove os espíritos de todos os nossos colaboradores, parceiros e clientes. Feliz Natal e um próspero Ano Novo! 🎅✨</p>
                 </div>
                 <div class="col-lg-6 text-center">
                     <div class="hero-illustration">
-                        <!-- Substitua o ícone de engrenagem por este SVG -->
-                        <svg width="77" height="77" viewBox="0 0 77 77" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <g>
-                            <rect x="22" y="22" width="33" height="33" rx="12" stroke="#2A5D90" stroke-width="6" fill="none"/>
-                            <path d="M22 22 Q10 10 22 22" stroke="#2A5D90" stroke-width="4" fill="none"/>
-                            <path d="M55 22 Q67 10 55 22" stroke="#2A5D90" stroke-width="4" fill="none"/>
-                            <path d="M22 55 Q10 67 22 55" stroke="#2A5D90" stroke-width="4" fill="none"/>
-                            <path d="M55 55 Q67 67 55 55" stroke="#2A5D90" stroke-width="4" fill="none"/>
-                          </g>
+                        <!-- SVG de Papai Noel -->
+                        <svg width="120" height="140" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <!-- Corpo Vermelho -->
+                          <rect x="35" y="60" width="50" height="50" rx="5" fill="#c41e3a"/>
+                          <!-- Cintura dourada -->
+                          <rect x="30" y="105" width="60" height="8" fill="#ffd700"/>
+                          <!-- Cabeça -->
+                          <circle cx="60" cy="35" r="20" fill="#f4a460"/>
+                          <!-- Chapéu Vermelho -->
+                          <path d="M40 15 L50 0 L70 0 L80 15 Z" fill="#c41e3a" stroke="#8b0000" stroke-width="1"/>
+                          <!-- Pompom branco -->
+                          <circle cx="60" cy="-2" r="5" fill="white"/>
+                          <!-- Barba branca -->
+                          <ellipse cx="60" cy="45" rx="12" ry="8" fill="white"/>
+                          <!-- Olhos -->
+                          <circle cx="54" cy="32" r="2" fill="black"/>
+                          <circle cx="66" cy="32" r="2" fill="black"/>
+                          <!-- Nariz -->
+                          <circle cx="60" cy="38" r="2" fill="#ff6b6b"/>
+                          <!-- Braços -->
+                          <rect x="15" y="70" width="20" height="10" rx="5" fill="#f4a460"/>
+                          <rect x="85" y="70" width="20" height="10" rx="5" fill="#f4a460"/>
+                          <!-- Pernas -->
+                          <rect x="45" y="110" width="8" height="25" fill="black"/>
+                          <rect x="67" y="110" width="8" height="25" fill="black"/>
+                          <!-- Sapatos -->
+                          <rect x="42" y="135" width="14" height="6" rx="3" fill="black"/>
+                          <rect x="64" y="135" width="14" height="6" rx="3" fill="black"/>
                         </svg>
                     </div>
                 </div>
@@ -544,8 +601,8 @@
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-lg-8 mx-auto">
-                    <h2 class="display-5 fw-bold mb-3">Por que escolher nossa empresa?</h2>
-                    <p class="lead text-muted">Oferecemos soluções completas e personalizadas para o seu negócio</p>
+                    <h2 class="display-5 fw-bold mb-3">🎁 Feliz Natal da Top Gun! 🎁</h2>
+                    <p class="lead text-muted">Continuamos oferecendo soluções completas e personalizadas para o seu negócio, mesmo na época festiva</p>
                 </div>
             </div>
             
@@ -598,11 +655,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 Pulvion Tech. Todos os direitos reservados.</p>
+                    <p class="mb-0">&copy; 2025 Pulvion Tech. Feliz Natal! 🎄 Todos os direitos reservados.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="social-links">
-                       <!--/<a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a> -->
                         <a href="https://www.instagram.com/topgunpulverizacoes.com/" class="text-white me-3"><i class="bi bi-instagram"></i></a>
                         <a href="https://www.linkedin.com/company/top-gun-pulveriza%C3%A7%C3%B5es/" class="text-white me-3"><i class="bi bi-linkedin"></i></a>
                         <a href="mailto:tgagro@pulverizacoes.com" class="text-white">
@@ -628,6 +684,29 @@
     <script>
         // Variáveis globais
         let isLoading = false;
+
+        // Criar efeito de neve caindo
+        function createSnowflakes() {
+            const snowContainer = document.getElementById('snowContainer');
+            if (!snowContainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.textContent = '❄';
+                snowflake.style.position = 'fixed';
+                snowflake.style.top = Math.random() * -100 + 'px';
+                snowflake.style.left = Math.random() * window.innerWidth + 'px';
+                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+                snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+                snowflake.style.color = 'white';
+                snowflake.style.textShadow = '0 0 5px rgba(255,255,255,0.8)';
+                snowflake.style.pointerEvents = 'none';
+                snowflake.style.zIndex = 0;
+                snowflake.style.animation = `snowFall ${Math.random() * 10 + 10}s linear infinite`;
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowContainer.appendChild(snowflake);
+            }
+        }
 
         // Função para navegação entre seções
         function navigateTo(section) {
@@ -850,6 +929,9 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar neve
+            createSnowflakes();
+            
             // Inicializar animações
             initAnimations();
             
@@ -885,9 +967,9 @@
                 }
             });
             
-            // Mostrar notificação de boas-vindas
+            // Mostrar notificação de boas-vindas festiva
             setTimeout(() => {
-                showNotification('Bem-vindo! Clique nos botões para navegar.', 'info');
+                showNotification('🎄 Bem-vindo ao Natal Top Gun! Felicidades! 🎅', 'info');
             }, 1000);
         });
 
@@ -925,6 +1007,7 @@
     </script>
 </body>
 </html>
+
 
 
 
