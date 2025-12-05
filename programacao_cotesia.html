@@ -30,7 +30,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--background);
+    background: #00070e;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -44,7 +44,7 @@
     justify-content: flex-start;
     gap: 0;
     padding: 0;
-    background: var(--card);
+    background: #000000;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -118,6 +118,21 @@
   .grid { display: flex; flex-direction: column; gap: 12px; }
   .row { display: flex; flex-direction: column; gap: 6px; }
 
+  /* Melhor separação entre linhas de fazenda */
+  .farm { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .farm:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .farm .top { margin-bottom: 10px; }
+  .inline { display: flex; gap: 8px; align-items: center; }
+  .inline-row { display: flex; gap: 8px; align-items: center; }
+  .farm .os { min-width: 110px; }
+
+  @media (max-width: 790px) {
+    .inline { flex-direction: column; align-items: stretch; }
+    .inline-row { width: 100%; }
+    .inline-row .os { width: 100%; }
+    .farm .remover, .farm .buscar { width: 100%; }
+  }
+
   label { color: #2f361f; font-size: 1rem; font-weight: 500; display: block; margin-top: 0; }
 
   input, select, textarea {
@@ -185,12 +200,12 @@
     <h2><i data-lucide="clipboard-list" width="18" height="18"></i> Dados gerais</h2>
     <div class="grid">
       <div class="row">
-        <label for="dtData">Data</label>
+        <label for="dtData">Data:</label>
         <input type="date" id="dtData">
       </div>
 
       <div class="row">
-        <label for="selFrente">Frente</label>
+        <label for="selFrente">Frente:</label>
         <select id="selFrente">
           <option value="" selected>Selecione…</option>
           <option value="Frente 01">Frente 01</option>
@@ -200,25 +215,26 @@
       </div>
 
       <div class="row">
-        <label for="txtPiloto">Piloto</label>
+        <label for="txtPiloto">Piloto:</label>
         <input type="text" id="txtPiloto" placeholder="Selecione a Frente" readonly title="Preenchido automaticamente pela Frente">
       </div>
 
       <div class="row">
-        <label for="txtDrone">Drone</label>
+        <label for="txtDrone">Drone:</label>
         <input type="text" id="txtDrone" value="X 800">
       </div>
 
       <div class="row">
-        <label for="selUnidade">Unidade</label>
+        <label for="selUnidade">Unidade:</label>
         <select id="selUnidade">
-          <option>Delta - Delta</option>
-          <option>Delta - Volta Grande</option>
+          <option value="" selected>Selecione…</option>
+          <option value="Delta - Delta">Delta - Delta</option>
+          <option value="Delta - Volta Grande">Delta - Volta Grande</option>
         </select>
       </div>
 
       <div class="row">
-        <label for="txtObjetivo" class="muted">Observação (opcional)</label>
+        <label for="txtObjetivo" class="muted">Observação:</label>
         <input type="text" id="txtObjetivo" placeholder="Ex.: Dois">
       </div>
     </div>
@@ -236,6 +252,10 @@
     </div>
 
     <div class="totals">
+      <div class="row">
+        <label>Total de fazendas</label>
+        <input id="totFazendas" type="text" readonly>
+      </div>
       <div class="row">
         <label>Total hectares</label>
         <input id="totHa" type="text" readonly>
@@ -276,7 +296,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Maicon', 'Frente 03': 'Gabriel' };
+const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Hilton', 'Frente 03': 'Gabriel' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -326,13 +346,10 @@ function makeRow(prefill={}){
         <input type="text" class="copos">
       </div>
       <div class="row">
-        <label class="muted">Objetivo (opcional)</label>
+        <label class="muted">Objetivo</label>
         <input type="text" class="objetivo">
       </div>
-      <div class="row">
-        <label class="muted">Piloto (opcional)</label>
-        <input type="text" class="piloto">
-      </div>
+      
     </div>
   `;
   rowsEl.appendChild(el);
@@ -354,7 +371,7 @@ function makeRow(prefill={}){
   el.querySelector('.remover').addEventListener('click', ()=>{ el.remove(); recalcTotals(); updatePreview(false); });
   el.querySelector('.buscar').addEventListener('click', ()=> doLookup(el));
   $os.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doLookup(el); });
-  [$ha,$cop,$faz,$cod,el.querySelector('.objetivo'),el.querySelector('.piloto')].forEach(inp=>{
+  [$ha,$cop,$faz,$cod,el.querySelector('.objetivo')].forEach(inp=>{
     inp.addEventListener('input', ()=>{ recalcTotals(); updatePreview(false); });
   });
 
@@ -386,7 +403,6 @@ async function doLookup(el){
     el.querySelector('.cod').value = it.codigo  || '';
     el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
     el.querySelector('.copos').value = it.copos ? String(it.copos).replace('.', ',') : '';
-    el.querySelector('.piloto').value   = it.piloto   || '';
     el.querySelector('.objetivo').value = it.objetivo || '';
 
     $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
@@ -400,12 +416,16 @@ async function doLookup(el){
 /* ===== Totais ===== */
 function recalcTotals(){
   let tHa = 0, tCop = 0;
+  let count = 0;
   rowsEl.querySelectorAll('.farm').forEach(el=>{
     tHa  += toNumBR(el.querySelector('.ha').value);
     tCop += toNumBR(el.querySelector('.copos').value);
+    count++;
   });
   document.getElementById('totHa').value    = fmtBR(tHa);
   document.getElementById('totCopos').value = fmtBR(tCop,0);
+  const totF = document.getElementById('totFazendas');
+  if (totF) totF.value = String(count);
 }
 
 /* ===== Mensagem ===== */
@@ -443,8 +463,9 @@ Unidade: ${uni}`;
     if (obj) msg += `\nObjetivo: ${obj}`;
     msg += `\n————————-`;
   });
+  const farmCount = rowsEl.querySelectorAll('.farm').length;
 
-  msg += `\n*Total de copos:* ${fmtBR(tCop,0)}\n*Total hectares:* ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
+  msg += `\n*Total de fazendas:* ${farmCount}\n*Total de copos:* ${fmtBR(tCop,0)}\n*Total hectares:* ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
   return msg;
 }
 function updatePreview(andScroll=true){
@@ -500,6 +521,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
