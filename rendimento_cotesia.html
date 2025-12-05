@@ -30,7 +30,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--background);
+    background: #000000;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -44,7 +44,7 @@
     justify-content: flex-start;
     gap: 0;
     padding: 0;
-    background: var(--card);
+    background: #000000;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -214,8 +214,9 @@
       <div class="row">
         <label for="selUnidade">Unidade</label>
         <select id="selUnidade">
-          <option>Delta - Delta</option>
-          <option>Delta - Volta Grande</option>
+          <option value="" selected>Selecione…</option>
+          <option value="Delta - Delta">Delta - Delta</option>
+          <option value="Delta - Volta Grande">Delta - Volta Grande</option>
         </select>
       </div>
     </div>
@@ -233,6 +234,10 @@
     </div>
 
     <div class="grid" style="margin-top:12px">
+      <div class="row">
+        <label>Total de fazendas</label>
+        <input id="totFazendas" type="text" readonly>
+      </div>
       <div class="row">
         <label>Total hectares</label>
         <input id="totHa" type="text" readonly>
@@ -273,7 +278,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', dateStyle:'short', timeStyle:'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Maicon', 'Frente 03': 'Gabriel' };
+const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Hilton', 'Frente 03': 'Gabriel' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -409,12 +414,16 @@ async function doLookup(el){
 /* ===== Totais ===== */
 function recalcTotals(){
   let tHa = 0, tCop = 0;
+  let count = 0;
   rowsEl.querySelectorAll('.farm').forEach(el=>{
     tHa  += toNumBR(el.querySelector('.ha').value);
     tCop += toNumBR(el.querySelector('.copos').value);
+    count++;
   });
   document.getElementById('totHa').value    = fmtBR(tHa);
   document.getElementById('totCopos').value = fmtBR(tCop,0);
+  const totF = document.getElementById('totFazendas');
+  if (totF) totF.value = String(count);
 }
 
 /* ===== Mensagem ===== */
@@ -460,8 +469,10 @@ function buildMessage(){
            `\n*Status:* ${statusStr}` +
            `\n————————-`;
   });
+  const farmCount = rowsEl.querySelectorAll('.farm').length;
 
-  msg += `\nTotal de copos: ${fmtBR(tCop,0)}` +
+  msg += `\nTotal de fazendas: ${farmCount}` +
+         `\nTotal de copos: ${fmtBR(tCop,0)}` +
          `\nTotal hectares: ${fmtBR(tHa)}` +
          `\n\nRelatorio gerado: ${nowStrSP()}`;
 
@@ -525,6 +536,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
