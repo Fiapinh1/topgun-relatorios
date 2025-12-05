@@ -435,7 +435,7 @@
       <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px; gap: 10px;">
         <img src="logo_atual.png" alt="Logo" style="height:30px;">
         <img src="toca_papai_noel.png" alt="Toca Papai Noel" style="height:36px; filter: drop-shadow(0 0 10px #ffd700);">
-        <img src="laco_vermelho.png" alt="Selo do Mês" style="height:36px;">
+        <img src="novembro_azul.png" alt="Selo do Mês" style="height:36px;">
         <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px; margin-left:auto;">
       </div>
     </header>
@@ -449,37 +449,80 @@
                     <p class="lead mb-4">Nesta época festiva, a Top Gun Pulverizações deseja a todos um Natal cheio de alegria, paz e reunião com quem amamos! Assim como cuidamos das lavouras durante todo o ano, esperamos que neste natal vocês colham a felicidade e a harmonia que plantaram. Que a magia do Natal renove os espíritos de todos os nossos colaboradores, parceiros e clientes. Feliz Natal e um próspero Ano Novo! 🎅✨</p>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <div class="hero-illustration">
-                        <!-- SVG de Papai Noel -->
-                        <svg width="120" height="140" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <!-- Corpo Vermelho -->
-                          <rect x="35" y="60" width="50" height="50" rx="5" fill="#c41e3a"/>
-                          <!-- Cintura dourada -->
-                          <rect x="30" y="105" width="60" height="8" fill="#ffd700"/>
-                          <!-- Cabeça -->
-                          <circle cx="60" cy="35" r="20" fill="#f4a460"/>
-                          <!-- Chapéu Vermelho -->
-                          <path d="M40 15 L50 0 L70 0 L80 15 Z" fill="#c41e3a" stroke="#8b0000" stroke-width="1"/>
-                          <!-- Pompom branco -->
-                          <circle cx="60" cy="-2" r="5" fill="white"/>
-                          <!-- Barba branca -->
-                          <ellipse cx="60" cy="45" rx="12" ry="8" fill="white"/>
-                          <!-- Olhos -->
-                          <circle cx="54" cy="32" r="2" fill="black"/>
-                          <circle cx="66" cy="32" r="2" fill="black"/>
-                          <!-- Nariz -->
-                          <circle cx="60" cy="38" r="2" fill="#ff6b6b"/>
-                          <!-- Braços -->
-                          <rect x="15" y="70" width="20" height="10" rx="5" fill="#f4a460"/>
-                          <rect x="85" y="70" width="20" height="10" rx="5" fill="#f4a460"/>
-                          <!-- Pernas -->
-                          <rect x="45" y="110" width="8" height="25" fill="black"/>
-                          <rect x="67" y="110" width="8" height="25" fill="black"/>
-                          <!-- Sapatos -->
-                          <rect x="42" y="135" width="14" height="6" rx="3" fill="black"/>
-                          <rect x="64" y="135" width="14" height="6" rx="3" fill="black"/>
-                        </svg>
-                    </div>
+                                        <div class="hero-illustration">
+                                                <!-- SVG: Drone com toque natalino -->
+                                                <svg width="160" height="140" viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <defs>
+                                                        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.2"/>
+                                                        </filter>
+                                                    </defs>
+                                                    <!-- Braços -->
+                                                    <g stroke="#2b2b2b" stroke-width="3" stroke-linecap="round" filter="url(#shadow)">
+                                                        <line x1="40" y1="50" x2="70" y2="70" stroke="#2b2b2b" stroke-width="4"/>
+                                                        <line x1="120" y1="50" x2="90" y2="70" stroke="#2b2b2b" stroke-width="4"/>
+                                                        <line x1="40" y1="90" x2="70" y2="70" stroke="#2b2b2b" stroke-width="4"/>
+                                                        <line x1="120" y1="90" x2="90" y2="70" stroke="#2b2b2b" stroke-width="4"/>
+                                                    </g>
+
+                                                    <!-- Corpo central -->
+                                                    <g>
+                                                        <rect x="60" y="50" width="40" height="30" rx="6" fill="#222"/>
+                                                        <rect x="66" y="56" width="28" height="18" rx="4" fill="#c41e3a"/>
+                                                        <!-- Painel dourado -->
+                                                        <rect x="74" y="62" width="12" height="6" rx="2" fill="#ffd700"/>
+                                                    </g>
+
+                                                    <!-- Hélices (grupos animados) -->
+                                                    <g id="rotor1" transform="translate(26,46)">
+                                                        <g fill="#000">
+                                                            <circle cx="0" cy="0" r="10" fill="#111" opacity="0.2"/>
+                                                            <rect x="-18" y="-3" width="36" height="6" rx="3" fill="#333"/>
+                                                        </g>
+                                                        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1.2s" repeatCount="indefinite"/>
+                                                    </g>
+
+                                                    <g id="rotor2" transform="translate(134,46)">
+                                                        <g fill="#000">
+                                                            <circle cx="0" cy="0" r="10" fill="#111" opacity="0.2"/>
+                                                            <rect x="-18" y="-3" width="36" height="6" rx="3" fill="#333"/>
+                                                        </g>
+                                                        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="1.2s" repeatCount="indefinite"/>
+                                                    </g>
+
+                                                    <g id="rotor3" transform="translate(26,94)">
+                                                        <g fill="#000">
+                                                            <circle cx="0" cy="0" r="10" fill="#111" opacity="0.2"/>
+                                                            <rect x="-18" y="-3" width="36" height="6" rx="3" fill="#333"/>
+                                                        </g>
+                                                        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1.2s" repeatCount="indefinite"/>
+                                                    </g>
+
+                                                    <g id="rotor4" transform="translate(134,94)">
+                                                        <g fill="#000">
+                                                            <circle cx="0" cy="0" r="10" fill="#111" opacity="0.2"/>
+                                                            <rect x="-18" y="-3" width="36" height="6" rx="3" fill="#333"/>
+                                                        </g>
+                                                        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="1.2s" repeatCount="indefinite"/>
+                                                    </g>
+
+                                                    <!-- Presente pendurado (elemento natalino) -->
+                                                    <g>
+                                                        <line x1="80" y1="80" x2="80" y2="106" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                                                        <rect x="68" y="106" width="24" height="20" rx="3" fill="#ffd700" stroke="#c41e3a" stroke-width="2"/>
+                                                        <rect x="80" y="106" width="4" height="20" fill="#c41e3a"/>
+                                                        <rect x="68" y="116" width="24" height="4" fill="#c41e3a"/>
+                                                    </g>
+
+                                                    <!-- Pequeno chapéu natalino sobre o corpo -->
+                                                    <g>
+                                                        <path d="M74 46 L86 30 L98 46 Z" fill="#c41e3a" stroke="#8b0000" stroke-width="1"/>
+                                                        <circle cx="86" cy="29" r="3" fill="#fff"/>
+                                                        <rect x="74" y="45" width="24" height="4" rx="2" fill="#fff"/>
+                                                    </g>
+
+                                                </svg>
+                                        </div>
                 </div>
             </div>
         </div>
@@ -1007,7 +1050,6 @@
     </script>
 </body>
 </html>
-
 
 
 
