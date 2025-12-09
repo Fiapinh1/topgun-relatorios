@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     --primary: #021d4c;
     --primary-light: #dcfce7;
     --primary-dark: #15803d;
-    --background: #f8fafc;
+    --background: #000000;
     --card: #ffffff;
     --text: #1e293b;
     --text-muted: #64748b;
@@ -44,7 +44,7 @@
     justify-content: flex-start;
     gap: 0;
     padding: 0;
-    background: var(--card);
+    background: #f8fafc;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -89,7 +89,7 @@
     gap: 6px;
     cursor: pointer;
     border: 1px solid var(--border);
-    background: var(--card);
+    background: #f8fafc;
     color: var(--text);
     padding: 16px 0;
     border-radius: 12px;
@@ -192,12 +192,12 @@
     <h2><i data-lucide="clipboard-list" width="18" height="18"></i> Dados gerais</h2>
     <div class="grid">
       <div class="row">
-        <label for="dtData">Data</label>
+        <label for="dtData">Data:</label>
         <input type="date" id="dtData">
       </div>
 
       <div class="row">
-        <label for="selFrente">Frente</label>
+        <label for="selFrente">Frente:</label>
         <select id="selFrente">
           <option value="" selected>Selecione…</option>
           <option value="Frente 01">Frente 01</option>
@@ -207,12 +207,12 @@
       </div>
 
       <div class="row">
-        <label for="txtPiloto">Piloto</label>
+        <label for="txtPiloto">Piloto:</label>
         <input type="text" id="txtPiloto" placeholder="Selecione a Frente" readonly title="Preenchido automaticamente pela Frente">
       </div>
 
       <div class="row">
-        <label for="txtDrone">Drone</label>
+        <label for="txtDrone">Drone:</label>
         <input type="text" id="txtDrone" value="X 800">
       </div>
 
@@ -226,7 +226,7 @@
       </div>
 
       <div class="row">
-        <label for="txtObjetivo" class="muted">Observação (opcional)</label>
+        <label for="txtObjetivo" class="muted">Observação: (opcional)</label>
         <input type="text" id="txtObjetivo" placeholder="Ex.: Dois">
       </div>
     </div>
@@ -234,7 +234,7 @@
 
   <!-- Fazendas -->
   <section class="card">
-    <h2><i data-lucide="tractor" width="18" height="18"></i> Fazendas (por OS)</h2>
+    <h2><i data-lucide="tractor" width="18" height="18"></i> Fazendas:</h2>
 
     <div class="rows" id="rows"></div>
 
@@ -245,7 +245,11 @@
 
     <div class="totals">
       <div class="row">
-        <label>Total hectares</label>
+        <label>Total de fazendas:</label>
+        <input id="totFazendas" type="text" readonly>
+      </div>
+      <div class="row">
+        <label>Total hectares:</label>
         <input id="totHa" type="text" readonly>
       </div>
       <!-- Campo de total de copos removido -->
@@ -263,12 +267,21 @@
       <button class="btn neon" id="btnGerar"><i data-lucide="refresh-cw" width="16" height="16"></i> Gerar prévia</button>
       <button class="btn" id="btnCopiar"><i data-lucide="copy" width="16" height="16"></i> Copiar mensagem</button>
       <button class="btn light" id="btnWhats"><i data-lucide="message-circle" width="16" height="16"></i> Abrir no WhatsApp</button>
+      <button class="btn" id="btnPdf"><i data-lucide="file-earmark-pdf" width="16" height="16"></i> Gerar PDF</button>
       <span class="badge" id="lblInfo"></span>
     </div>
   </section>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 <script>
+// Inicializar jsPDF (exporta `jsPDF` via UMD)
+const jsPDFAvailable = (typeof window.jspdf !== 'undefined') || (typeof window.jsPDF !== 'undefined');
+if (jsPDFAvailable) {
+  // make jsPDF constructor available as global `jsPDF` for older plugin expectations
+  window.jsPDF = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+}
 // Inicializar ícones Lucide
 lucide.createIcons();
 
@@ -281,7 +294,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Maicon', 'Frente 03': 'Gabriel' };
+const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Hilton', 'Frente 03': 'Gabriel' };
 function setPilotByFrente(){
   const frente = document.getElementById('selFrente').value || '';
   document.getElementById('txtPiloto').value = PILOTOS[frente] || '';
@@ -325,25 +338,25 @@ function makeRow(prefill={}){
     </div>
     <div class="grid">
       <div class="row">
-        <label>Fazenda</label>
+        <label>Fazenda:</label>
         <input type="text" class="faz">
       </div>
       <div class="row">
-        <label>Código</label>
+        <label>Código:</label>
         <input type="text" class="cod">
       </div>
       <div class="row">
-        <label>Hectares (ha)</label>
+        <label>Hectares:</label>
         <input type="text" class="ha">
       </div>
       <!-- Campo de quantidade de copos removido -->
       <div class="row">
-        <label class="muted">Objetivo (opcional)</label>
+        <label class="muted">Objetivo:</label>
         <input type="text" class="objetivo">
       </div>
       <div class="row">
-        <label class="muted">Piloto (opcional)</label>
-        <input type="text" class="piloto">
+        <label>Dose:</label>
+        <input type="text" class="dose" placeholder="(Conferir antes de retirar)">
       </div>
     </div>
   `;
@@ -355,15 +368,18 @@ function makeRow(prefill={}){
   const $faz = el.querySelector('.faz');
   const $cod = el.querySelector('.cod');
   const $ha  = el.querySelector('.ha');
+  const $dose = el.querySelector('.dose');
   if (prefill.os)  $os.value  = prefill.os;
   if (prefill.faz) $faz.value = prefill.faz;
   if (prefill.cod) $cod.value = prefill.cod;
   if (prefill.ha)  $ha.value  = prefill.ha;
+  if (prefill.dose) $dose.value = prefill.dose;
 
   el.querySelector('.remover').addEventListener('click', ()=>{ el.remove(); recalcTotals(); updatePreview(false); });
   el.querySelector('.buscar').addEventListener('click', ()=> doLookup(el));
   $os.addEventListener('keydown', (e)=>{ if(e.key==='Enter') doLookup(el); });
-  [$ha,$faz,$cod,el.querySelector('.objetivo'),el.querySelector('.piloto')].forEach(inp=>{
+  [$ha,$faz,$cod,el.querySelector('.objetivo'),$dose].forEach(inp=>{
+    if (!inp) return;
     inp.addEventListener('input', ()=>{ recalcTotals(); updatePreview(false); });
   });
 
@@ -394,9 +410,22 @@ async function doLookup(el){
     el.querySelector('.faz').value = it.fazenda || '';
     el.querySelector('.cod').value = it.codigo  || '';
     el.querySelector('.ha').value  = it.area ? String(it.area).replace('.', ',') : '';
-    // Campo copos removido
-    el.querySelector('.piloto').value   = it.piloto   || '';
     el.querySelector('.objetivo').value = it.objetivo || '';
+    // Preencher Dose a partir da coluna 'copos' (ou variações)
+    (function fillDoseIfExists(){
+      const possible = ['copos','tubetes','tubete','qtd_copos','qtd_tubetes','qtcopos','qtd_tubete','copos_qtd','tubetes_qtd'];
+      for(const k of possible){
+        if (k in it && it[k] !== null && it[k] !== undefined && String(it[k]).trim() !== ''){
+          try{
+            const v = toNumBR(it[k]);
+            el.querySelector('.dose').value = fmtBR(v,0);
+          }catch(_e){
+            el.querySelector('.dose').value = String(it[k]);
+          }
+          break;
+        }
+      }
+    })();
 
     $msg.textContent = it.data ? `Carregado (Data ${it.data})` : 'Carregado';
     recalcTotals();
@@ -409,10 +438,14 @@ async function doLookup(el){
 /* ===== Totais ===== */
 function recalcTotals(){
   let tHa = 0;
+  let count = 0;
   rowsEl.querySelectorAll('.farm').forEach(el=>{
     tHa  += toNumBR(el.querySelector('.ha').value);
+    count++;
   });
   document.getElementById('totHa').value    = fmtBR(tHa);
+  const totF = document.getElementById('totFazendas');
+  if (totF) totF.value = String(count);
 }
 
 /* ===== Mensagem ===== */
@@ -435,21 +468,33 @@ Unidade: ${uni}`;
   msg += `\n_________`;
 
   let tHa = 0;
-
   rowsEl.querySelectorAll('.farm').forEach(el=>{
     const os  = (el.querySelector('.os').value || '').trim();
     const faz = (el.querySelector('.faz').value || '').trim();
     const cod = (el.querySelector('.cod').value || '').trim();
     const ha  = toNumBR(el.querySelector('.ha').value);
+    const doseRaw = (el.querySelector('.dose') && el.querySelector('.dose').value) ? (el.querySelector('.dose').value || '').trim() : '';
+    let dose = '';
+    if (doseRaw) {
+      const parsed = parseFloat(String(doseRaw).replace(/\./g,'').replace(',','.'));
+      if (!isNaN(parsed)) {
+        dose = `${fmtBR(parsed,0)} g`;
+      } else {
+        dose = doseRaw;
+      }
+    }
     const obj = (el.querySelector('.objetivo').value || '').trim();
 
     tHa  += ha;
 
     msg += `\n*OS:* ${os || '—'}\n*Faz:* ${faz || '—'}\n*Cod:* ${cod || '—'}\n*Ha:* ${fmtBR(ha)}`;
+    if (dose) msg += `\n*Dose:* ${dose}`;
     if (obj) msg += `\nObjetivo: ${obj}`;
     msg += `\n————————-`;
   });
+  const farmCount = rowsEl.querySelectorAll('.farm').length;
 
+  msg += `\n*Total de fazendas:* ${farmCount}`;
   msg += `\n*Total hectares:* ${fmtBR(tHa)}\n\nRelatorio gerado: ${nowStrSP()}`;
   return msg;
 }
@@ -457,6 +502,73 @@ function updatePreview(andScroll=true){
   const p = document.getElementById('preview');
   p.textContent = buildMessage();
   if (andScroll) p.scrollTop = p.scrollHeight;
+}
+
+/* ===== PDF generation ===== */
+function generatePDF(){
+  if (typeof jsPDF === 'undefined'){
+    alert('Biblioteca jsPDF não encontrada. Verifique a conexão com a internet.');
+    return;
+  }
+
+  const title = 'Programação Trichogramma - Top Gun';
+  const dt = document.getElementById('dtData').value;
+  const headerInfo = [
+    ['Data', dt ? fmtDateBRfromInput(dt) : ''],
+    ['Frente', document.getElementById('selFrente').value || ''],
+    ['Piloto', document.getElementById('txtPiloto').value || ''],
+    ['Drone', document.getElementById('txtDrone').value || ''],
+    ['Unidade', document.getElementById('selUnidade').value || ''],
+    ['Objetivo', document.getElementById('txtObjetivo').value || '']
+  ];
+
+  const rows = [];
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    const os = (el.querySelector('.os').value||'').trim();
+    const faz = (el.querySelector('.faz').value||'').trim();
+    const cod = (el.querySelector('.cod').value||'').trim();
+    const ha = toNumBR(el.querySelector('.ha').value);
+    const doseRaw = (el.querySelector('.dose') && el.querySelector('.dose').value) ? (el.querySelector('.dose').value||'').trim() : '';
+    let dose = '';
+    if (doseRaw) {
+      const parsed = parseFloat(String(doseRaw).replace(/\./g,'').replace(',','.'));
+      if (!isNaN(parsed)) dose = `${fmtBR(parsed,0)} g`;
+      else dose = doseRaw;
+    }
+    const obj = (el.querySelector('.objetivo').value||'').trim();
+    rows.push([os, faz, cod, fmtBR(ha), dose, obj]);
+  });
+
+  try{
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text(title, 14, 20);
+    doc.setFontSize(10);
+    let y = 30;
+    headerInfo.forEach(h=>{
+      doc.text(`${h[0]}: ${h[1]}`, 14, y);
+      y += 6;
+    });
+
+    doc.autoTable({
+      startY: y + 4,
+      head: [['OS','Fazenda','Cod','Ha','Dose','Objetivo']],
+      body: rows,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [40, 40, 40] }
+    });
+
+    const farmCount = rows.length;
+    const totalHa = rows.reduce((s,r)=> s + toNumBR(r[3]), 0);
+    const footY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY : (y + 4 + rows.length*6 + 10);
+    doc.text(`Total de fazendas: ${farmCount}`, 14, footY + 10);
+    doc.text(`Total hectares: ${fmtBR(totalHa)}`, 14, footY + 16);
+
+    const filename = `programacao_trichogramma_${dt || todaySP()}.pdf`;
+    doc.save(filename);
+  }catch(err){
+    alert('Falha ao gerar PDF: ' + (err && err.message ? err.message : err));
+  }
 }
 
 /* ===== Init & eventos ===== */
@@ -493,6 +605,9 @@ function updatePreview(andScroll=true){
     window.open(url, '_blank');
   });
 
+  // Gerar PDF
+  document.getElementById('btnPdf').addEventListener('click', ()=>{ generatePDF(); });
+
   ['dtData','selFrente','txtPiloto','txtDrone','selUnidade','txtObjetivo'].forEach(id=>{
     document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
   });
@@ -509,7 +624,6 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
-
 
 
 
