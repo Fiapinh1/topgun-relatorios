@@ -422,8 +422,31 @@
         .logo-selo-bandeira-row img.bandeira {
           height: 36px;
         }
+        .flag-lock {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-left: auto;
+        }
+        .lock-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 6px 10px;
+          border-radius: 999px;
+          border: 1px solid rgba(255,255,255,0.65);
+          background: rgba(255,255,255,0.1);
+          color: #ffffff;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .lock-btn:hover {
+          background: rgba(255,255,255,0.18);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+        }
 
-    </style>
+  </style>
 </head>
 <body>
     <!-- Efeito de Neve -->
@@ -435,10 +458,39 @@
       <div class="logo-selo-bandeira-row" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 16px; gap: 10px;">
         <img src="logo_atual.png" alt="Logo" style="height:30px;">
         <img src="toca_papai_noel.png" alt="Toca Papai Noel" style="height:36px; filter: drop-shadow(0 0 10px #ffd700);">
-        <img src="treno.png" alt="Selo do Mês" style="height:36px;">
-        <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px; margin-left:auto;">
+        <img src="novembro_azul.png" alt="Selo do Mês" style="height:36px;">
+        <div class="flag-lock">
+          <img src="https://flagcdn.com/w40/br.png" alt="Bandeira do Brasil" class="bandeira" style="height:28px;">
+          <button type="button" class="lock-btn" id="lockButton" aria-label="Acesso restrito">
+            <i class="bi bi-lock-fill"></i>
+          </button>
+        </div>
       </div>
     </header>
+
+    <!-- Modal de senha -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Área restrita</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-3">Digite a senha para acessar o envio de KML.</p>
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="passwordInput" placeholder="Senha" autocomplete="off" autofocus>
+              <label for="passwordInput">Senha</label>
+            </div>
+            <div id="passwordFeedback" class="text-danger small" style="display:none;">Senha incorreta.</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="passwordSubmit">Acessar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero-section bg-gradient-primary text-white py-5">
@@ -564,7 +616,7 @@
                           <button class="btn btn-outline-primary" onclick="window.location.href='programacao_aplicacao.html'">Programação</button>
                             <button class="btn btn-outline-primary" onclick="window.location.href='status_operacional_aplicacao.html'">Status Operacional</button>
                           <button class="btn btn-outline-primary" onclick="window.location.href='rendimento_aplicacao.html'">Rendimento</button>
-                          <button class="btn btn-outline-primary" onclick="window.location.href='enc_kml_uplo.html'">Buscar KML</button>
+                          <button class="btn btn-outline-primary" onclick="window.location.href='encontrar_kml.html'">Buscar KML</button>
                         </div>
                     </div>
                 </div>
@@ -730,6 +782,29 @@
     <script>
         // Variáveis globais
         let isLoading = false;
+        let passwordModal;
+        function openPasswordModal() {
+            const feedback = document.getElementById('passwordFeedback');
+            const input = document.getElementById('passwordInput');
+            if (feedback) feedback.style.display = 'none';
+            if (input) input.value = '';
+            if (passwordModal) {
+                passwordModal.show();
+                setTimeout(() => input && input.focus(), 150);
+            }
+        }
+        function submitPassword() {
+            const input = document.getElementById('passwordInput');
+            const feedback = document.getElementById('passwordFeedback');
+            const senha = input ? input.value : '';
+            if (senha === 'topgungeo') {
+                if (passwordModal) passwordModal.hide();
+                window.location.href = 'uploadkml.html';
+            } else {
+                if (feedback) feedback.style.display = 'block';
+                if (input) input.focus();
+            }
+        }
 
         // Criar efeito de neve caindo
         function createSnowflakes() {
@@ -996,6 +1071,25 @@
                 logoPlaceholder.style.cursor = 'pointer';
                 logoPlaceholder.title = 'Clique para adicionar sua logo';
             }
+            passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'), { backdrop: 'static', focus: true });
+            const lockButton = document.getElementById('lockButton');
+            if (lockButton) {
+                lockButton.addEventListener('click', openPasswordModal);
+                lockButton.title = 'Area restrita';
+            }
+            const passwordSubmit = document.getElementById('passwordSubmit');
+            if (passwordSubmit) {
+                passwordSubmit.addEventListener('click', submitPassword);
+            }
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitPassword();
+                    }
+                });
+            }
             
             // Adicionar tooltips nos ícones sociais
             document.querySelectorAll('.social-links a').forEach(link => {
@@ -1053,9 +1147,6 @@
     </script>
 </body>
 </html>
-
-
-
 
 
 
