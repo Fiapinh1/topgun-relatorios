@@ -296,7 +296,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Hilton', 'Frente 03': 'Gabriel' };
+const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Pedro', 'Frente 03': 'Sem Piloto' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -521,6 +521,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
