@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Administrador - Natal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.281.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root{
+      --bg:#f9fbff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --accent:#c62828;
+      --accent-2:#168f4b;
+      --gold:#f59e0b;
+      --border:#e2e8f0;
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(198,40,40,0.08), transparent 32%),
+        radial-gradient(circle at 90% 10%, rgba(22,143,75,0.1), transparent 38%),
+        radial-gradient(circle at 15% 80%, rgba(245,158,11,0.14), transparent 30%),
+        linear-gradient(180deg,#fdf7f4 0%,#f2f7ff 65%,#fdf7f4 100%);
+      color:var(--text);
+      display:flex;
+    }
+    .layout{display:flex;width:100%;}
+    .sidebar{
+      width:280px;
+      min-height:100vh;
+      background:var(--card);
+      border-right:1px solid var(--border);
+      padding:12px 10px;
+      box-shadow:4px 0 18px rgba(0,0,0,0.04);
+      position:sticky;
+      top:0;
+      transition:width .18s ease, padding .18s ease;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .sidebar.collapsed{width:78px;padding:12px 8px;}
+    .toggle{
+      margin-top:8px;
+      width:100%;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:14px;
+      padding:8px 10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      font-weight:600;
+      transition:all .14s ease;
+    }
+    .toggle:hover{border-color:var(--accent);}
+    .sidebar.collapsed .toggle span{display:none;}
+    .menu{
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+    .nav-group{
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .nav-main{
+      width:100%;
+      border:none;
+      background:#fff;
+      padding:12px 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--text);
+      border-bottom:1px solid var(--border);
+      transition:background .12s ease;
+    }
+    .nav-main:hover{background:rgba(198,40,40,0.06);}
+    .nav-main .dot{
+      width:12px;height:12px;border-radius:999px;
+      background:linear-gradient(135deg,var(--accent),#ef5350);
+      flex-shrink:0;
+    }
+    .nav-main .chevron{margin-left:auto;color:var(--muted);}
+    .nav-sub{
+      display:none;
+      flex-direction:column;
+      background:rgba(198,40,40,0.03);
+    }
+    .nav-sub.open{display:flex;}
+    .nav-link{
+      border:none;
+      background:transparent;
+      padding:12px 16px;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      color:var(--text);
+      transition:background .12s ease;
+      font-weight:600;
+    }
+    .nav-link:hover{background:rgba(22,143,75,0.08);}
+    .nav-link.active{background:rgba(198,40,40,0.12);color:var(--accent);}
+    .nav-link .bullet{
+      width:8px;height:8px;border-radius:50%;background:var(--accent-2);flex-shrink:0;
+    }
+    .nav-icon,.nav-sub .nav-icon{
+      width:18px;
+      height:18px;
+      color:var(--accent);
+      flex-shrink:0;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .sidebar.collapsed .brand h1,
+    .sidebar.collapsed .brand small,
+    .sidebar.collapsed .nav-main span.label,
+    .sidebar.collapsed .nav-main .chevron,
+    .sidebar.collapsed .nav-link span.label,
+    .sidebar.collapsed .nav-link .bullet-text,
+    .sidebar.collapsed .exit-btn .label,
+    .sidebar.collapsed .exit .label{display:none!important;}
+    .sidebar.collapsed .nav-sub{padding-left:0;}
+    .sidebar.collapsed .exit-btn{justify-content:center;}
+
+    .content{
+      flex:1;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight:700;
+      color:var(--accent);
+      box-shadow:0 10px 20px rgba(0,0,0,0.04);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .panel-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .iframe-wrap{
+      display:none;
+      flex-direction:column;
+      gap:10px;
+      min-height:70vh;
+    }
+    .iframe-wrap.active{display:flex;}
+    iframe{
+      width:100%;
+      height:70vh;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+    }
+    .calendar-wrap{
+      display:grid;
+      grid-template-columns:1.4fr 1fr;
+      gap:12px;
+    }
+    .calendar-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .calendar-header button{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--accent);
+    }
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:6px;
+      margin-top:10px;
+    }
+    .dow{
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+      letter-spacing:.06em;
+    }
+    .day{
+      background:rgba(255,255,255,0.9);
+      border:1px solid var(--border);
+      border-radius:12px;
+      min-height:56px;
+      padding:8px 6px;
+      font-weight:700;
+      display:flex;
+      justify-content:flex-start;
+      align-items:flex-start;
+      cursor:pointer;
+      position:relative;
+      transition:all .12s ease;
+      font-size:.95rem;
+    }
+    .day:hover{border-color:var(--accent-2);transform:translateY(-2px);}
+    .day.today{border-color:var(--accent);box-shadow:0 10px 20px rgba(198,40,40,0.12);}
+    .day.selected{outline:2px solid var(--accent-2);}
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--gold);
+      position:absolute;
+      bottom:8px;right:8px;
+    }
+    .notes{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .notes textarea{
+      width:100%;
+      min-height:90px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      background:#fff;
+      color:var(--text);
+    }
+    .notes button{
+      align-self:flex-start;
+      padding:10px 14px;
+      border:none;
+      border-radius:10px;
+      background:linear-gradient(135deg,#c62828,#ef5350);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(198,40,40,0.2);
+    }
+    .note-list{
+      max-height:220px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .note-pill{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(22,143,75,0.06);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .note-pill button.view-note{
+      border:none;
+      background:transparent;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      cursor:pointer;
+      color:var(--text);
+    }
+    .pill-actions button{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:var(--accent);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px;
+      border-radius:8px;
+      transition:background .12s ease;
+    }
+    .pill-actions button:hover{background:rgba(198,40,40,0.08);}
+    .util-stack{display:flex;flex-direction:column;gap:10px;}
+    .mini-card{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      box-shadow:0 10px 20px rgba(0,0,0,0.06);
+    }
+    .clock{
+      font-size:1.6rem;
+      font-weight:800;
+      color:var(--accent);
+    }
+    .calc-display{
+      width:100%;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      margin-bottom:8px;
+      font-size:1.1rem;
+      font-weight:700;
+    }
+    .calc-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+    }
+    .calc-grid button{
+      padding:10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--text);
+      transition:all .12s ease;
+    }
+    .calc-grid button:hover{background:rgba(22,143,75,0.08);}
+    .calc-op{color:var(--accent);}
+    .sidebar .exit{ margin-top:auto; display:block; width:100%; padding-top:12px; border-top:1px solid var(--border); }
+    .exit-btn{ width:100%; border:1px solid var(--border); background:#fff4e0; color:var(--text); border-radius:12px; padding:10px 12px; font-weight:700; display:flex; align-items:center; gap:8px; justify-content:center; cursor:pointer; transition:all .12s ease; }
+    .exit-btn:hover{border-color:var(--accent);background:#ffe4b2;}
+    .note-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:1000;
+    }
+    .note-modal.active{display:flex;}
+    .note-modal .modal-card{
+      background:#fff;
+      border-radius:14px;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      max-width:420px;
+      width:100%;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .note-modal textarea{
+      width:100%;
+      min-height:120px;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      resize:vertical;
+    }
+    .note-modal .actions{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+    }
+    .note-modal button{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      cursor:pointer;
+      font-weight:700;
+      background:#fff;
+      color:var(--text);
+    }
+    .note-modal .save-btn{
+      background:linear-gradient(135deg,#168f4b,#1fb15d);
+      color:#fff;
+      border:none;
+      box-shadow:0 10px 18px rgba(22,143,75,0.22);
+    }
+    .note-modal .delete-btn{
+      background:linear-gradient(135deg,#c62828,#ef5350);
+      color:#fff;
+      border:none;
+      box-shadow:0 10px 18px rgba(198,40,40,0.22);
+    }
+    @media (max-width:1100px){
+      .calendar-wrap{grid-template-columns:1fr;}
+      .sidebar{position:fixed;z-index:10;left:0;top:0;height:100vh;}
+      .content{margin-left:0;padding:12px;}
+    }
+    @media (max-width:640px){
+      .sidebar{width:74px;padding:10px 8px;}
+      .sidebar.collapsed{width:74px;}
+      .toggle{justify-content:center;}
+      .toggle span{display:none;}
+      .content{padding:10px;}
+      .calendar-grid{gap:4px;}
+      .day{min-height:48px;font-size:.9rem;}
+      .calc-grid button{padding:8px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="layout container-fluid">
+    <aside class="sidebar" id="sidebar">
+      <button class="toggle" id="toggleSidebar">
+        <i class="nav-icon" data-lucide="panel-left-close"></i>
+        <span>Menu</span>
+      </button>
+      <nav class="menu">
+        <div class="nav-group">
+          <button class="nav-main" data-target="dashboard">
+            <i class="nav-icon" data-lucide="calendar-clock"></i>
+            <span class="label">Dashboard</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <button class="nav-main" data-group="kml">
+            <i class="nav-icon" data-lucide="folder-kanban"></i>
+            <span class="label">Arquivos KML</span>
+            <i class="nav-icon chevron" data-lucide="chevron-down"></i>
+          </button>
+          <div class="nav-sub" data-group="kml">
+            <button class="nav-link" data-src="UploadKml.html" data-label="Página de Upload">
+              <i class="nav-icon" data-lucide="upload-cloud"></i>
+              <span class="label">Página de Upload</span>
+            </button>
+            <button class="nav-link" data-src="enc_kml_uplo.html" data-label="Buscar KML">
+              <i class="nav-icon" data-lucide="search"></i>
+              <span class="label">Buscar KML</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button class="nav-main" data-group="geo">
+            <i class="nav-icon" data-lucide="map"></i>
+            <span class="label">Geometria</span>
+            <i class="nav-icon chevron" data-lucide="chevron-down"></i>
+          </button>
+          <div class="nav-sub" data-group="geo">
+            <button class="nav-link" data-src="gerar_planos_voo.html" data-label="Gerar Planos">
+              <i class="nav-icon" data-lucide="route"></i>
+              <span class="label">Gerar Planos</span>
+            </button>
+            <button class="nav-link" data-src="gerar_linhas.html" data-label="Gerar Linhas">
+              <i class="nav-icon" data-lucide="git-branch"></i>
+              <span class="label">Gerar Linhas</span>
+            </button>
+            <button class="nav-link" data-src="gerar_pontos.html" data-label="Gerar Pontos">
+              <i class="nav-icon" data-lucide="map-pin"></i>
+              <span class="label">Gerar Pontos</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <div class="exit">
+        <a class="exit-btn" href="index.html">
+          <i class="nav-icon" data-lucide="log-out"></i>
+          <span class="label">Sair</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <div>
+          <div style="font-size:1.1rem;font-weight:800;">Painel do Administrador</div>
+          <div style="color:var(--muted);">Clique no menu lateral para abrir cada página ao lado.</div>
+        </div>
+
+      </section>
+
+      <div class="panel-grid">
+        <section class="card" id="dashboardPanel">
+          <div class="calendar-wrap">
+            <div>
+              <div class="calendar-header">
+                <button id="prevMonth" aria-label="Mês anterior">◀</button>
+                <div>
+                  <div style="font-weight:800" id="monthLabel">Mês</div>
+                  <div style="color:var(--muted);" id="selectedLabel"></div>
+                </div>
+                <button id="nextMonth" aria-label="Próximo mês">▶</button>
+              </div>
+              <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            <div class="util-stack">
+              <div class="mini-card">
+                <div style="display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:700;">
+                  <i class="nav-icon" data-lucide="clock-4"></i> Relógio
+                </div>
+                <div class="clock" id="clockNow">--:--:--</div>
+              </div>
+              <div class="mini-card">
+                <div style="display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:700;margin-bottom:6px;">
+                  <i class="nav-icon" data-lucide="calculator"></i> Calculadora
+                </div>
+                <input id="calcDisplay" class="calc-display" readonly value="0">
+                <div class="calc-grid">
+                  <button type="button" data-val="7">7</button>
+                  <button type="button" data-val="8">8</button>
+                  <button type="button" data-val="9">9</button>
+                  <button type="button" class="calc-op" data-val="/">/</button>
+                  <button type="button" data-val="4">4</button>
+                  <button type="button" data-val="5">5</button>
+                  <button type="button" data-val="6">6</button>
+                  <button type="button" class="calc-op" data-val="*">*</button>
+                  <button type="button" data-val="1">1</button>
+                  <button type="button" data-val="2">2</button>
+                  <button type="button" data-val="3">3</button>
+                  <button type="button" class="calc-op" data-val="-">-</button>
+                  <button type="button" data-val="0">0</button>
+                  <button type="button" data-val=".">.</button>
+                  <button type="button" id="calcClear">C</button>
+                  <button type="button" class="calc-op" data-val="+">+</button>
+                  <button type="button" id="calcDel">DEL</button>
+                  <button type="button" class="calc-op" data-val="(">(</button>
+                  <button type="button" class="calc-op" data-val=")">)</button>
+                  <button type="button" id="calcEq">=</button>
+                </div>
+              </div>
+              <div class="notes">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <h3 style="margin:0;">Anotações</h3>
+                  <small id="notesDateLabel" style="color:var(--muted);"></small>
+                </div>
+                <textarea id="noteInput" placeholder="Escreva um lembrete para esta data"></textarea>
+                <button id="saveNote" type="button">Salvar anotação</button>
+                <div class="note-list" id="noteList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card iframe-wrap" id="framePanel">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div id="frameTitle" style="font-weight:800;">Conteúdo</div>
+              <div style="color:var(--muted);" id="frameHint">Clique em um item do menu para abrir aqui ao lado.</div>
+            </div>
+            <div class="chip" id="frameChip"></div>
+          </div>
+          <iframe id="contentFrame" title="Conteúdo selecionado"></iframe>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="note-modal" id="noteModal">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <div>
+          <div style="font-weight:800;">Anotação</div>
+          <small id="noteModalDate" style="color:var(--muted);"></small>
+        </div>
+        <button type="button" id="closeModal" aria-label="Fechar" style="background:transparent;border:none;font-weight:800;font-size:1rem;cursor:pointer;">×</button>
+      </div>
+      <textarea id="noteModalText"></textarea>
+      <div class="actions">
+        <button type="button" class="delete-btn" id="deleteModal">Excluir</button>
+        <button type="button" class="save-btn" id="saveModal">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Sidebar toggle ---
+    const sidebar = document.getElementById('sidebar');
+    const toggleSidebar = document.getElementById('toggleSidebar');
+    toggleSidebar.addEventListener('click', ()=> sidebar.classList.toggle('collapsed'));
+    if(window.innerWidth < 800){ sidebar.classList.add('collapsed'); }
+
+    // --- Accordion menu ---
+    document.querySelectorAll('.nav-main[data-group]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const group = btn.dataset.group;
+        const sub = document.querySelector('.nav-sub[data-group="'+group+'"]');
+        if(sub) sub.classList.toggle('open');
+      });
+    });
+
+    const dashboardPanel = document.getElementById('dashboardPanel');
+    const framePanel = document.getElementById('framePanel');
+    const frame = document.getElementById('contentFrame');
+    const frameTitle = document.getElementById('frameTitle');
+    const frameHint = document.getElementById('frameHint');
+    const frameChip = document.getElementById('frameChip');
+
+    function setActiveLink(btn){
+      document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    }
+
+    document.querySelectorAll('.nav-link').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const src = btn.dataset.src;
+        const label = btn.dataset.label || 'Conteúdo';
+        frame.src = src;
+        frameTitle.textContent = label;
+        frameHint.textContent = src;
+        framePanel.classList.add('active');
+        dashboardPanel.style.display='none';
+        setActiveLink(btn);
+      });
+    });
+
+    document.querySelector('.nav-main[data-target="dashboard"]').addEventListener('click',()=>{
+      framePanel.classList.remove('active');
+      dashboardPanel.style.display='block';
+      frame.src='about:blank';
+      setActiveLink(null);
+    });
+
+    // --- Calendário + anotações ---
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthLabel = document.getElementById('monthLabel');
+    const selectedLabel = document.getElementById('selectedLabel');
+    const notesDateLabel = document.getElementById('notesDateLabel');
+    const noteInput = document.getElementById('noteInput');
+    const noteList = document.getElementById('noteList');
+    let current = new Date();
+    let selected = new Date();
+    let modalKey = null;
+    let modalIdx = null;
+    const storageKey = 'tg_admin_notes';
+    const noteModal = document.getElementById('noteModal');
+    const noteModalText = document.getElementById('noteModalText');
+    const noteModalDate = document.getElementById('noteModalDate');
+    const btnCloseModal = document.getElementById('closeModal');
+    const btnSaveModal = document.getElementById('saveModal');
+    const btnDeleteModal = document.getElementById('deleteModal');
+
+    function loadNotes(){
+      try{
+        const saved = localStorage.getItem(storageKey);
+        return saved ? JSON.parse(saved) : {};
+      }catch(_e){return {};}
+    }
+    function saveNotes(data){
+      localStorage.setItem(storageKey,JSON.stringify(data));
+    }
+    function formatKey(date){return date.toISOString().split('T')[0];}
+
+    function renderNotes(){
+      const notes = loadNotes();
+      const key = formatKey(selected);
+      const items = notes[key] || [];
+      noteList.innerHTML='';
+      notesDateLabel.textContent = key;
+      if(!items.length){
+        const empty=document.createElement('div');
+        empty.textContent='Sem anotações.';
+        empty.style.color='var(--muted)';
+        noteList.appendChild(empty);
+        return;
+      }
+      items.forEach((text,idx)=>{
+        const pill=document.createElement('div');
+        pill.className='note-pill';
+        const btnView=document.createElement('button');
+        btnView.className='view-note';
+        btnView.type='button';
+        btnView.textContent=text;
+        btnView.addEventListener('click',()=> openNoteModal(key, idx, text));
+        pill.appendChild(btnView);
+        noteList.appendChild(pill);
+      });
+      refreshIcons();
+    }
+
+    function buildCalendar(){
+      calendarGrid.innerHTML='';
+      const year = current.getFullYear();
+      const month = current.getMonth();
+      const start = new Date(year,month,1);
+      const startDay = start.getDay();
+      const daysInMonth = new Date(year,month+1,0).getDate();
+      monthLabel.textContent = start.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+      selectedLabel.textContent = 'Selecionado: '+formatKey(selected);
+
+      const dow = ['D','S','T','Q','Q','S','S'];
+      dow.forEach(d=>{
+        const el=document.createElement('div');
+        el.className='dow';
+        el.textContent=d;
+        calendarGrid.appendChild(el);
+      });
+
+      for(let i=0;i<startDay;i++){
+        const empty=document.createElement('div');
+        calendarGrid.appendChild(empty);
+      }
+
+      const notes = loadNotes();
+      const todayKey = formatKey(new Date());
+      for(let d=1; d<=daysInMonth; d++){
+        const cell=document.createElement('div');
+        cell.className='day';
+        const date=new Date(year,month,d);
+        const key=formatKey(date);
+        cell.textContent=d;
+        if(key===todayKey) cell.classList.add('today');
+        if(key===formatKey(selected)) cell.classList.add('selected');
+        if(notes[key] && notes[key].length){
+          const dot=document.createElement('div');
+          dot.className='dot';
+          cell.appendChild(dot);
+        }
+        cell.addEventListener('click',()=>{
+          selected=date;
+          buildCalendar();
+          renderNotes();
+        });
+        calendarGrid.appendChild(cell);
+      }
+    }
+
+    function deleteNote(key, idx){
+      const notes = loadNotes();
+      if(!notes[key]) return;
+      notes[key].splice(idx,1);
+      if(!notes[key].length) delete notes[key];
+      saveNotes(notes);
+      renderNotes();
+      buildCalendar();
+    }
+
+    function openNoteModal(key, idx, text){
+      modalKey = key;
+      modalIdx = idx;
+      noteModalText.value = text;
+      noteModalDate.textContent = key;
+      noteModal.classList.add('active');
+    }
+    function closeNoteModal(){
+      modalKey = null;
+      modalIdx = null;
+      noteModal.classList.remove('active');
+    }
+    function saveModalNote(){
+      if(modalKey===null || modalIdx===null) return;
+      const notes = loadNotes();
+      const val = noteModalText.value.trim();
+      if(!val){
+        deleteModalNote();
+        return;
+      }
+      if(notes[modalKey] && notes[modalKey][modalIdx]!==undefined){
+        notes[modalKey][modalIdx]=val;
+        saveNotes(notes);
+        renderNotes();
+        buildCalendar();
+      }
+      closeNoteModal();
+    }
+    function deleteModalNote(){
+      if(modalKey===null || modalIdx===null) return;
+      deleteNote(modalKey, modalIdx);
+      closeNoteModal();
+    }
+
+    document.getElementById('prevMonth').addEventListener('click',()=>{
+      current.setMonth(current.getMonth()-1);
+      buildCalendar();
+    });
+    document.getElementById('nextMonth').addEventListener('click',()=>{
+      current.setMonth(current.getMonth()+1);
+      buildCalendar();
+    });
+    document.getElementById('saveNote').addEventListener('click',()=>{
+      const text = noteInput.value.trim();
+      if(!text) return;
+      const notes = loadNotes();
+      const key = formatKey(selected);
+      notes[key] = notes[key] || [];
+      notes[key].push(text);
+      saveNotes(notes);
+      noteInput.value='';
+      renderNotes();
+      buildCalendar();
+    });
+
+    // relógio
+    const clockNow = document.getElementById('clockNow');
+    function updateClock(){
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      const s = String(now.getSeconds()).padStart(2,'0');
+      clockNow.textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClock,1000);
+    updateClock();
+
+    // calculadora
+    const calcDisplay = document.getElementById('calcDisplay');
+    function appendVal(v){
+      if(calcDisplay.value==='0') calcDisplay.value='';
+      calcDisplay.value += v;
+    }
+    function clearCalc(){calcDisplay.value='0';}
+    function delCalc(){
+      calcDisplay.value = calcDisplay.value.length>1 ? calcDisplay.value.slice(0,-1) : '0';
+    }
+    function evalCalc(){
+      const expr = calcDisplay.value;
+      if(!/^[0-9+\-*/().\s]+$/.test(expr)) {calcDisplay.value='0';return;}
+      try{
+        const result = Function('return '+expr)();
+        calcDisplay.value = isFinite(result) ? String(result) : '0';
+      }catch(_e){calcDisplay.value='0';}
+    }
+    document.querySelectorAll('.calc-grid button[data-val]').forEach(btn=>{
+      btn.addEventListener('click',()=>appendVal(btn.dataset.val));
+    });
+    document.getElementById('calcClear').addEventListener('click',clearCalc);
+    document.getElementById('calcDel').addEventListener('click',delCalc);
+    document.getElementById('calcEq').addEventListener('click',evalCalc);
+
+    btnCloseModal.addEventListener('click',closeNoteModal);
+    btnSaveModal.addEventListener('click',saveModalNote);
+    btnDeleteModal.addEventListener('click',deleteModalNote);
+    noteModal.addEventListener('click',(e)=>{ if(e.target===noteModal) closeNoteModal(); });
+
+    buildCalendar();
+    renderNotes();
+    refreshIcons();
+
+    function refreshIcons(){ if (window.lucide) { lucide.createIcons(); } }
+  </script>
+</body>
+</html>
+
