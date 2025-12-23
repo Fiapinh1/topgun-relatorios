@@ -1,0 +1,428 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Adicionar Pontos ao longo de Linhas (KML)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <style>
+      :root{
+        --bg:#f9fbff;
+        --panel:#ffffff;
+        --soft:#f7fafc;
+        --text:#0f172a;
+        --muted:#64748b;
+        --accent:#c62828;
+        --accent-2:#168f4b;
+        --border:#e2e8f0;
+      }
+      *{box-sizing:border-box;}
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body {
+        font-family: system-ui,-apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(198,40,40,0.08), transparent 36%),
+          radial-gradient(circle at 80% 0%, rgba(22,143,75,0.08), transparent 38%),
+          linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
+        color: var(--text);
+      }
+      .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
+      .nav { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+      .nav a { background: #fff; color: var(--text); text-decoration: none; padding: 9px 14px; border-radius: 999px; font-weight: 600; border:1px solid var(--border); box-shadow:0 10px 20px rgba(15,23,42,0.06); }
+      .nav a:hover { border-color: var(--accent); transform: translateY(-1px); transition:.15s ease; }
+      .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow:0 18px 40px rgba(15,23,42,0.12); }
+      h1 { font-size: 1.4rem; margin: 0 0 8px; color: var(--accent); }
+      p.helper { color: #0f172a; margin: 0 0 12px; font-size: .95rem; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+      .row.single { grid-template-columns: 1fr; }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      label { color: #0f172a; font-size: .9rem; }
+      input[type="number"], input[type="text"], input[type="file"], select {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 1rem;
+      }
+      input[type="checkbox"] { transform: scale(1.05); }
+      .checkbox { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+      button {
+        background: linear-gradient(135deg,var(--accent),#ef5350);
+        color: #fff; border: none; padding: 10px 14px;
+        border-radius: 10px; font-weight: 700; cursor: pointer;
+        box-shadow:0 12px 24px rgba(198,40,40,0.25);
+      }
+      button.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); box-shadow:0 8px 18px rgba(15,23,42,0.06); }
+      button:disabled { opacity: .6; cursor: not-allowed; }
+      .actions { display: flex; gap: 10px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+      .log { margin-top: 16px; background: var(--soft); border: 1px solid var(--border); padding: 12px; border-radius: 10px; white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .9rem; color: var(--text); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+      .success { color: var(--accent-2); }
+      .error { color: var(--accent); }
+      .hint { color: #0f172a; }
+      .footer { margin-top: 24px; color: var(--muted); font-size: .85rem; text-align: center; }
+      a { color: var(--accent); }
+      #map { height: 60vh; width: 100%; margin-top: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow:0 14px 30px rgba(15,23,42,0.08); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <!-- <a href="index.html">Home</a>
+        <a href="gerar_linhas.html">Gerar Linhas</a>
+        <a href="relatorio_cotesia.html">Relatorio</a> -->
+      </div>
+      <div class="card">
+        <h1>Gerador de Pontos ao longo de Linhas (KML)</h1>
+        <p class="helper">Carregue um KML com LineStrings, defina a quantidade total de pontos e exporte um novo KML com as linhas originais mais pontos numerados. Opcionalmente, desenhe áreas de exclusão para evitar pontos nesses trechos.</p>
+
+        <div class="row single">
+          <div class="field">
+            <label for="kmlFile">Arquivo KML de entrada</label>
+            <input id="kmlFile" type="file" accept=".kml,application/vnd.google-earth.kml+xml" />
+            <div class="hint">O arquivo deve conter um ou mais &lt;LineString&gt;.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="numPoints">Quantidade total de pontos</label>
+            <input id="numPoints" type="number" min="1" step="1" value="10" />
+          </div>
+          <div class="field">
+            <label for="prefixo">Prefixo do nome (opcional)</label>
+            <input id="prefixo" type="text" placeholder="Ex.: PT-" />
+          </div>
+        </div>
+
+        <div class="row single">
+          <div class="checkbox">
+            <input id="includeEndpoints" type="checkbox" />
+            <label for="includeEndpoints">Incluir extremidades (0% e 100%)</label>
+          </div>
+          <div class="checkbox">
+            <input id="warnSmallLines" type="checkbox" checked />
+            <label for="warnSmallLines">Garantir cobertura por linha quando possível</label>
+          </div>
+          <div class="checkbox">
+            <input id="applyExclusions" type="checkbox" checked />
+            <label for="applyExclusions">Aplicar áreas de exclusão desenhadas</label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnGerar" disabled>Gerar KML</button>
+          <a id="downloadLink" class="secondary" href="#" download style="display:none;">Baixar KML Gerado</a>
+          <button id="btnExemplo" class="secondary" title="Carrega um exemplo simples de KML de linhas">Carregar Exemplo</button>
+          <button id="btnLimparPoligonos" class="secondary" title="Remove todas as áreas de exclusão">Limpar Áreas</button>
+        </div>
+
+        <div id="log" class="log hint">Aguardando arquivo KML...</div>
+        <div id="map"></div>
+      </div>
+
+      <div class="footer">Processamento 100% no navegador.</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script>
+      const el = (id) => document.getElementById(id);
+      const logEl = el('log');
+      const fileEl = el('kmlFile');
+      const numEl = el('numPoints');
+      const prefixEl = el('prefixo');
+      const endpointsEl = el('includeEndpoints');
+      const warnSmallLinesEl = el('warnSmallLines');
+      const applyExclusionsEl = el('applyExclusions');
+      const btnEl = el('btnGerar');
+      const dlEl = el('downloadLink');
+      const btnExemplo = el('btnExemplo');
+      const btnLimparPoligonos = el('btnLimparPoligonos');
+
+      let loadedKmlText = '';
+      let loadedKmlName = 'entrada.kml';
+      let currentLines = [];
+      let currentPoints = [];
+
+      let map, baseLayers, overlayLayers;
+      let lineLayer = L.featureGroup();
+      let pointLayer = L.featureGroup();
+      let exclusionLayer = L.featureGroup();
+
+      function initMap() {
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' });
+        const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagery © Esri' });
+        map = L.map('map', { center: [-14.235, -51.925], zoom: 4, layers: [esriSat] });
+        baseLayers = { 'Satélite (Esri)': esriSat, 'OSM': osm };
+        overlayLayers = { 'Linhas': lineLayer, 'Pontos': pointLayer, 'Áreas de exclusão': exclusionLayer };
+        L.control.layers(baseLayers, overlayLayers).addTo(map);
+        lineLayer.addTo(map); pointLayer.addTo(map); exclusionLayer.addTo(map);
+
+        const drawControl = new L.Control.Draw({
+          position: 'topleft',
+          draw: {
+            polygon: { allowIntersection: false, showArea: true, shapeOptions: { color: '#f59e0b', weight: 2, fillOpacity: 0.2 } },
+            polyline: false, rectangle: false, circle: false, marker: false, circlemarker: false
+          },
+          edit: { featureGroup: exclusionLayer, remove: true }
+        });
+        map.addControl(drawControl);
+        map.on(L.Draw.Event.CREATED, (e) => exclusionLayer.addLayer(e.layer));
+      }
+
+      fileEl.addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) { btnEl.disabled = true; return; }
+        loadedKmlName = f.name || 'entrada.kml';
+        loadedKmlText = await f.text();
+        const { linesCount, placemarks, lines } = scanKmlDetailed(loadedKmlText);
+        if (linesCount === 0) { logMsg('Nenhum LineString encontrado no KML.', true); btnEl.disabled = true; return; }
+        currentLines = lines; currentPoints = [];
+        drawLinesOnMap(currentLines); pointLayer.clearLayers();
+        btnEl.disabled = false;
+        logMsg(`Arquivo carregado: ${f.name} - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
+      });
+
+      btnExemplo.addEventListener('click', () => {
+        loadedKmlName = 'exemplo.kml';
+        loadedKmlText = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Linhas Exemplo</name>
+    <Placemark>
+      <name>Linha A</name>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-46.7000,-23.6000,0 -46.6900,-23.5900,0</coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Linha B</name>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-46.6900,-23.6000,0 -46.6800,-23.6000,0 -46.6700,-23.5900,0</coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>`;
+        const { linesCount, placemarks, lines } = scanKmlDetailed(loadedKmlText);
+        currentLines = lines; currentPoints = [];
+        drawLinesOnMap(currentLines); pointLayer.clearLayers();
+        btnEl.disabled = false;
+        logMsg(`Exemplo carregado - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
+      });
+
+      btnLimparPoligonos.addEventListener('click', () => { exclusionLayer.clearLayers(); logMsg('Áreas de exclusão removidas.'); });
+
+      btnEl.addEventListener('click', () => {
+        try {
+          if (!loadedKmlText) { logMsg('Nenhum arquivo KML carregado.', true); return; }
+          const N = parseInt(numEl.value, 10); if (!(N >= 1)) { logMsg('Quantidade de pontos deve ser >= 1.', true); return; }
+          const includeEnds = !!endpointsEl.checked;
+          const prefixo = (prefixEl.value || '').trim();
+          const result = processKml(loadedKmlText, { totalPoints: N, includeEndpoints: includeEnds, prefix: prefixo, warnSmallLines: !!warnSmallLinesEl.checked, applyExclusions: !!applyExclusionsEl.checked });
+          if (!result || !result.kml) { logMsg('Falha ao gerar KML.', true); return; }
+          const outName = suggestOutName(loadedKmlName);
+          const blob = new Blob([result.kml], { type: 'application/vnd.google-earth.kml+xml' });
+          const url = URL.createObjectURL(blob);
+          dlEl.href = url; dlEl.download = outName; dlEl.style.display = 'inline-block';
+          currentPoints = result.pointsForMap; drawPointsOnMap(currentPoints);
+          const msg = `Gerado com sucesso: ${result.totalPoints} ponto(s) em ${result.linesProcessed} linha(s).` + (result.warn || '');
+          logMsg(msg, false, true);
+        } catch (err) { console.error(err); logMsg('Erro inesperado ao processar o KML.', true); }
+      });
+
+      function suggestOutName(name) { const idx = name.lastIndexOf('.'); return (idx > 0 ? name.slice(0, idx) : name) + '-pontos.kml'; }
+      function logMsg(msg, isError = false, success = false) { logEl.className = 'log ' + (isError ? 'error' : success ? 'success' : 'hint'); logEl.textContent = msg; }
+
+      function scanKmlDetailed(kmlText) {
+        try {
+          const doc = new DOMParser().parseFromString(kmlText, 'text/xml');
+          const placemarks = doc.getElementsByTagName('Placemark');
+          let linesCount = 0; const lines = [];
+          for (let i = 0; i < placemarks.length; i++) {
+            const pm = placemarks[i];
+            const nameEl = pm.getElementsByTagName('name')[0];
+            const pmName = nameEl ? nameEl.textContent : `Linha ${i+1}`;
+            const ls = pm.getElementsByTagName('LineString');
+            for (let j = 0; j < ls.length; j++) {
+              const coordsEl = ls[j].getElementsByTagName('coordinates')[0];
+              if (!coordsEl) continue;
+              const coords = parseCoordinates((coordsEl.textContent || ''));
+              if (coords.length >= 2) { lines.push({ name: pmName, coords }); linesCount++; }
+            }
+          }
+          return { linesCount, placemarks: placemarks.length, lines };
+        } catch { return { linesCount: 0, placemarks: 0, lines: [] }; }
+      }
+
+      function parseCoordinates(text) {
+        const tokens = (text || '').trim().split(/\s+/).filter(Boolean);
+        const coords = [];
+        for (const tok of tokens) {
+          const parts = tok.split(',');
+          if (parts.length >= 2) {
+            const lon = parseFloat(parts[0]);
+            const lat = parseFloat(parts[1]);
+            const alt = parts.length >= 3 ? parseFloat(parts[2]) : 0;
+            if (Number.isFinite(lon) && Number.isFinite(lat)) coords.push({ lon, lat, alt });
+          }
+        }
+        return coords;
+      }
+
+      function processKml(kmlText, opts) {
+        const { totalPoints, includeEndpoints, prefix, warnSmallLines, applyExclusions } = opts;
+        const doc = new DOMParser().parseFromString(kmlText, 'text/xml');
+        const lineEntries = [];
+        const placemarks = doc.getElementsByTagName('Placemark');
+        for (let i = 0; i < placemarks.length; i++) {
+          const pm = placemarks[i];
+          const nameEl = pm.getElementsByTagName('name')[0];
+          const pmName = nameEl ? nameEl.textContent : `Linha ${i+1}`;
+          const lines = pm.getElementsByTagName('LineString');
+          for (let j = 0; j < lines.length; j++) {
+            const coordsEl = lines[j].getElementsByTagName('coordinates')[0]; if (!coordsEl) continue;
+            const coords = parseCoordinates(coordsEl.textContent || ''); if (coords.length >= 2) lineEntries.push({ name: pmName, coords });
+          }
+        }
+        if (lineEntries.length === 0) return { kml: null, totalPoints: 0, linesProcessed: 0 };
+
+        const segNet = applyExclusions ? buildSegmentsMergedWithExclusions(lineEntries) : buildSegments(lineEntries);
+        if (segNet.totalLength <= 0 || segNet.segments.length === 0) return { kml: null, totalPoints: 0, linesProcessed: 0 };
+
+        const N = Math.max(1, totalPoints | 0);
+        const perLine = apportionCountsByLine(segNet.segments, N);
+
+        let coveredLines = 0; const points = []; let counter = 1;
+        for (const li of perLine) {
+          const segs = segNet.segments.filter(s => s.lineId === li.lineId);
+          if (!segs.length) continue;
+          if (li.count > 0) coveredLines++;
+          const pts = generatePointsOnSegments(segs, li.count, includeEndpoints);
+          for (const p of pts) { points.push({ name: buildLabel(counter, prefix), lon: p.lon, lat: p.lat, alt: p.alt ?? 0 }); counter++; }
+        }
+
+        const outKml = buildOutputKml(doc, points);
+        const pointsForMap = points.map(p => ({ lat: p.lat, lon: p.lon, name: p.name }));
+        let warn = '';
+        if (warnSmallLines && coveredLines < perLine.length && N >= perLine.length) warn = `
+Aviso: algumas linhas tem comprimento muito pequeno (ou foram totalmente excluidas) e não receberam pontos.`;
+        return { kml: outKml, totalPoints: points.length, linesProcessed: perLine.length, pointsForMap, warn };
+      }
+
+      function buildSegments(lineEntries) {
+        const segments = []; let total = 0;
+        for (let lineId = 0; lineId < lineEntries.length; lineId++) {
+          const entry = lineEntries[lineId]; const cs = entry.coords;
+          for (let i = 0; i < cs.length - 1; i++) { const a = cs[i]; const b = cs[i+1]; const len = haversineMeters(a, b); if (len > 0) { segments.push({ a, b, len, lineId, lineName: entry.name }); total += len; } }
+        }
+        return { segments, totalLength: total };
+      }
+
+      function getExclusionPolygons() {
+        try { const gj = exclusionLayer.toGeoJSON(); const polys = []; if (!gj || !gj.features) return polys; for (const f of gj.features) { if (f && f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')) polys.push(f); } return polys; } catch { return []; }
+      }
+
+      function buildSegmentsMergedWithExclusions(lineEntries) {
+        const full = buildSegments(lineEntries);
+        const polys = getExclusionPolygons();
+        if (!polys.length || typeof turf === 'undefined') return full;
+        const excl = buildSegmentsExcluding(lineEntries);
+        if (!excl.segments.length) return full;
+        const present = new Set(excl.segments.map(s => s.lineId));
+        let total = excl.totalLength;
+        const segs = excl.segments.slice();
+        for (let lineId = 0; lineId < lineEntries.length; lineId++) {
+          if (!present.has(lineId)) {
+            for (const s of full.segments) {
+              if (s.lineId === lineId) { segs.push(s); total += s.len; }
+            }
+          }
+        }
+        return { segments: segs, totalLength: total };
+      }
+
+      function buildSegmentsExcluding(lineEntries) {
+        const polys = getExclusionPolygons(); if (!polys.length || typeof turf === 'undefined') return buildSegments(lineEntries);
+        const boundaryCoords = [];
+        for (const pg of polys) { try { const b = turf.polygonToLine(pg); if (b.geometry.type === 'LineString') boundaryCoords.push(b.geometry.coordinates); else if (b.geometry.type === 'MultiLineString') boundaryCoords.push(...b.geometry.coordinates); } catch {} }
+        const splitter = boundaryCoords.length ? turf.multiLineString(boundaryCoords) : null;
+        const segments = []; let total = 0;
+        for (let lineId = 0; lineId < lineEntries.length; lineId++) {
+          const entry = lineEntries[lineId]; const coords = entry.coords.map(c => [c.lon, c.lat]);
+          let line = turf.lineString(coords); let pieces; try { pieces = splitter ? turf.lineSplit(line, splitter) : turf.featureCollection([line]); } catch { pieces = turf.featureCollection([line]); }
+          for (const piece of pieces.features) {
+            const lenKm = turf.length(piece, { units: 'kilometers' }); if (lenKm <= 0) continue;
+            let inside = false; try { const mid = turf.along(piece, lenKm / 2, { units: 'kilometers' }); for (const pg of polys) { if (turf.booleanPointInPolygon(mid, pg)) { inside = true; break; } } } catch {}
+            if (inside) continue;
+            const pcs = piece.geometry.coordinates;
+            for (let i = 0; i < pcs.length - 1; i++) { const a = { lon: pcs[i][0], lat: pcs[i][1], alt: 0 }; const b = { lon: pcs[i+1][0], lat: pcs[i+1][1], alt: 0 }; const m = haversineMeters(a, b); if (m > 0) { segments.push({ a, b, len: m, lineId, lineName: entry.name }); total += m; } }
+          }
+        }
+        return { segments, totalLength: total };
+      }
+
+      function apportionCountsByLine(segments, totalPoints) {
+        const byLine = new Map();
+        for (const s of segments) { let rec = byLine.get(s.lineId); if (!rec) { rec = { lineId: s.lineId, name: s.lineName || `Linha ${s.lineId+1}`, length: 0 }; byLine.set(s.lineId, rec); } rec.length += s.len; }
+        const lines = Array.from(byLine.values()).filter(l => l.length > 0).sort((a,b) => a.lineId - b.lineId);
+        const L = lines.length; if (L === 0) return [];
+        const totalLen = lines.reduce((a,b) => a + b.length, 0);
+        const N = Math.max(0, totalPoints|0);
+        let counts = new Array(L).fill(0);
+        if (N === 0) return lines.map(l => ({ lineId: l.lineId, count: 0 }));
+        if (N < L) { const order = lines.map((l,i)=>({i,len:l.length})).sort((x,y)=>y.len - x.len); for (let k=0;k<N;k++) counts[order[k].i] = 1; }
+        else { counts = counts.map(()=>1); let extras = N - L; if (extras > 0) { const ideals = lines.map(l => (extras * (l.length / totalLen))); const floors = ideals.map(x => Math.floor(x)); let used = floors.reduce((a,b)=>a+b,0); for (let i=0;i<floors.length;i++) counts[i] += floors[i]; let leftover = extras - used; const fracs = ideals.map((x,i)=>({i, frac: x - Math.floor(x)})).sort((a,b)=>b.frac - a.frac); for (let j=0;j<leftover;j++) counts[fracs[j % fracs.length].i] += 1; } }
+        return lines.map((l,i)=>({ lineId: l.lineId, count: counts[i] }));
+      }
+
+      function generatePointsOnSegments(segments, count, includeEndpoints) {
+        if (!segments || segments.length === 0 || count <= 0) return [];
+        const total = segments.reduce((a,s)=>a+s.len,0); if (total <= 0) return [];
+        const targets = [];
+        if (includeEndpoints) { if (count === 1) targets.push(total/2); else for (let i=0;i<count;i++) targets.push((i/(count-1))*total); }
+        else { for (let i=1;i<=count;i++) targets.push((i/(count+1))*total); }
+        const out = [];
+        for (const d of targets) { let acc = 0; for (let i=0;i<segments.length;i++) { const s = segments[i]; if (d <= acc + s.len || i === segments.length - 1) { const remain = d - acc; const t = s.len > 0 ? Math.min(Math.max(remain / s.len, 0), 1) : 0; const p = lerpLonLat(s.a, s.b, t); out.push({ lon: p.lon, lat: p.lat, alt: lerp(s.a.alt ?? 0, s.b.alt ?? 0, t) }); break; } acc += s.len; } }
+        return out;
+      }
+
+      function buildLabel(n, prefix = '') { const s = String(n); const padLen = Math.max(3, s.length); return (prefix || '') + s.padStart(padLen, '0'); }
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function lerpLonLat(a, b, t) { return { lon: lerp(a.lon, b.lon, t), lat: lerp(a.lat, b.lat, t) }; }
+      function toRad(deg) { return deg * Math.PI / 180; }
+      function haversineMeters(a, b) { const R = 6371000; const dLat = toRad(b.lat - a.lat); const dLon = toRad(b.lon - a.lon); const lat1 = toRad(a.lat); const lat2 = toRad(b.lat); const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2; return 2 * R * Math.atan2(Math.sqrt(h), Math.sqrt(1-h)); }
+
+      function buildOutputKml(sourceDoc, points) {
+        const kmlDoc = sourceDoc.implementation.createDocument(null, null);
+        let kmlRoot = sourceDoc.getElementsByTagName('kml')[0];
+        if (kmlRoot) kmlRoot = kmlRoot.cloneNode(true); else { kmlRoot = sourceDoc.createElement('kml'); kmlRoot.setAttribute('xmlns', 'http://www.opengis.net/kml/2.2'); kmlRoot.appendChild(sourceDoc.createElement('Document')); }
+        let documentNode = kmlRoot.getElementsByTagName('Document')[0]; if (!documentNode) { documentNode = sourceDoc.createElement('Document'); kmlRoot.appendChild(documentNode); }
+        const styleId = 'ptStyle';
+        if (!kmlRoot.querySelector(`#${styleId}`)) { const style = sourceDoc.createElement('Style'); style.setAttribute('id', styleId); const iconStyle = sourceDoc.createElement('IconStyle'); const color = sourceDoc.createElement('color'); color.textContent = 'ff00a5ff'; const scale = sourceDoc.createElement('scale'); scale.textContent = '1.1'; const icon = sourceDoc.createElement('Icon'); const href = sourceDoc.createElement('href'); href.textContent = 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'; icon.appendChild(href); iconStyle.appendChild(color); iconStyle.appendChild(scale); iconStyle.appendChild(icon); style.appendChild(iconStyle); documentNode.appendChild(style); }
+        const folder = sourceDoc.createElement('Folder'); const fname = sourceDoc.createElement('name'); fname.textContent = 'Pontos Gerados'; folder.appendChild(fname);
+        for (const p of points) { const pm = sourceDoc.createElement('Placemark'); const nm = sourceDoc.createElement('name'); nm.textContent = p.name; pm.appendChild(nm); const styleUrl = sourceDoc.createElement('styleUrl'); styleUrl.textContent = `#${styleId}`; pm.appendChild(styleUrl); const pt = sourceDoc.createElement('Point'); const coords = sourceDoc.createElement('coordinates'); coords.textContent = `${Number(p.lon).toFixed(6)},${Number(p.lat).toFixed(6)},${Number(p.alt ?? 0).toFixed(2)}`; pt.appendChild(coords); pm.appendChild(pt); folder.appendChild(pm); }
+        documentNode.appendChild(folder); kmlDoc.appendChild(kmlRoot);
+        const xml = new XMLSerializer().serializeToString(kmlDoc); return xml.startsWith('<?xml') ? xml : `<?xml version="1.0" encoding="UTF-8"?>
+${xml}`;
+      }
+
+      function drawLinesOnMap(lines) {
+        lineLayer.clearLayers(); const latlngsForBounds = [];
+        for (const ln of lines) { const latlngs = ln.coords.map(c => [c.lat, c.lon]); if (latlngs.length >= 2) { const poly = L.polyline(latlngs, { color: '#c62828', weight: 3 }); poly.bindPopup(ln.name); lineLayer.addLayer(poly); latlngsForBounds.push(...latlngs); } }
+        if (latlngsForBounds.length) map.fitBounds(L.latLngBounds(latlngsForBounds), { padding: [20, 20] });
+      }
+      function drawPointsOnMap(points) {
+        pointLayer.clearLayers(); const latlngsForBounds = [];
+        for (const p of points) { const m = L.circleMarker([p.lat, p.lon], { radius: 5, color: '#168f4b', weight: 2, fillOpacity: 0.8 }); m.bindTooltip(p.name, { permanent: false, direction: 'top' }); pointLayer.addLayer(m); latlngsForBounds.push([p.lat, p.lon]); }
+        if (latlngsForBounds.length) map.fitBounds(L.latLngBounds(latlngsForBounds), { padding: [20, 20] });
+      }
+
+      window.addEventListener('DOMContentLoaded', initMap);
+    </script>
+  </body>
+</html>

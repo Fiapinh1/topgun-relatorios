@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mesclar Talhões (KML ⇄ KML/Shapefile)</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Edição -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
+  <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
+
+  <!-- Geoprocessamento / Conversões -->
+  <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+  <script src="https://unpkg.com/@tmcw/togeojson@5.8.0/dist/togeojson.umd.js"></script>
+  <script src="https://unpkg.com/tokml@0.4.0/tokml.js"></script>
+  <!-- Raster GeoTIFF no Leaflet -->
+  <script src="https://unpkg.com/geotiff/dist-browser/geotiff.min.js"></script>
+  <script src="https://unpkg.com/georaster/dist/georaster.browser.min.js"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+
+  <!-- Exportação -->
+  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <!-- shp-write local (baixada previamente) -->
+  <script src="assets/vendor/shp-write/shpwrite.js"></script>
+
+  <style>
+    :root{
+      --bg:#f9fbff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --accent:#c62828;
+      --accent-2:#168f4b;
+      --border:#e2e8f0;
+    }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:
+      radial-gradient(circle at 20% 20%,rgba(198,40,40,0.08),transparent 36%),
+      radial-gradient(circle at 80% 0%,rgba(22,143,75,0.08),transparent 42%),
+      linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
+      color: var(--text);
+    }
+    .app { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+    header { display: flex; gap: .75rem; align-items: center; padding: .75rem; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 5; box-shadow:0 10px 20px rgba(15,23,42,0.08); }
+    header h1 { font-size: 1rem; margin: 0 .5rem 0 0; font-weight: 700; color:var(--accent); letter-spacing:.02em; }
+    header .grow { flex: 1; }
+    .btn { background: #fff; color: var(--text); border: 1px solid var(--border); padding: .5rem .75rem; border-radius: .75rem; cursor: pointer; box-shadow:0 8px 18px rgba(15,23,42,0.06); }
+    .btn:hover { border-color: var(--accent); background: rgba(198,40,40,0.06); }
+    .btn.primary { background: linear-gradient(135deg,var(--accent),#ef5350); border-color: transparent; color:#fff; box-shadow:0 12px 24px rgba(198,40,40,0.24); }
+    .btn.primary:hover { filter:brightness(1.05); }
+    .btn.ghost { background: transparent; border-color: #3a3f4a; }
+    .controls { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .controls label { font-size: .85rem; opacity: .9; }
+    .controls input[type="number"] { width: 8rem; padding: .4rem .5rem; background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .4rem; }
+    .layout { display: grid; grid-template-columns: 320px 1fr; height: 100%; gap:12px; }
+    @media (max-width: 900px){ .layout { grid-template-columns: 1fr; grid-template-rows: 40vh 1fr; } }
+    aside { border: 1px solid var(--border); background: var(--card); overflow: auto; border-radius:14px; box-shadow:0 14px 28px rgba(15,23,42,0.08); }
+    aside header { position: sticky; top: 0; background: var(--card); border-bottom:1px solid var(--border); }
+    #map { height: 100%; width: 100%; }
+    .list { padding: .75rem; display: grid; gap: .5rem; }
+    .item { display: flex; gap: .5rem; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid var(--border); border-radius: .5rem; padding: .5rem .6rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+    .pill { font-size: .75rem; opacity: .9; background: #ffc107; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--border); color: #0f172a; }
+    .help { font-size: .8rem; opacity: .9; padding: .4rem .75rem; color:var(--muted); }
+    /* Notificação central */
+    .notify-center { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.98);
+      background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .6rem; padding: .7rem 1rem;
+      box-shadow: 0 10px 30px rgba(15,23,42,.18); z-index: 9999; opacity: 0; transition: opacity .18s ease, transform .18s ease;
+      pointer-events: none; font-size: .95rem; }
+    .notify-center.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .notify-center.success { border-color: var(--accent-2); }
+    .notify-center.error { border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Mesclar Talhões</h1>
+      <div class="controls">
+        <input id="fileInput" type="file" accept=".kml" multiple />
+        <button id="btnClear" class="btn ghost" title="Limpar tudo">Limpar</button> 
+      </div>
+      <div class="grow"></div>
+      <div class="controls">
+        <label for="tol">Tolerância (m):</label>
+        <input id="tol" type="number" min="0" step="1" value="5" />
+        <button id="btnMerge" class="btn primary">Mesclar selecionados</button>
+        <button id="btnEdit" class="btn">Editar</button>
+        <button id="btnSaveEdits" class="btn">Salvar edições</button>
+        <button id="btnCancelEdits" class="btn ghost">Cancelar</button>
+        <button id="btnExportKML" class="btn">Exportar KML</button>
+        <button id="btnExportSHP" class="btn">Exportar Shapefile</button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside>
+        <header style="padding:.6rem .75rem; border-bottom:1px solid #2a2d34; display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
+          <div>
+            <div style="font-weight:600; font-size:.95rem;">Camadas e Talhões</div>
+            <div class="muted" style="font-size:.8rem;">Clique no mapa ou marque na lista</div>
+          </div>
+          <div style="display:flex; gap:.4rem; align-items:center;">
+            <div class="pill"><span id="countSelected">0</span> selecionados</div>
+            <div class="pill"><span id="haSelected">0.00</span> ha</div>
+          </div>
+        </header>
+        <div id="list" class="list"></div>
+        <div class="footer">
+          <button id="btnSelectAll" class="btn ghost">Selecionar todos</button>
+          <button id="btnSelectNone" class="btn ghost">Limpar seleção</button>
+        </div>
+      </aside>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script>
+    // Estado
+    let map;
+    let nextId = 1;
+    const allItems = new Map(); // id -> { id, layer, feature, name, fileName }
+    const selectedIds = new Set();
+    const resultLayers = [];
+    const resultFeatures = [];
+    const resultColors = [];
+    let lastResult = null; // FeatureCollection com todos os resultados
+    let editActive = false;
+
+    // Estilos
+    const baseStyle = { color: '#3b82f6', weight: 2, fillColor: '#3b82f6', fillOpacity: 0.15 };
+    const selectedStyle = { color: '#22c55e', weight: 3, fillColor: '#22c55e', fillOpacity: 0.25 };
+
+    // Notificação central
+    function notifyCenter(message, type = 'success', ms = 1800){
+      try {
+        const el = document.createElement('div');
+        el.className = 'notify-center ' + (type || '');
+        el.textContent = String(message);
+        document.body.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+        setTimeout(() => { el.classList.remove('show'); setTimeout(() => { try { el.remove(); } catch {} }, 220); }, ms);
+      } catch {}
+    }
+
+    function initMap(){
+      map = L.map('map', { zoomControl: true });
+      const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 });
+      const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri, Maxar', maxZoom: 19 });
+      const esriLabels = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', opacity: .8, maxZoom: 19 });
+      let esriFailed = 0; esriSat.on('tileerror', () => { esriFailed++; if(esriFailed>=3){ if(map.hasLayer(esriSat)) map.removeLayer(esriSat); osm.addTo(map); } });
+      esriSat.addTo(map); esriLabels.addTo(map);
+      L.control.layers({ 'Satélite (Esri)': esriSat, 'Rua (OSM)': osm }, { 'Rótulos (Esri)': esriLabels }, { collapsed: true, position: 'topleft' }).addTo(map);
+      map.setView([-15.78,-47.93], 4);
+      map.whenReady(() => { try { map.invalidateSize(true); } catch {} }); setTimeout(() => { try { map.invalidateSize(true); } catch {} }, 300);
+
+      if(map.pm){
+        map.pm.addControls({ position:'topleft', drawMarker:false, drawPolyline:false, drawRectangle:false, drawCircle:false, drawCircleMarker:false, drawPolygon:false, editMode:true, dragMode:false, cutPolygon:true, removalMode:true });
+      }
+    }
+
+    function addFeatureToMap(feature, name, fileName){
+      const id = nextId++;
+      const layer = L.geoJSON(feature, { style: () => ({ ...baseStyle }) }).addTo(map);
+      layer.eachLayer(l => { l.on('click', () => toggleSelect(id)); l.options.pmIgnore = true; });
+      const item = { id, layer, feature, name, fileName };
+      allItems.set(id, item);
+      appendListItem(item);
+    }
+
+    function appendListItem(item){
+      const list = document.getElementById('list');
+      const el = document.createElement('div'); el.className = 'item'; el.id = 'item-'+item.id;
+      el.innerHTML = `<div style="display:flex;gap:.5rem;align-items:center;">
+          <input type="checkbox" id="chk-${item.id}" />
+          <div>
+            <div class="name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+            <div class="muted" style="font-size:.75rem;opacity:.8;">${escapeHtml(item.fileName)}</div>
+          </div>
+        </div>
+        <span class="pill">ID ${item.id}</span>`;
+      list.appendChild(el);
+      document.getElementById('chk-'+item.id).addEventListener('change', e => { if(e.target.checked) select(item.id); else deselect(item.id); });
+    }
+
+    function select(id){ if(!allItems.has(id) || selectedIds.has(id)) return; selectedIds.add(id); const {layer}=allItems.get(id); layer.setStyle({...selectedStyle}); const chk=document.getElementById('chk-'+id); if(chk && !chk.checked) chk.checked = true; updateSelectedCount(); }
+    function deselect(id){ if(!allItems.has(id) || !selectedIds.has(id)) return; selectedIds.delete(id); const {layer}=allItems.get(id); layer.setStyle({...baseStyle}); const chk=document.getElementById('chk-'+id); if(chk && chk.checked) chk.checked = false; updateSelectedCount(); }
+    function toggleSelect(id){ selectedIds.has(id) ? deselect(id) : select(id); }
+
+    function computeSelectedAreaHa(){ try { let totalM2=0; for(const id of selectedIds){ const it=allItems.get(id); if(!it||!it.feature) continue; const a=turf.area(it.feature); if(Number.isFinite(a)) totalM2+=a; } return Math.round((totalM2/10000)*100)/100; } catch { return 0; } }
+    function updateSelectedCount(){ const n=selectedIds.size; const ha=computeSelectedAreaHa(); const elN=document.getElementById('countSelected'); const elHa=document.getElementById('haSelected'); if(elN) elN.textContent=String(n); if(elHa) elHa.textContent=ha.toFixed(2); }
+
+    function clearAll(){ for(const {layer} of allItems.values()){ try{ map.removeLayer(layer);}catch{} } allItems.clear(); selectedIds.clear(); updateSelectedCount(); document.getElementById('list').innerHTML=''; for(const l of resultLayers){ try{ map.removeLayer(l);}catch{} } resultLayers.length=0; resultFeatures.length=0; resultColors.length=0; lastResult=null; }
+
+    function fitAllBounds(){ const group = L.featureGroup([...Array.from(allItems.values()).map(it=>it.layer)]); if(group.getLayers().length){ map.fitBounds(group.getBounds().pad(0.15)); } }
+
+    async function readKmlText(file){ try { return await file.text(); } catch {} try { const ab=await file.arrayBuffer(); return new TextDecoder('utf-8').decode(ab); } catch {} try { const ab=await file.arrayBuffer(); return new TextDecoder('windows-1252').decode(ab); } catch {} return ''; }
+    function extractPolygonFeaturesFromFeature(src){ const props=(src&&src.properties)||{}; const name=props.name||props.NOME||props.Nome; const g=src&&src.geometry; const makeF=geom=>({ type:'Feature', properties:{ ...props, name }, geometry: geom }); if(!g) return []; if(g.type==='Polygon'||g.type==='MultiPolygon') return [makeF(g)]; if(g.type==='GeometryCollection'&&Array.isArray(g.geometries)){ const out=[]; g.geometries.forEach(gg=>{ if(gg&&(gg.type==='Polygon'||gg.type==='MultiPolygon')) out.push(makeF(gg)); }); return out; } return []; }
+
+    async function handleFiles(files){
+      for(const file of files){ if(!file.name.toLowerCase().endsWith('.kml')) continue; const text = await readKmlText(file); if(!text.trim()) continue; const xml = new DOMParser().parseFromString(text, 'text/xml'); if(!toGeoJSON || !toGeoJSON.kml){ alert('toGeoJSON indisponível.'); return; } const gj = toGeoJSON.kml(xml); if(!gj || !gj.features) continue; let count=0; gj.features.forEach((f,idx)=>{ const list = extractPolygonFeaturesFromFeature(f); list.forEach((pf,k)=>{ const nm = pf.properties && pf.properties.name ? pf.properties.name : `${file.name} #${idx+1}${list.length>1?'-'+(k+1):''}`; addFeatureToMap(pf,nm,file.name); count++; }); }); console.log(`Carregado: ${file.name} (${count} polígonos)`); }
+      fitAllBounds();
+    }
+
+    function safeClean(feature){ try { const cleaned = turf.buffer(feature, 0, { units:'meters' }); if(cleaned && cleaned.geometry) return cleaned; } catch {} return feature; }
+    function safeUnion(a,b){ try { const u=turf.union(a,b); if(u) return u; } catch {} try { const fc={ type:'FeatureCollection', features:[a,b] }; const c=turf.combine(fc); if(c&&c.features&&c.features[0]) return c.features[0]; } catch {} return a; }
+    function toSingleFeature(geo){ if(!geo) return null; if(geo.type==='Feature') return geo; if(geo.type==='FeatureCollection'){ if(!geo.features||!geo.features.length) return null; let acc=geo.features[0]; for(let i=1;i<geo.features.length;i++) acc=safeUnion(acc,geo.features[i]); return acc; } return { type:'Feature', properties:{}, geometry: geo.geometry||geo } }
+
+    function getSelectedFeatures(){ const feats=[]; for(const id of selectedIds){ const it=allItems.get(id); if(it) feats.push(it.feature); } return feats; }
+
+    function mergeSelected(){
+      const feats = getSelectedFeatures(); if(!feats.length){ alert('Selecione ao menos um talhão.'); return; }
+      const tolM = Number(document.getElementById('tol').value||0);
+      try {
+        const cleaned = feats.map(safeClean);
+        let merged = null;
+        if(tolM>0){ const buffered = cleaned.map(f => turf.buffer(f,tolM,{units:'meters'})); merged = buffered.reduce((acc,cur)=>acc?safeUnion(acc,cur):cur,null); try{ const shr = turf.buffer(merged,-tolM,{units:'meters'}); if(shr&&shr.geometry) merged = shr; } catch{} } else { merged = cleaned.reduce((acc,cur)=>acc?safeUnion(acc,cur):cur,null); }
+        if(!merged){ alert('Falha ao mesclar.'); return; }
+        const one = toSingleFeature(merged); if(!one){ alert('Falha ao normalizar.'); return; }
+        // remove originais selecionados
+        for(const id of Array.from(selectedIds)){ const it = allItems.get(id); if(it){ try{ map.removeLayer(it.layer);}catch{} const row=document.getElementById('item-'+id); if(row&&row.parentNode) row.parentNode.removeChild(row); allItems.delete(id); } }
+        selectedIds.clear(); updateSelectedCount();
+        // adicionar resultado com cor distinta
+        resultFeatures.push(one);
+        const palette=['#ef4444','#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6','#e11d48','#10b981','#6366f1','#84cc16'];
+        const color = palette[(resultFeatures.length-1)%palette.length]; resultColors.push(color);
+        const rLayer = L.geoJSON(one, { style: ()=>({ color, weight:3, fillColor:color, fillOpacity:.25 }) }).addTo(map);
+        resultLayers.push(rLayer);
+        try{ map.fitBounds(rLayer.getBounds().pad(0.15)); }catch{}
+        lastResult = { type:'FeatureCollection', features:[...resultFeatures] };
+        notifyCenter('Mescla concluída','success',1600);
+      } catch(e){ console.error(e); alert('Erro durante a mescla.'); }
+    }
+
+    function sanitizeForKml(fc){ try{ const out={ type:'FeatureCollection', features:[] }; (fc.features||[]).forEach((f,i)=>{ if(!f||!f.geometry) return; const src=f.properties||{}; const props={}; for(const k in src){ if(!Object.prototype.hasOwnProperty.call(src,k)) continue; const v=src[k]; if(v===undefined||v===null) props[k]=''; else if(typeof v==='object'){ try{ props[k]=JSON.stringify(v);}catch{ props[k]=String(v);} } else props[k]=String(v); } if(props.name===undefined) props.name='resultado_'+(i+1); out.features.push({ type:'Feature', properties:props, geometry:f.geometry }); }); return out; } catch { return fc; } }
+
+    async function ensureToKml(){ if(typeof window.tokml!=='undefined') return true; try{ await loadScriptOnce('https://cdn.jsdelivr.net/npm/tokml@0.4.0/tokml.js'); }catch{} return typeof window.tokml!=='undefined'; }
+    function basicGeoJsonToKml(fc){ if(!fc||!fc.features) return ''; const header='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>'; const footer='</Document></kml>'; function ringToStr(r){ return r.map(([x,y])=>`${x},${y},0`).join(' ');} const placemarks = fc.features.map((f,i)=>{ if(!f||!f.geometry) return ''; const nm=(f.properties&&(f.properties.name||f.properties.NOME||f.properties.Nome))||`feature_${i+1}`; const g=f.geometry; if(g.type==='Polygon'){ const rings=g.coordinates||[]; if(!rings.length) return ''; const outer=`<outerBoundaryIs><LinearRing><coordinates>${ringToStr(rings[0])}</coordinates></LinearRing></outerBoundaryIs>`; const inners=rings.slice(1).map(r=>`<innerBoundaryIs><LinearRing><coordinates>${ringToStr(r)}</coordinates></LinearRing></innerBoundaryIs>`).join(''); return `<Placemark><name>${nm}</name><Polygon><tessellate>1</tessellate>${outer}${inners}</Polygon></Placemark>`; } if(g.type==='MultiPolygon'){ const polys=(g.coordinates||[]).map(poly=>{ if(!poly||!poly.length) return ''; const outer=`<outerBoundaryIs><LinearRing><coordinates>${ringToStr(poly[0])}</coordinates></LinearRing></outerBoundaryIs>`; const inners=poly.slice(1).map(r=>`<innerBoundaryIs><LinearRing><coordinates>${ringToStr(r)}</coordinates></LinearRing></innerBoundaryIs>`).join(''); return `<Polygon><tessellate>1</tessellate>${outer}${inners}</Polygon>`; }).join(''); return `<Placemark><name>${nm}</name>${polys}</Placemark>`; } return ''; }).join(''); return header+placemarks+footer; }
+
+    function exportKML(){
+      if(!lastResult || !lastResult.features || !lastResult.features.length){ alert('Nada para exportar. Faça uma mescla.'); return; }
+      (async ()=>{
+        try{
+          let kmlString=''; const ok = await ensureToKml(); if(ok){ kmlString = tokml(sanitizeForKml(lastResult), { name:'name' }); } else { kmlString = basicGeoJsonToKml(sanitizeForKml(lastResult)); }
+          if(!kmlString) throw new Error('KML vazio');
+          const blob = new Blob([kmlString], { type:'application/vnd.google-earth.kml+xml' }); saveAs(blob,'talhoes_mesclados.kml');
+        }catch(e){ console.error(e); alert('Falha ao exportar KML.'); }
+      })();
+    }
+
+    // Loader dinâmico (reuso)
+    const _loadedScripts = new Set();
+    function loadScriptOnce(src){ return new Promise((resolve,reject)=>{ if(_loadedScripts.has(src)) return resolve(); const s=document.createElement('script'); s.src=src; s.async=true; s.onload=()=>{ _loadedScripts.add(src); resolve(); }; s.onerror=reject; document.head.appendChild(s); }); }
+
+    async function ensureShpWrite(){ return typeof window.shpwrite !== 'undefined'; }
+    async function exportSHP(){
+      if(!lastResult || !lastResult.features || !lastResult.features.length){ alert('Nada para exportar. Faça uma mescla.'); return; }
+      if(typeof JSZip==='undefined'){ alert('Biblioteca JSZip indisponível.'); return; }
+      try {
+        const rows=[]; const geometries=[]; (lastResult.features||[]).forEach(f=>{ if(!f||!f.geometry) return; const t=f.geometry.type; if(t!=='Polygon'&&t!=='MultiPolygon') return; rows.push(f.properties||{}); geometries.push(f.geometry.coordinates); }); if(!geometries.length){ alert('Sem polígonos para exportar.'); return; }
+        await new Promise((resolve,reject)=>{ shpwrite.write(rows,'POLYGON',geometries,(err,files)=>{ if(err) return reject(err); try{ const zip=new JSZip(); const folder=zip.folder('export'); const name='talhoes_mesclados'; folder.file(name+'.shp', files.shp.buffer, {binary:true}); folder.file(name+'.shx', files.shx.buffer, {binary:true}); folder.file(name+'.dbf', files.dbf.buffer, {binary:true}); folder.file(name+'.prj', files.prj); zip.generateAsync({type:'blob',compression:'STORE'}).then(blob=>{ saveAs(blob,name+'.zip'); resolve(); }).catch(reject); }catch(e){ reject(e); } }); });
+      } catch(e){ console.error(e); alert('Falha ao exportar Shapefile.'); }
+    }
+
+    // Edição
+    function setEditableForItem(item, enabled){ try{ item.layer.eachLayer(l=>{ l.options.pmIgnore=!enabled; if(!l.pm) return; if(enabled) l.pm.enable({ allowSelfIntersection:false, snappable:true, snapDistance:20 }); else l.pm.disable(); }); }catch{} }
+    function setEditableForResultIndex(idx, enabled){ const lyr=resultLayers[idx]; if(!lyr) return; try{ lyr.eachLayer?lyr.eachLayer(l=>{ if(l.pm){ if(enabled) l.pm.enable(); else l.pm.disable(); } l.options.pmIgnore=!enabled; }):(lyr.pm?(enabled?lyr.pm.enable():lyr.pm.disable()):null); }catch{} }
+    function enableEditSelected(){ for(const [id,item] of allItems){ setEditableForItem(item, selectedIds.has(id)); } for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,true);} editActive=true; notifyCenter('Edição ativada','success',1200); }
+    function disableAllEditing(){ for(const [,item] of allItems){ setEditableForItem(item,false);} for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,false);} editActive=false; }
+    function toSingleFeatureFromLayer(layer){ try{ const gj=layer.toGeoJSON(); if(!gj) return null; if(gj.type==='Feature') return gj; if(gj.type==='FeatureCollection'){ if(!gj.features||!gj.features.length) return null; let acc=gj.features[0]; for(let i=1;i<gj.features.length;i++) acc=safeUnion(acc,gj.features[i]); return acc; } return { type:'Feature', properties:{}, geometry:(gj.geometry||gj) }; } catch { return null; } }
+    function saveEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; const one=toSingleFeatureFromLayer(it.layer); if(one&&one.geometry){ it.feature=one; } setEditableForItem(it,false);} for(let i=0;i<resultLayers.length;i++){ const lyr=resultLayers[i]; const one=toSingleFeatureFromLayer(lyr); if(one&&one.geometry){ resultFeatures[i]=one; } setEditableForResultIndex(i,false);} lastResult={ type:'FeatureCollection', features:[...resultFeatures] }; editActive=false; notifyCenter('Edições salvas','success',1200); }
+    function cancelEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; try{ map.removeLayer(it.layer);}catch{} const layer=L.geoJSON(it.feature,{ style:()=>({...selectedStyle}) }).addTo(map); layer.eachLayer(l=>{ l.on('click',()=>toggleSelect(id)); l.options.pmIgnore=true; }); it.layer=layer; } for(let i=0;i<resultLayers.length;i++){ const feat=resultFeatures[i]; const old=resultLayers[i]; try{ map.removeLayer(old);}catch{} const layer=L.geoJSON(feat,{ style:()=>({ color: resultColors[i]||'#f97316', weight:3, fillColor: resultColors[i]||'#f97316', fillOpacity:.25 }) }).addTo(map); resultLayers[i]=layer; } disableAllEditing(); notifyCenter('Edições canceladas','success',1200); }
+
+    function escapeHtml(str){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
+      document.getElementById('btnClear').addEventListener('click', () => { if(confirm('Remover todas as camadas e seleção?')) clearAll(); });
+      document.getElementById('btnMerge').addEventListener('click', mergeSelected);
+      document.getElementById('btnEdit').addEventListener('click', () => { if(!editActive) enableEditSelected(); else disableAllEditing(); });
+      document.getElementById('btnSaveEdits').addEventListener('click', saveEdits);
+      document.getElementById('btnCancelEdits').addEventListener('click', cancelEdits);
+      document.getElementById('btnExportKML').addEventListener('click', exportKML);
+      document.getElementById('btnExportSHP').addEventListener('click', exportSHP);
+      document.getElementById('btnSelectAll').addEventListener('click', () => { for(const id of allItems.keys()) select(id); });
+      document.getElementById('btnSelectNone').addEventListener('click', () => { for(const id of Array.from(selectedIds)) deselect(id); });
+    });
+  </script>
+</body>
+</html>
+
+
