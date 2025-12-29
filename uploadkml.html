@@ -29,11 +29,8 @@
       align-items:center;
       justify-content:center;
       color:var(--text);
-      background:
-        radial-gradient(circle at 10% 15%, rgba(198,40,40,0.1), transparent 32%),
-        radial-gradient(circle at 85% 10%, rgba(22,143,75,0.1), transparent 30%),
-        linear-gradient(180deg,#fdf7f4 0%,#f7fbff 50%,#fdf7f4 100%);
-      padding:16px;
+      background:#0f172a
+      
     }
     .card{
       background:var(--card);
@@ -49,7 +46,7 @@
       font-weight:800;
       letter-spacing:.06em;
       text-transform:uppercase;
-      color:var(--primary);
+      color:#b09140;
       margin-bottom:4px;
     }
     .subtitle{
@@ -127,16 +124,16 @@
       transition:all .18s;
     }
     .btn-secondary{
-      background:#fff4e0;
-      border-color:#ffd699;
-      color:var(--text);
+      background:#c62828;
+      border-color:#2b2926;
+      color:#ffffff;
     }
     .btn-secondary:hover{
       border-color:#f59e0b;
       background:#ffe4b2;
     }
     .btn-primary{
-      background:linear-gradient(135deg,var(--primary),#e53935);
+      background:linear-gradient(135deg,#bb9a46,#d9b24c);
       color:#ffffff;
       box-shadow:0 10px 28px rgba(198,40,40,0.28);
     }
@@ -190,8 +187,7 @@
     </div>
     <div class="title">Upload de KML</div>
     <div class="subtitle">
-      Envie aqui os arquivos <span class="highlight">.kml ou .pdf</span> que devem ir para a mesma pasta do
-      <span class="highlight">encontrar_kml</span> no Google Drive.
+      Envie aqui os arquivos <span class="highlight">.kml ou .pdf</span>que vão para o Google Drive.
     </div>
 
     <form id="uploadForm" class="mt-3">
