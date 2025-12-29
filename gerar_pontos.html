@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
@@ -24,7 +24,7 @@
         background:
           radial-gradient(circle at 18% 18%, rgba(198,40,40,0.08), transparent 36%),
           radial-gradient(circle at 80% 0%, rgba(22,143,75,0.08), transparent 38%),
-          linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
+          linear-gradient(160deg,rgb(27 30 38)df7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
         color: var(--text);
       }
       .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
@@ -32,7 +32,7 @@
       .nav a { background: #fff; color: var(--text); text-decoration: none; padding: 9px 14px; border-radius: 999px; font-weight: 600; border:1px solid var(--border); box-shadow:0 10px 20px rgba(15,23,42,0.06); }
       .nav a:hover { border-color: var(--accent); transform: translateY(-1px); transition:.15s ease; }
       .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow:0 18px 40px rgba(15,23,42,0.12); }
-      h1 { font-size: 1.4rem; margin: 0 0 8px; color: var(--accent); }
+      h1 { font-size: 1.4rem; margin: 0 0 8px; color: #ba9942; }
       p.helper { color: #0f172a; margin: 0 0 12px; font-size: .95rem; }
       .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
       .row.single { grid-template-columns: 1fr; }
@@ -75,13 +75,13 @@
       </div>
       <div class="card">
         <h1>Gerador de Pontos ao longo de Linhas (KML)</h1>
-        <p class="helper">Carregue um KML com LineStrings, defina a quantidade total de pontos e exporte um novo KML com as linhas originais mais pontos numerados. Opcionalmente, desenhe áreas de exclusão para evitar pontos nesses trechos.</p>
+        <p class="helper">Carregue um KML defina a quantidade total de pontos e exporte um novo KML com as linhas originais mais pontos numerados.</p>
 
         <div class="row single">
           <div class="field">
-            <label for="kmlFile">Arquivo KML de entrada</label>
+            <label for="kmlFile"> </label>
             <input id="kmlFile" type="file" accept=".kml,application/vnd.google-earth.kml+xml" />
-            <div class="hint">O arquivo deve conter um ou mais &lt;LineString&gt;.</div>
+            <div class="hint"></div>
           </div>
         </div>
 
@@ -92,7 +92,7 @@
           </div>
           <div class="field">
             <label for="prefixo">Prefixo do nome (opcional)</label>
-            <input id="prefixo" type="text" placeholder="Ex.: PT-" />
+            <input id="prefixo" type="text" placeholder="Ex.: pts001" />
           </div>
         </div>
 
@@ -114,7 +114,6 @@
         <div class="actions">
           <button id="btnGerar" disabled>Gerar KML</button>
           <a id="downloadLink" class="secondary" href="#" download style="display:none;">Baixar KML Gerado</a>
-          <button id="btnExemplo" class="secondary" title="Carrega um exemplo simples de KML de linhas">Carregar Exemplo</button>
           <button id="btnLimparPoligonos" class="secondary" title="Remove todas as áreas de exclusão">Limpar Áreas</button>
         </div>
 
