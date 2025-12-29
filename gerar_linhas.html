@@ -20,13 +20,10 @@
     html,body{margin:0;padding:0;height:100%;}
     body{
       font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(198,40,40,0.08), transparent 36%),
-        radial-gradient(circle at 80% 0%, rgba(22,143,75,0.08), transparent 38%),
-        linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
+      background:#ffffff;
       color:var(--text);
     }
-    .wrap{max-width:1100px;margin:24px auto;padding:0 16px;}
+    .wrap{max-width:1400px;margin:24px auto;padding:0 16px;}
     .top-nav{display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px;}
     .nav-btn{
       display:inline-flex;align-items:center;gap:8px;
@@ -43,14 +40,15 @@
       border-radius:14px;
       padding:20px;
       box-shadow:0 18px 40px rgba(15,23,42,0.12);
+      overflow:hidden;
     }
-    h1{margin:0 0 6px;font-size:1.4rem;color:var(--accent);}
+    h1{margin:0 0 6px;font-size:1.4rem;color:#ba9942;}
     p.helper{margin:0 0 12px;color:#0f172a;}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
     .row.single{grid-template-columns:1fr;}
     .field{display:flex;flex-direction:column;gap:6px;}
     label{color:#0f172a;font-size:.9rem;}
-    input[type="number"],input[type="text"],input[type="file"],input[type="range"]{
+    input[type="number"],input[type="text"],input[type="file"],input[type="range"],select{
       border:1px solid var(--border);background:#fff;color:var(--text);
       border-radius:10px;padding:10px;font-size:1rem;
     }
@@ -65,7 +63,9 @@
       border:1px solid var(--border);box-shadow:0 8px 18px rgba(15,23,42,0.06);
     }
     button:disabled{opacity:.6;cursor:not-allowed;}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;}
+    .actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:center;margin-top:16px;}
+    .actions button,
+    .actions a{min-width:0; text-align:center;}
     .log{
       margin-top:16px;background:var(--soft);border:1px solid var(--border);
       padding:12px;border-radius:10px;white-space:pre-wrap;
@@ -76,19 +76,21 @@
     .error{color:var(--accent);}
     .hint{color:var(--muted);}
     .footer{margin-top:18px;color:var(--muted);font-size:.85rem;text-align:center;}
-    .map-wrap{position:relative;margin-top:12px;}
+    .layout-grid{display:grid;grid-template-columns:minmax(360px,460px) 1fr;gap:16px;align-items:start;}
+    .map-card{padding:18px;}
+    .map-wrap{position:relative;margin-top:0;height:78vh;}
     #map{
       position:relative;
       z-index:1;
-      height:62vh;width:100%;border-radius:12px;
+      height:100%;width:100%;border-radius:12px;
       border:1px solid var(--border);box-shadow:0 14px 30px rgba(15,23,42,0.08);
       overflow:hidden;
     }
     .angle-overlay{
-      position:absolute;top:16px;right:16px;
-      background:#fff;border:1px solid var(--border);
+      position:absolute;top:16px;right:62px;
+      background:rgba(255,255,255,0.95);border:1px solid var(--border);
       border-radius:12px;box-shadow:0 12px 26px rgba(15,23,42,0.12);
-      padding:12px;display:flex;align-items:center;gap:12px;min-width:200px;
+      padding:12px;display:flex;align-items:center;gap:12px;min-width:220px;
       z-index:1100;
     }
     .angle-dial{
@@ -106,6 +108,14 @@
     }
     .angle-controls{flex:1;display:flex;flex-direction:column;gap:6px;}
     .angle-label{font-weight:700;}
+
+    @media (max-width: 1200px){
+      .layout-grid{grid-template-columns:1fr;}
+      .map-wrap{height:72vh;}
+    }
+    @media (max-width: 800px){
+      .map-wrap{height:64vh;}
+    }
   </style>
 </head>
 <body>
@@ -114,67 +124,81 @@
       <!-- <a href="index.html" class="nav-btn">Home</a> -->
       <a href="gerar_pontos.html" class="nav-btn">Gerar Pontos</a>
     </div>
-    <div class="card">
-      <h1>Criar Linhas Paralelas dentro de Polígono (KML)</h1>
-      <p class="helper">Carregue um KML com a área demarcada. Ajuste espaçamento entre linhas, ângulo e altitude, gere as linhas e exporte em KML.</p>
+    <div class="layout-grid">
+      <div class="card">
+        <h1>Criar Linhas Paralelas dentro de Polígono (KML)</h1>
+        <p class="helper">Carregue um KML com a área demarcada.</p>
 
-      <div class="row single">
-        <div class="field">
-          <label for="kmlFile">Arquivo KML com Talhões</label>
-          <input id="kmlFile" type="file" accept=".kml,application/vnd.google-earth.kml+xml">
-          <div class="hint">O arquivo pode conter vários &lt;Polygon&gt;. Clique no talhão desejado no mapa para selecionar.</div>
+        <div class="row single">
+          <div class="field">
+            <label for="kmlFile">Arquivo KML com Talhões</label>
+            <input id="kmlFile" type="file" accept=".kml,application/vnd.google-earth.kml+xml">
+            <div class="hint">Clique no talhão desejado no mapa para selecionar.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="espacamento">Espaçamento entre linhas (m)</label>
+            <input id="espacamento" type="number" min="1" step="1" value="40">
+          </div>
+          <div class="field">
+            <label for="bordadura">Bordadura interna (m)</label>
+            <input id="bordadura" type="number" min="0" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="altura">Altitude das linhas (m)</label>
+            <input id="altura" type="number" min="0" step="1" value="30">
+          </div>
+          <div class="field">
+            <label for="nomePrefixo">Prefixo do nome (opcional)</label>
+            <input id="nomePrefixo" type="text" placeholder="Ex.: PTS001">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="modoLinha">Modo das linhas</label>
+            <select id="modoLinha">
+              <option value="normal">Normal (segmentos retos)</option>
+              <option value="suavizado">Suavizado (curvas)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="iterSuavizar">Iterações para suavizar</label>
+            <input id="iterSuavizar" type="number" min="1" max="6" step="1" value="2">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnGerar" disabled>Gerar Linhas</button>
+          <a id="downloadLink" class="secondary" href="#" download style="display:none;">Exportar Projeto (KML)</a>
+          <button id="btnLimpar" class="secondary">Limpar Linhas</button>
+          <button id="btnProximo" class="secondary" disabled>Próximo Talhão</button>
+          <button id="btnLimparProjeto" class="secondary" disabled>Limpar Projeto</button>
         </div>
       </div>
 
-      <div class="row single">
-        <div class="field">
-          <label for="espacamento">Espaçamento entre linhas (m)</label>
-          <input id="espacamento" type="number" min="1" step="1" value="40">
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="field">
-          <label for="altura">Altitude das linhas (m)</label>
-          <input id="altura" type="number" min="0" step="1" value="30">
-        </div>
-        <div class="field">
-          <label for="nomePrefixo">Prefixo do nome (opcional)</label>
-          <input id="nomePrefixo" type="text" placeholder="Ex.: FAIXA-">
-        </div>
-      </div>
-
-      <div class="row single">
-        <div class="field">
-          <label for="bordadura">Bordadura interna (m)</label>
-          <input id="bordadura" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="btnGerar" disabled>Gerar Linhas</button>
-        <a id="downloadLink" class="secondary" href="#" download style="display:none;">Exportar Projeto (KML)</a>
-        <button id="btnLimpar" class="secondary">Limpar Linhas</button>
-        <button id="btnProximo" class="secondary" disabled>Próximo Talhão</button>
-        <button id="btnLimparProjeto" class="secondary" disabled>Limpar Projeto</button>
-      </div>
-
-      <div class="map-wrap">
-        <div id="map"></div>
-        <div class="angle-overlay">
-          <div class="angle-dial" id="angleDial"></div>
-          <div class="angle-controls">
-            <div class="angle-label">Ângulo</div>
-            <input id="angulo" type="range" min="0" max="359" step="1" value="0">
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input id="anguloBox" type="number" min="0" max="359" step="1" value="0" class="angle-value">
-              <span style="color:var(--muted);font-size:.9rem;">° relógio</span>
+      <div class="card map-card">
+        <div class="map-wrap">
+          <div id="map"></div>
+          <div class="angle-overlay">
+            <div class="angle-dial" id="angleDial"></div>
+            <div class="angle-controls">
+              <div class="angle-label">Ângulo</div>
+              <input id="angulo" type="range" min="0" max="359" step="1" value="0">
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input id="anguloBox" type="number" min="0" max="359" step="1" value="0" class="angle-value">
+                <span style="color:var(--muted);font-size:.9rem;">° relógio</span>
+              </div>
             </div>
           </div>
         </div>
+        <div id="log" class="log hint" style="margin-top:12px;">Carregue um KML de polígono para começar.</div>
       </div>
-
-      <div id="log" class="log hint">Carregue um KML de polígono para começar.</div>
     </div>
     <div class="footer">Base satélite: Esri World Imagery · Mapas por Leaflet</div>
   </div>
@@ -190,6 +214,8 @@
     const altEl = document.getElementById('altura');
     const borderEl = document.getElementById('bordadura');
     const namePrefixEl = document.getElementById('nomePrefixo');
+    const modoLinhaEl = document.getElementById('modoLinha');
+    const iterSuavizarEl = document.getElementById('iterSuavizar');
     const btnGerar = document.getElementById('btnGerar');
     const btnLimpar = document.getElementById('btnLimpar');
     const btnProximo = document.getElementById('btnProximo');
@@ -341,6 +367,8 @@
     });
     espEl.addEventListener('input', updatePreview);
     borderEl.addEventListener('input', updatePreview);
+    modoLinhaEl.addEventListener('change', updatePreview);
+    iterSuavizarEl.addEventListener('input', updatePreview);
 
     kmlFileEl.addEventListener('change', async (e) => {
       const f = e.target.files && e.target.files[0];
@@ -376,12 +404,13 @@
       const baseName = (selectedIdx>=0 && polygons[selectedIdx]?.name ? polygons[selectedIdx].name : 'Talhao');
       const prefix = (namePrefixEl.value || (baseName + ' ')).trim();
       const { pathLL, segmentsLL } = buildParallelPathInsidePolygon(polygonCoords, spacing, angleDeg, Math.max(0, parseFloat(borderEl.value || '0')));
-      drawPath(pathLL);
-      const kml = exportPathToKml(pathLL, altitude, prefix);
+      const finalPath = getProcessedPath(pathLL);
+      drawPath(finalPath);
+      const kml = exportPathToKml(finalPath, altitude, prefix);
       const blob = new Blob([kml], { type:'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
       dlEl.href = url; dlEl.download = 'linhas-geradas.kml'; dlEl.style.display = 'inline-block';
-      addPathToProject(prefix || baseName, altitude, pathLL);
+      addPathToProject(prefix || baseName, altitude, finalPath);
       updateExportLink();
       logMsg(`Caminho continuo gerado para "${prefix || 'Talhao'}" com ${segmentsLL.length} faixas.`, 'success');
       updateAngleDial();
@@ -435,7 +464,8 @@
       const angleDeg = Math.max(0, Math.min(359, parseFloat(angEl.value || '0')));
       const borderM = Math.max(0, parseFloat(borderEl.value || '0'));
       const { pathLL } = buildParallelPathInsidePolygon(polygonCoords, spacing, angleDeg, borderM);
-      drawPath(pathLL);
+      const previewPath = getProcessedPath(pathLL);
+      drawPath(previewPath);
     }
 
     function addPathToProject(name, altitude, pathLL) {
@@ -629,6 +659,44 @@
         }
       }
       return { pathLL, segmentsLL };
+    }
+
+    function smoothCorners(points, factor = 0.2) {
+      if (!points || points.length < 3) return points || [];
+      const clamp = (v, mn, mx) => Math.max(mn, Math.min(mx, v));
+      const dist = (a, b) => Math.hypot(a.lon - b.lon, a.lat - b.lat);
+      const move = (from, to, d) => {
+        const len = dist(from, to) || 1e-9;
+        const t = d / len;
+        return {
+          lat: from.lat + (to.lat - from.lat) * t,
+          lon: from.lon + (to.lon - from.lon) * t
+        };
+      };
+      const out = [];
+      out.push(points[0]);
+      for (let i = 1; i < points.length - 1; i++) {
+        const prev = points[i-1], cur = points[i], next = points[i+1];
+        const len1 = dist(prev, cur);
+        const len2 = dist(cur, next);
+        const maxOffset = Math.min(len1, len2) * clamp(factor, 0.05, 0.45);
+        const p1 = move(cur, prev, maxOffset);
+        const p2 = move(cur, next, maxOffset);
+        out.push(p1, p2);
+      }
+      out.push(points[points.length-1]);
+      return out;
+    }
+
+    function getProcessedPath(pathLL) {
+      if (!pathLL || pathLL.length < 2) return pathLL || [];
+      const mode = modoLinhaEl.value;
+      if (mode === 'suavizado') {
+        const iters = Math.max(1, Math.min(6, parseInt(iterSuavizarEl.value || '2', 10)));
+        const factor = Math.max(0.05, Math.min(0.4, iters * 0.1));
+        return smoothCorners(pathLL, factor);
+      }
+      return pathLL;
     }
 
     updateAngleDial();
