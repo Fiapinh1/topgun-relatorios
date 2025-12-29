@@ -9,15 +9,15 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.281.0/dist/umd/lucide.min.js"></script>
   <style>
     :root{
-      --bg:#f9fbff;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --accent:#c62828;
-      --accent-2:#168f4b;
-      --gold:#f59e0b;
-      --border:#e2e8f0;
-      --shadow:0 20px 50px rgba(15,23,42,0.12);
+      --bg:#060912;
+      --card:#0c1224;
+      --text:#f5f5f5;
+      --muted:#cbd5e1;
+      --accent:#d9b24c;
+      --accent-2:#ffffff;
+      --gold:#f7e7a1;
+      --border:rgba(217,178,76,0.35);
+      --shadow:0 20px 50px rgba(0,0,0,0.32);
     }
     *{box-sizing:border-box;}
     body{
@@ -25,10 +25,9 @@
       min-height:100vh;
       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
       background:
-        radial-gradient(circle at 12% 20%, rgba(198,40,40,0.08), transparent 32%),
-        radial-gradient(circle at 90% 10%, rgba(22,143,75,0.1), transparent 38%),
-        radial-gradient(circle at 15% 80%, rgba(245,158,11,0.14), transparent 30%),
-        linear-gradient(180deg,#fdf7f4 0%,#f2f7ff 65%,#fdf7f4 100%);
+        radial-gradient(circle at 10% 20%, rgba(217,178,76,0.08), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(255,255,255,0.07), transparent 38%),
+        #060912;
       color:var(--text);
       display:flex;
     }
@@ -36,7 +35,7 @@
     .sidebar{
       width:280px;
       min-height:100vh;
-      background:var(--card);
+      background:linear-gradient(135deg,#0a0f1f 0%,#0c1224 100%);
       border-right:1px solid var(--border);
       padding:12px 10px;
       box-shadow:4px 0 18px rgba(0,0,0,0.04);
@@ -52,7 +51,7 @@
       margin-top:8px;
       width:100%;
       border:1px solid var(--border);
-      background:#fff;
+      background:rgba(255,255,255,0.04);
       border-radius:14px;
       padding:8px 10px;
       display:flex;
@@ -61,8 +60,11 @@
       cursor:pointer;
       font-weight:600;
       transition:all .14s ease;
+      color:#ffffff;
     }
     .toggle:hover{border-color:var(--accent);}
+    .toggle span{color:#ffffff;}
+    .toggle .nav-icon{color:#ffffff;}
     .sidebar.collapsed .toggle span{display:none;}
     .menu{
       margin-top:16px;
@@ -74,13 +76,13 @@
     .nav-group{
       border:1px solid var(--border);
       border-radius:14px;
-      background:#fff;
+      background:rgba(255,255,255,0.03);
       overflow:hidden;
     }
     .nav-main{
       width:100%;
       border:none;
-      background:#fff;
+      background:transparent;
       padding:12px 12px;
       display:flex;
       align-items:center;
@@ -89,19 +91,19 @@
       font-weight:700;
       color:var(--text);
       border-bottom:1px solid var(--border);
-      transition:background .12s ease;
+      transition:background .12s ease, color .12s ease;
     }
-    .nav-main:hover{background:rgba(198,40,40,0.06);}
+    .nav-main:hover{background:rgba(217,178,76,0.08);}
     .nav-main .dot{
       width:12px;height:12px;border-radius:999px;
-      background:linear-gradient(135deg,var(--accent),#ef5350);
+      background:linear-gradient(135deg,var(--accent),var(--gold));
       flex-shrink:0;
     }
     .nav-main .chevron{margin-left:auto;color:var(--muted);}
     .nav-sub{
       display:none;
       flex-direction:column;
-      background:rgba(198,40,40,0.03);
+      background:rgba(217,178,76,0.05);
     }
     .nav-sub.open{display:flex;}
     .nav-link{
@@ -114,11 +116,11 @@
       gap:10px;
       cursor:pointer;
       color:var(--text);
-      transition:background .12s ease;
+      transition:background .12s ease,color .12s ease;
       font-weight:600;
     }
-    .nav-link:hover{background:rgba(22,143,75,0.08);}
-    .nav-link.active{background:rgba(198,40,40,0.12);color:var(--accent);}
+    .nav-link:hover{background:rgba(217,178,76,0.08);}
+    .nav-link.active{background:rgba(217,178,76,0.16);color:var(--accent);}
     .nav-link .bullet{
       width:8px;height:8px;border-radius:50%;background:var(--accent-2);flex-shrink:0;
     }
@@ -152,11 +154,11 @@
     .chip{
       padding:6px 10px;
       border-radius:999px;
-      background:#fff;
+      background:rgba(255,255,255,0.05);
       border:1px solid var(--border);
       font-weight:700;
       color:var(--accent);
-      box-shadow:0 10px 20px rgba(0,0,0,0.04);
+      box-shadow:0 10px 20px rgba(0,0,0,0.12);
       display:inline-flex;
       align-items:center;
       gap:6px;
@@ -167,7 +169,7 @@
       gap:14px;
     }
     .card{
-      background:var(--card);
+      background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
       border:1px solid var(--border);
       border-radius:16px;
       padding:16px;
@@ -185,7 +187,7 @@
       height:70vh;
       border:1px solid var(--border);
       border-radius:14px;
-      background:#fff;
+      background:rgba(255,255,255,0.04);
     }
     .calendar-wrap{
       display:grid;
@@ -200,12 +202,15 @@
     }
     .calendar-header button{
       border:1px solid var(--border);
-      background:#fff;
+      background:rgba(255,255,255,0.04);
       border-radius:10px;
       padding:8px 10px;
       cursor:pointer;
       font-weight:700;
       color:var(--accent);
+    }
+    #monthLabel{
+      color:#ffffff;
     }
     .calendar-grid{
       display:grid;
@@ -220,7 +225,7 @@
       letter-spacing:.06em;
     }
     .day{
-      background:rgba(255,255,255,0.9);
+      background:rgba(255,255,255,0.06);
       border:1px solid var(--border);
       border-radius:12px;
       min-height:56px;
@@ -233,10 +238,11 @@
       position:relative;
       transition:all .12s ease;
       font-size:.95rem;
+      color:var(--text);
     }
-    .day:hover{border-color:var(--accent-2);transform:translateY(-2px);}
-    .day.today{border-color:var(--accent);box-shadow:0 10px 20px rgba(198,40,40,0.12);}
-    .day.selected{outline:2px solid var(--accent-2);}
+    .day:hover{border-color:var(--accent);transform:translateY(-2px);}
+    .day.today{border-color:var(--accent);box-shadow:0 10px 20px rgba(217,178,76,0.25);}
+    .day.selected{outline:2px solid rgba(217,178,76,0.7);}
     .dot{
       width:8px;height:8px;border-radius:50%;
       background:var(--gold);
@@ -248,25 +254,28 @@
       flex-direction:column;
       gap:8px;
     }
+    .notes h3{
+      color:var(--text);
+    }
     .notes textarea{
       width:100%;
       min-height:90px;
       border:1px solid var(--border);
       border-radius:10px;
       padding:10px;
-      background:#fff;
-      color:var(--text);
+      background:rgba(185, 3, 3, 0.04);
+      color:#cbd5e1;
     }
     .notes button{
       align-self:flex-start;
       padding:10px 14px;
       border:none;
       border-radius:10px;
-      background:linear-gradient(135deg,#c62828,#ef5350);
-      color:#fff;
+      background:linear-gradient(135deg,#d9b24c,#f7e7a1);
+      color:#0b0f1f;
       font-weight:700;
       cursor:pointer;
-      box-shadow:0 12px 24px rgba(198,40,40,0.2);
+      box-shadow:0 12px 24px rgba(217,178,76,0.22);
     }
     .note-list{
       max-height:220px;
@@ -279,7 +288,7 @@
       padding:10px 12px;
       border-radius:12px;
       border:1px solid var(--border);
-      background:rgba(22,143,75,0.06);
+      background:rgba(217,178,76,0.1);
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -312,8 +321,8 @@
       border:1px solid var(--border);
       border-radius:14px;
       padding:10px 12px;
-      background:#fff;
-      box-shadow:0 10px 20px rgba(0,0,0,0.06);
+      background:rgba(255,255,255,0.05);
+      box-shadow:0 10px 20px rgba(0,0,0,0.14);
     }
     .clock{
       font-size:1.6rem;
@@ -328,6 +337,8 @@
       margin-bottom:8px;
       font-size:1.1rem;
       font-weight:700;
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
     }
     .calc-grid{
       display:grid;
@@ -338,17 +349,17 @@
       padding:10px;
       border-radius:10px;
       border:1px solid var(--border);
-      background:#fff;
+      background:rgba(255,255,255,0.05);
       cursor:pointer;
       font-weight:700;
       color:var(--text);
       transition:all .12s ease;
     }
-    .calc-grid button:hover{background:rgba(22,143,75,0.08);}
+    .calc-grid button:hover{background:rgba(217,178,76,0.12);}
     .calc-op{color:var(--accent);}
     .sidebar .exit{ margin-top:auto; display:block; width:100%; padding-top:12px; border-top:1px solid var(--border); }
-    .exit-btn{ width:100%; border:1px solid var(--border); background:#fff4e0; color:var(--text); border-radius:12px; padding:10px 12px; font-weight:700; display:flex; align-items:center; gap:8px; justify-content:center; cursor:pointer; transition:all .12s ease; }
-    .exit-btn:hover{border-color:var(--accent);background:#ffe4b2;}
+    .exit-btn{ width:100%; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:var(--text); border-radius:12px; padding:10px 12px; font-weight:700; display:flex; align-items:center; gap:8px; justify-content:center; cursor:pointer; transition:all .12s ease; }
+    .exit-btn:hover{border-color:var(--accent);background:rgba(217,178,76,0.12);}
     .note-modal{
       position:fixed;
       inset:0;
@@ -361,7 +372,7 @@
     }
     .note-modal.active{display:flex;}
     .note-modal .modal-card{
-      background:#fff;
+      background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
       border-radius:14px;
       border:1px solid var(--border);
       box-shadow:var(--shadow);
@@ -372,6 +383,7 @@
       flex-direction:column;
       gap:10px;
     }
+    .note-title{color:var(--text);}
     .note-modal textarea{
       width:100%;
       min-height:120px;
@@ -391,20 +403,20 @@
       border:1px solid var(--border);
       cursor:pointer;
       font-weight:700;
-      background:#fff;
+      background:rgba(255,255,255,0.05);
       color:var(--text);
     }
     .note-modal .save-btn{
-      background:linear-gradient(135deg,#168f4b,#1fb15d);
-      color:#fff;
+      background:linear-gradient(135deg,#d9b24c,#f7e7a1);
+      color:#0b0f1f;
       border:none;
-      box-shadow:0 10px 18px rgba(22,143,75,0.22);
+      box-shadow:0 10px 18px rgba(217,178,76,0.22);
     }
     .note-modal .delete-btn{
-      background:linear-gradient(135deg,#c62828,#ef5350);
+      background:linear-gradient(135deg,#7a1f1f,#b03a3a);
       color:#fff;
       border:none;
-      box-shadow:0 10px 18px rgba(198,40,40,0.22);
+      box-shadow:0 10px 18px rgba(176,58,58,0.22);
     }
     @media (max-width:1100px){
       .calendar-wrap{grid-template-columns:1fr;}
@@ -464,7 +476,7 @@
           </button>
           <div class="nav-sub" data-group="geo">
             <button class="nav-link" data-src="gerar_planos_voo.html" data-label="Gerar Planos">
-              <i class="nav-icon" data-lucide="route"></i>
+              <i class="nav-icon" data-lucide="navigation"></i>
               <span class="label">Gerar Planos</span>
             </button>
             <button class="nav-link" data-src="gerar_linhas.html" data-label="Gerar Linhas">
@@ -546,11 +558,11 @@
               </div>
               <div class="notes">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <h3 style="margin:0;">Anotações</h3>
+                  <h3 style="margin:0;color:var(--text);">Anotacões</h3>
                   <small id="notesDateLabel" style="color:var(--muted);"></small>
                 </div>
                 <textarea id="noteInput" placeholder="Escreva um lembrete para esta data"></textarea>
-                <button id="saveNote" type="button">Salvar anotação</button>
+                <button id="saveNote" type="button">Salvar Anotação</button>
                 <div class="note-list" id="noteList"></div>
               </div>
             </div>
@@ -575,10 +587,10 @@
     <div class="modal-card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
         <div>
-          <div style="font-weight:800;">Anotação</div>
+          <div class="note-title" style="font-weight:800;">Anotacao</div>
           <small id="noteModalDate" style="color:var(--muted);"></small>
         </div>
-        <button type="button" id="closeModal" aria-label="Fechar" style="background:transparent;border:none;font-weight:800;font-size:1rem;cursor:pointer;">×</button>
+        <button type="button" id="closeModal" aria-label="Fechar" style="background:transparent;border:none;font-weight:800;font-size:1rem;cursor:pointer;">X</button>
       </div>
       <textarea id="noteModalText"></textarea>
       <div class="actions">
@@ -592,6 +604,7 @@
     // --- Sidebar toggle ---
     const sidebar = document.getElementById('sidebar');
     const toggleSidebar = document.getElementById('toggleSidebar');
+    sidebar.classList.add('collapsed');
     toggleSidebar.addEventListener('click', ()=> sidebar.classList.toggle('collapsed'));
     if(window.innerWidth < 800){ sidebar.classList.add('collapsed'); }
 
@@ -855,4 +868,9 @@
   </script>
 </body>
 </html>
+
+
+
+
+
 
