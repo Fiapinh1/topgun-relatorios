@@ -24,8 +24,8 @@
   <!-- Exportação -->
   <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <!-- shp-write local (baixada previamente) -->
-  <script src="assets/vendor/shp-write/shpwrite.js"></script>
+  <!-- shp-write via CDN (fallback adicional no código) -->
+  <script src="https://cdn.jsdelivr.net/npm/shp-write@0.4.4/dist/shpwrite.js"></script>
 
   <style>
     :root{
@@ -127,6 +127,7 @@
     const resultColors = [];
     let lastResult = null; // FeatureCollection com todos os resultados
     let editActive = false;
+    let lastInputBaseName = 'talhoes';
 
     // Estilos
     const baseStyle = { color: '#3b82f6', weight: 2, fillColor: '#3b82f6', fillOpacity: 0.15 };
@@ -199,7 +200,9 @@
     function extractPolygonFeaturesFromFeature(src){ const props=(src&&src.properties)||{}; const name=props.name||props.NOME||props.Nome; const g=src&&src.geometry; const makeF=geom=>({ type:'Feature', properties:{ ...props, name }, geometry: geom }); if(!g) return []; if(g.type==='Polygon'||g.type==='MultiPolygon') return [makeF(g)]; if(g.type==='GeometryCollection'&&Array.isArray(g.geometries)){ const out=[]; g.geometries.forEach(gg=>{ if(gg&&(gg.type==='Polygon'||gg.type==='MultiPolygon')) out.push(makeF(gg)); }); return out; } return []; }
 
     async function handleFiles(files){
-      for(const file of files){ if(!file.name.toLowerCase().endsWith('.kml')) continue; const text = await readKmlText(file); if(!text.trim()) continue; const xml = new DOMParser().parseFromString(text, 'text/xml'); if(!toGeoJSON || !toGeoJSON.kml){ alert('toGeoJSON indisponível.'); return; } const gj = toGeoJSON.kml(xml); if(!gj || !gj.features) continue; let count=0; gj.features.forEach((f,idx)=>{ const list = extractPolygonFeaturesFromFeature(f); list.forEach((pf,k)=>{ const nm = pf.properties && pf.properties.name ? pf.properties.name : `${file.name} #${idx+1}${list.length>1?'-'+(k+1):''}`; addFeatureToMap(pf,nm,file.name); count++; }); }); console.log(`Carregado: ${file.name} (${count} polígonos)`); }
+      const fileArr = Array.from(files || []);
+      if(fileArr.length){ const nm = fileArr[0].name || ''; const idx = nm.lastIndexOf('.'); lastInputBaseName = (idx>0 ? nm.slice(0,idx) : nm) || 'talhoes'; }
+      for(const file of fileArr){ if(!file.name.toLowerCase().endsWith('.kml')) continue; const text = await readKmlText(file); if(!text.trim()) continue; const xml = new DOMParser().parseFromString(text, 'text/xml'); if(!toGeoJSON || !toGeoJSON.kml){ alert('toGeoJSON indisponível.'); return; } const gj = toGeoJSON.kml(xml); if(!gj || !gj.features) continue; let count=0; gj.features.forEach((f,idx)=>{ const list = extractPolygonFeaturesFromFeature(f); list.forEach((pf,k)=>{ const nm = pf.properties && pf.properties.name ? pf.properties.name : `${file.name} #${idx+1}${list.length>1?'-'+(k+1):''}`; addFeatureToMap(pf,nm,file.name); count++; }); }); console.log(`Carregado: ${file.name} (${count} polígonos)`); }
       fitAllBounds();
     }
 
@@ -233,10 +236,41 @@
       } catch(e){ console.error(e); alert('Erro durante a mescla.'); }
     }
 
-    function sanitizeForKml(fc){ try{ const out={ type:'FeatureCollection', features:[] }; (fc.features||[]).forEach((f,i)=>{ if(!f||!f.geometry) return; const src=f.properties||{}; const props={}; for(const k in src){ if(!Object.prototype.hasOwnProperty.call(src,k)) continue; const v=src[k]; if(v===undefined||v===null) props[k]=''; else if(typeof v==='object'){ try{ props[k]=JSON.stringify(v);}catch{ props[k]=String(v);} } else props[k]=String(v); } if(props.name===undefined) props.name='resultado_'+(i+1); out.features.push({ type:'Feature', properties:props, geometry:f.geometry }); }); return out; } catch { return fc; } }
+    function computeAreaHa(feature){ try{ const a=turf.area(feature); if(Number.isFinite(a)) return Number((a/10000).toFixed(4)); }catch{} return null; }
+    function sanitizeForKml(fc){ try{ const out={ type:'FeatureCollection', features:[] }; (fc.features||[]).forEach((f,i)=>{ if(!f||!f.geometry) return; const src=f.properties||{}; const props={}; for(const k in src){ if(!Object.prototype.hasOwnProperty.call(src,k)) continue; const v=src[k]; if(v===undefined||v===null) props[k]=''; else if(typeof v==='object'){ try{ props[k]=JSON.stringify(v);}catch{ props[k]=String(v);} } else props[k]=String(v); } if(props.name===undefined) props.name='resultado_'+(i+1); const ha = computeAreaHa(f); if(ha!==null) props.ha = ha; out.features.push({ type:'Feature', properties:props, geometry:f.geometry }); }); return out; } catch { return fc; } }
 
     async function ensureToKml(){ if(typeof window.tokml!=='undefined') return true; try{ await loadScriptOnce('https://cdn.jsdelivr.net/npm/tokml@0.4.0/tokml.js'); }catch{} return typeof window.tokml!=='undefined'; }
     function basicGeoJsonToKml(fc){ if(!fc||!fc.features) return ''; const header='<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>'; const footer='</Document></kml>'; function ringToStr(r){ return r.map(([x,y])=>`${x},${y},0`).join(' ');} const placemarks = fc.features.map((f,i)=>{ if(!f||!f.geometry) return ''; const nm=(f.properties&&(f.properties.name||f.properties.NOME||f.properties.Nome))||`feature_${i+1}`; const g=f.geometry; if(g.type==='Polygon'){ const rings=g.coordinates||[]; if(!rings.length) return ''; const outer=`<outerBoundaryIs><LinearRing><coordinates>${ringToStr(rings[0])}</coordinates></LinearRing></outerBoundaryIs>`; const inners=rings.slice(1).map(r=>`<innerBoundaryIs><LinearRing><coordinates>${ringToStr(r)}</coordinates></LinearRing></innerBoundaryIs>`).join(''); return `<Placemark><name>${nm}</name><Polygon><tessellate>1</tessellate>${outer}${inners}</Polygon></Placemark>`; } if(g.type==='MultiPolygon'){ const polys=(g.coordinates||[]).map(poly=>{ if(!poly||!poly.length) return ''; const outer=`<outerBoundaryIs><LinearRing><coordinates>${ringToStr(poly[0])}</coordinates></LinearRing></outerBoundaryIs>`; const inners=poly.slice(1).map(r=>`<innerBoundaryIs><LinearRing><coordinates>${ringToStr(r)}</coordinates></LinearRing></innerBoundaryIs>`).join(''); return `<Polygon><tessellate>1</tessellate>${outer}${inners}</Polygon>`; }).join(''); return `<Placemark><name>${nm}</name>${polys}</Placemark>`; } return ''; }).join(''); return header+placemarks+footer; }
+
+    function applyRedStyleToKml(kmlString){
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(kmlString, 'text/xml');
+        const kml = doc.getElementsByTagName('kml')[0] || doc.documentElement;
+        const documentNode = doc.getElementsByTagName('Document')[0] || (()=>{ const d=doc.createElement('Document'); kml.appendChild(d); return d;})();
+        const styleId = 'talhaoStyle';
+        let style = doc.getElementById(styleId);
+        if(!style){
+          style = doc.createElement('Style'); style.setAttribute('id', styleId);
+          const line = doc.createElement('LineStyle');
+          const lineColor = doc.createElement('color'); lineColor.textContent = 'ff0000ff'; // KML usa AABBGGRR
+          const width = doc.createElement('width'); width.textContent = '2.5';
+          line.appendChild(lineColor); line.appendChild(width);
+          const poly = doc.createElement('PolyStyle');
+          const polyColor = doc.createElement('color'); polyColor.textContent = '4d0000ff'; // semi-transparente
+          poly.appendChild(polyColor);
+          style.appendChild(line); style.appendChild(poly);
+          documentNode.insertBefore(style, documentNode.firstChild);
+        }
+        const placemarks = Array.from(doc.getElementsByTagName('Placemark'));
+        placemarks.forEach(pm => {
+          let su = pm.getElementsByTagName('styleUrl')[0];
+          if(!su){ su = doc.createElement('styleUrl'); pm.insertBefore(su, pm.firstChild); }
+          su.textContent = `#${styleId}`;
+        });
+        return new XMLSerializer().serializeToString(doc);
+      } catch { return kmlString; }
+    }
 
     function exportKML(){
       if(!lastResult || !lastResult.features || !lastResult.features.length){ alert('Nada para exportar. Faça uma mescla.'); return; }
@@ -244,7 +278,9 @@
         try{
           let kmlString=''; const ok = await ensureToKml(); if(ok){ kmlString = tokml(sanitizeForKml(lastResult), { name:'name' }); } else { kmlString = basicGeoJsonToKml(sanitizeForKml(lastResult)); }
           if(!kmlString) throw new Error('KML vazio');
-          const blob = new Blob([kmlString], { type:'application/vnd.google-earth.kml+xml' }); saveAs(blob,'talhoes_mesclados.kml');
+          const styled = applyRedStyleToKml(kmlString);
+          const outName = `${lastInputBaseName || 'talhoes'}_talhoes_mesclados.kml`;
+          const blob = new Blob([styled], { type:'application/vnd.google-earth.kml+xml' }); saveAs(blob,outName);
         }catch(e){ console.error(e); alert('Falha ao exportar KML.'); }
       })();
     }
@@ -253,13 +289,25 @@
     const _loadedScripts = new Set();
     function loadScriptOnce(src){ return new Promise((resolve,reject)=>{ if(_loadedScripts.has(src)) return resolve(); const s=document.createElement('script'); s.src=src; s.async=true; s.onload=()=>{ _loadedScripts.add(src); resolve(); }; s.onerror=reject; document.head.appendChild(s); }); }
 
-    async function ensureShpWrite(){ return typeof window.shpwrite !== 'undefined'; }
+    async function ensureShpWrite(){
+      if(typeof window.shpwrite !== 'undefined') return true;
+      const cdnList = [
+        'https://cdn.jsdelivr.net/npm/shp-write@0.4.4/dist/shpwrite.js',
+        'https://unpkg.com/shp-write@0.4.4/dist/shpwrite.js',
+        'https://cdn.jsdelivr.net/gh/mapbox/shp-write@0.4.4/dist/shpwrite.js'
+      ];
+      for(const src of cdnList){
+        try { await loadScriptOnce(src); if(typeof window.shpwrite !== 'undefined') return true; } catch {}
+      }
+      return typeof window.shpwrite !== 'undefined';
+    }
     async function exportSHP(){
       if(!lastResult || !lastResult.features || !lastResult.features.length){ alert('Nada para exportar. Faça uma mescla.'); return; }
       if(typeof JSZip==='undefined'){ alert('Biblioteca JSZip indisponível.'); return; }
       try {
-        const rows=[]; const geometries=[]; (lastResult.features||[]).forEach(f=>{ if(!f||!f.geometry) return; const t=f.geometry.type; if(t!=='Polygon'&&t!=='MultiPolygon') return; rows.push(f.properties||{}); geometries.push(f.geometry.coordinates); }); if(!geometries.length){ alert('Sem polígonos para exportar.'); return; }
-        await new Promise((resolve,reject)=>{ shpwrite.write(rows,'POLYGON',geometries,(err,files)=>{ if(err) return reject(err); try{ const zip=new JSZip(); const folder=zip.folder('export'); const name='talhoes_mesclados'; folder.file(name+'.shp', files.shp.buffer, {binary:true}); folder.file(name+'.shx', files.shx.buffer, {binary:true}); folder.file(name+'.dbf', files.dbf.buffer, {binary:true}); folder.file(name+'.prj', files.prj); zip.generateAsync({type:'blob',compression:'STORE'}).then(blob=>{ saveAs(blob,name+'.zip'); resolve(); }).catch(reject); }catch(e){ reject(e); } }); });
+        const ok = await ensureShpWrite(); if(!ok){ alert('Biblioteca shpwrite indisponível.'); return; }
+        const rows=[]; const geometries=[]; (lastResult.features||[]).forEach(f=>{ if(!f||!f.geometry) return; const t=f.geometry.type; if(t!=='Polygon'&&t!=='MultiPolygon') return; const props={...(f.properties||{})}; const ha = computeAreaHa(f); if(ha!==null) props.ha = ha; props.stroke='#c62828'; props['stroke-width']=2.5; props.fill='#c62828'; props['fill-opacity']=0.3; rows.push(props); geometries.push(f.geometry.coordinates); }); if(!geometries.length){ alert('Sem polígonos para exportar.'); return; }
+        await new Promise((resolve,reject)=>{ shpwrite.write(rows,'POLYGON',geometries,(err,files)=>{ if(err) return reject(err); try{ const zip=new JSZip(); const folder=zip.folder('export'); const base=`${lastInputBaseName || 'talhoes'}_talhoes_mesclados`; folder.file(base+'.shp', files.shp.buffer, {binary:true}); folder.file(base+'.shx', files.shx.buffer, {binary:true}); folder.file(base+'.dbf', files.dbf.buffer, {binary:true}); folder.file(base+'.prj', files.prj); const qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>\n<qgis version=\"3\" styleCategories=\"Symbology\">\n  <renderer-v2 type=\"singleSymbol\">\n    <symbols>\n      <symbol type=\"fill\" alpha=\"1\" name=\"0\">\n        <layer class=\"SimpleFill\" enabled=\"1\">\n          <prop k=\"color\" v=\"198,40,40,76\"/>\n          <prop k=\"outline_color\" v=\"198,40,40,255\"/>\n          <prop k=\"outline_width\" v=\"0.8\"/>\n        </layer>\n      </symbol>\n    </symbols>\n  </renderer-v2>\n</qgis>`; folder.file(base+'.qml', qml); zip.generateAsync({type:'blob',compression:'STORE'}).then(blob=>{ saveAs(blob,base+'.zip'); resolve(); }).catch(reject); }catch(e){ reject(e); } }); });
       } catch(e){ console.error(e); alert('Falha ao exportar Shapefile.'); }
     }
 
