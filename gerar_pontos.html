@@ -152,6 +152,7 @@
       let exclusionLayer = L.featureGroup();
 
       function initMap() {
+        if (map) return;
         const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' });
         const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagery © Esri' });
         map = L.map('map', { center: [-14.235, -51.925], zoom: 4, layers: [esriSat] });
@@ -185,7 +186,8 @@
         logMsg(`Arquivo carregado: ${f.name} - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
       });
 
-      btnExemplo.addEventListener('click', () => {
+      if (btnExemplo) {
+        btnExemplo.addEventListener('click', () => {
         loadedKmlName = 'exemplo.kml';
         loadedKmlText = `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
@@ -212,7 +214,8 @@
         drawLinesOnMap(currentLines); pointLayer.clearLayers();
         btnEl.disabled = false;
         logMsg(`Exemplo carregado - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
-      });
+        });
+      }
 
       btnLimparPoligonos.addEventListener('click', () => { exclusionLayer.clearLayers(); logMsg('Áreas de exclusão removidas.'); });
 
@@ -411,11 +414,13 @@ ${xml}`;
       }
 
       function drawLinesOnMap(lines) {
+        if (!map) initMap();
         lineLayer.clearLayers(); const latlngsForBounds = [];
         for (const ln of lines) { const latlngs = ln.coords.map(c => [c.lat, c.lon]); if (latlngs.length >= 2) { const poly = L.polyline(latlngs, { color: '#c62828', weight: 3 }); poly.bindPopup(ln.name); lineLayer.addLayer(poly); latlngsForBounds.push(...latlngs); } }
         if (latlngsForBounds.length) map.fitBounds(L.latLngBounds(latlngsForBounds), { padding: [20, 20] });
       }
       function drawPointsOnMap(points) {
+        if (!map) initMap();
         pointLayer.clearLayers(); const latlngsForBounds = [];
         for (const p of points) { const m = L.circleMarker([p.lat, p.lon], { radius: 5, color: '#168f4b', weight: 2, fillOpacity: 0.8 }); m.bindTooltip(p.name, { permanent: false, direction: 'top' }); pointLayer.addLayer(m); latlngsForBounds.push([p.lat, p.lon]); }
         if (latlngsForBounds.length) map.fitBounds(L.latLngBounds(latlngsForBounds), { padding: [20, 20] });
