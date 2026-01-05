@@ -37,7 +37,7 @@
       --accent-2:#168f4b;
       --border:#e2e8f0;
     }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:
+    body { margin: 0; font-family: "Segoe UI", "Inter", system-ui, -apple-system, Roboto, Arial, sans-serif; background:
       radial-gradient(circle at 20% 20%,rgba(198,40,40,0.08),transparent 36%),
       radial-gradient(circle at 80% 0%,rgba(22,143,75,0.08),transparent 42%),
       linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
@@ -47,11 +47,19 @@
     header { display: flex; gap: .75rem; align-items: center; padding: .75rem; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 5; box-shadow:0 10px 20px rgba(15,23,42,0.08); }
     header h1 { font-size: 1rem; margin: 0 .5rem 0 0; font-weight: 700; color:var(--accent); letter-spacing:.02em; }
     header .grow { flex: 1; }
-    .btn { background: #fff; color: var(--text); border: 1px solid var(--border); padding: .5rem .75rem; border-radius: .75rem; cursor: pointer; box-shadow:0 8px 18px rgba(15,23,42,0.06); }
+    .btn { background: #fff; color: var(--text); border: 1px solid var(--border); padding: .5rem .75rem; border-radius: .75rem; cursor: pointer; box-shadow:0 8px 18px rgba(15,23,42,0.06); display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
     .btn:hover { border-color: var(--accent); background: rgba(198,40,40,0.06); }
     .btn.primary { background: linear-gradient(135deg,var(--accent),#ef5350); border-color: transparent; color:#fff; box-shadow:0 12px 24px rgba(198,40,40,0.24); }
     .btn.primary:hover { filter:brightness(1.05); }
-    .btn.ghost { background: transparent; border-color: #3a3f4a; }
+    .btn.ghost { background: transparent; border-color: #1d632a; }
+    .icon-btn { width: 38px; height: 38px; padding: .35rem; border-radius: 12px; }
+    .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+    .icon-btn.active { background: rgba(198,40,40,0.12); border-color: var(--accent); color: var(--accent); }
+    .leaflet-bar .icon-btn { border-radius: 6px; width: 34px; height: 34px; border: none; box-shadow: none; padding: 0px; }
+    .leaflet-bar .icon-btn:hover { background:#f1f5f9; }
+    .leaflet-bar .icon-btn svg { width: 16px; height: 16px; }
+    .area-label { color:#fff; font-weight:700; font-size:.9rem; text-shadow:0 1px 2px rgba(0,0,0,0.45); }
+    .area-label div { background: rgba(15,23,42,0.9); border:1px solid rgba(0,0,0,0.4); border-radius:12px; padding:4px 8px; box-shadow:0 2px 8px rgba(0,0,0,0.35); }
     .controls { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
     .controls label { font-size: .85rem; opacity: .9; }
     .controls input[type="number"] { width: 8rem; padding: .4rem .5rem; background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .4rem; }
@@ -62,7 +70,9 @@
     #map { height: 100%; width: 100%; }
     .list { padding: .75rem; display: grid; gap: .5rem; }
     .item { display: flex; gap: .5rem; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid var(--border); border-radius: .5rem; padding: .5rem .6rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
-    .pill { font-size: .75rem; opacity: .9; background: #ffc107; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--border); color: #0f172a; }
+    .pill { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:40px; padding:.3rem .65rem; font-size: .75rem; background: #44814f; border-radius: 999px; border: 1px solid #44814f; color: #f9fbff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+    .pill .pill-num { font-size: .95rem; font-weight:700; line-height:1.1; }
+    .pill .pill-label { font-size: .7rem; line-height:1; opacity: .92; }
     .help { font-size: .8rem; opacity: .9; padding: .4rem .75rem; color:var(--muted); }
     /* Notificação central */
     .notify-center { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.98);
@@ -80,30 +90,40 @@
       <h1>Mesclar Talhões</h1>
       <div class="controls">
         <input id="fileInput" type="file" accept=".kml" multiple />
-        <button id="btnClear" class="btn ghost" title="Limpar tudo">Limpar</button> 
+        <button id="btnClear" class="btn ghost icon-btn" title="Limpar tudo" aria-label="Limpar tudo"></button> 
       </div>
       <div class="grow"></div>
       <div class="controls">
         <label for="tol">Tolerância (m):</label>
-        <input id="tol" type="number" min="0" step="1" value="5" />
-        <button id="btnMerge" class="btn primary">Mesclar selecionados</button>
-        <button id="btnEdit" class="btn">Editar</button>
-        <button id="btnSaveEdits" class="btn">Salvar edições</button>
-        <button id="btnCancelEdits" class="btn ghost">Cancelar</button>
-        <button id="btnExportKML" class="btn">Exportar KML</button>
-        <button id="btnExportSHP" class="btn">Exportar Shapefile</button>
+        <input id="tol" type="number" min="0" step="1" value="10" />
+        <button id="btnMerge" class="btn primary icon-btn" title="Mesclar selecionados" aria-label="Mesclar selecionados"></button>
+        <button id="btnEdit" class="btn icon-btn" title="Editar" aria-label="Editar"></button>
+        <button id="btnSaveEdits" class="btn icon-btn" title="Salvar edições" aria-label="Salvar edições"></button>
+        <button id="btnCancelEdits" class="btn ghost icon-btn" title="Cancelar edições" aria-label="Cancelar edições"></button>
+        <button id="btnExportKML" class="btn icon-btn" title="Exportar KML" aria-label="Exportar KML"></button>
+        <button id="btnExportSHP" class="btn icon-btn" title="Exportar Shapefile" aria-label="Exportar Shapefile"></button>
       </div>
     </header>
     <div class="layout">
       <aside>
         <header style="padding:.6rem .75rem; border-bottom:1px solid #2a2d34; display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
           <div>
-            <div style="font-weight:600; font-size:.95rem;">Camadas e Talhões</div>
-            <div class="muted" style="font-size:.8rem;">Clique no mapa ou marque na lista</div>
+            <div style="font-weight:600; font-size:.95rem;"></div>
+            <div class="muted" style="font-size:.9rem;font-weight:800;color:#44814f;">Camadas</div>
           </div>
           <div style="display:flex; gap:.4rem; align-items:center;">
-            <div class="pill"><span id="countSelected">0</span> select</div>
-            <div class="pill"><span id="haSelected">0.00</span> ha</div>
+            <div class="pill">
+              <div class="pill-num" id="countSelected">0</div>
+              <div class="pill-label">select</div>
+            </div>
+            <div class="pill">
+              <div class="pill-num" id="haSelected">0.00</div>
+              <div class="pill-label">ha</div>
+            </div>
+            <div class="pill">
+              <div class="pill-num" id="totalHa">0.00</div>
+              <div class="pill-label">total ha</div>
+            </div>
           </div>
         </header>
         <div id="list" class="list"></div>
@@ -125,13 +145,28 @@
     const resultLayers = [];
     const resultFeatures = [];
     const resultColors = [];
+    const resultLabels = [];
     let lastResult = null; // FeatureCollection com todos os resultados
     let editActive = false;
+    let fillMode = false;
+    let fillControlBtn = null;
+    const selectedResultIds = new Set(); // índices dos resultFeatures/layers
     let lastInputBaseName = 'talhoes';
 
     // Estilos
-    const baseStyle = { color: '#3b82f6', weight: 2, fillColor: '#3b82f6', fillOpacity: 0.15 };
+    const basePalette = ['#3b82f6','#10b981','#f59e0b','#a855f7','#14b8a6','#ef4444','#6366f1','#84cc16','#f97316','#0ea5e9','#d946ef','#06b6d4'];
+    const baseStyle = { color: '#3b82f6', weight: 2, fillColor: '#3b82f6', fillOpacity: 0.3 };
     const selectedStyle = { color: '#22c55e', weight: 3, fillColor: '#22c55e', fillOpacity: 0.25 };
+    const ICONS = {
+      merge: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 4 7l4 4" /><path d="M16 3l4 4-4 4" /><path d="M4 7h8a4 4 0 0 1 4 4v10" /><path d="M12 21h8" /></svg>',
+      edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 3 6 6-9.5 9.5H5.5V12.5Z" /><path d="m13 5 6 6" /><path d="M3 21h6" /></svg>',
+      save: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7Z" /><path d="M17 21v-8H7v8" /><path d="M7 3v5h7" /></svg>',
+      cancel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
+      kml: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a15.3 15.3 0 0 0 0 18" /><path d="M12 3a15.3 15.3 0 0 1 0 18" /></svg>',
+      shapefile: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7Z" /><path d="M14 3v5h5" /><path d="M9 12h3" /><path d="M9 16h6" /></svg>',
+      patch: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 10h6v10" /><path d="M14 4v6h6" /></svg>',
+      clear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>'
+    };
 
     // Notificação central
     function notifyCenter(message, type = 'success', ms = 1800){
@@ -159,13 +194,15 @@
       if(map.pm){
         map.pm.addControls({ position:'topleft', drawMarker:false, drawPolyline:false, drawRectangle:false, drawCircle:false, drawCircleMarker:false, drawPolygon:false, editMode:true, dragMode:false, cutPolygon:true, removalMode:true });
       }
+      addFillHoleControl();
     }
 
     function addFeatureToMap(feature, name, fileName){
       const id = nextId++;
-      const layer = L.geoJSON(feature, { style: () => ({ ...baseStyle }) }).addTo(map);
+      const color = basePalette[(id-1)%basePalette.length];
+      const layer = L.geoJSON(feature, { style: () => ({ ...baseStyle, color, fillColor: color }) }).addTo(map);
       layer.eachLayer(l => { l.on('click', () => toggleSelect(id)); l.options.pmIgnore = true; });
-      const item = { id, layer, feature, name, fileName };
+      const item = { id, layer, feature, name, fileName, color };
       allItems.set(id, item);
       appendListItem(item);
     }
@@ -186,13 +223,58 @@
     }
 
     function select(id){ if(!allItems.has(id) || selectedIds.has(id)) return; selectedIds.add(id); const {layer}=allItems.get(id); layer.setStyle({...selectedStyle}); const chk=document.getElementById('chk-'+id); if(chk && !chk.checked) chk.checked = true; updateSelectedCount(); }
-    function deselect(id){ if(!allItems.has(id) || !selectedIds.has(id)) return; selectedIds.delete(id); const {layer}=allItems.get(id); layer.setStyle({...baseStyle}); const chk=document.getElementById('chk-'+id); if(chk && chk.checked) chk.checked = false; updateSelectedCount(); }
+    function deselect(id){ if(!allItems.has(id) || !selectedIds.has(id)) return; selectedIds.delete(id); const it=allItems.get(id); if(it&&it.layer){ const color=it.color||baseStyle.color; it.layer.setStyle({ ...baseStyle, color, fillColor: color }); } const chk=document.getElementById('chk-'+id); if(chk && chk.checked) chk.checked = false; updateSelectedCount(); }
     function toggleSelect(id){ selectedIds.has(id) ? deselect(id) : select(id); }
 
-    function computeSelectedAreaHa(){ try { let totalM2=0; for(const id of selectedIds){ const it=allItems.get(id); if(!it||!it.feature) continue; const a=turf.area(it.feature); if(Number.isFinite(a)) totalM2+=a; } return Math.round((totalM2/10000)*100)/100; } catch { return 0; } }
-    function updateSelectedCount(){ const n=selectedIds.size; const ha=computeSelectedAreaHa(); const elN=document.getElementById('countSelected'); const elHa=document.getElementById('haSelected'); if(elN) elN.textContent=String(n); if(elHa) elHa.textContent=ha.toFixed(2); }
+    function setResultLayerStyle(idx, selected){
+      const lyr = resultLayers[idx]; const color = resultColors[idx] || '#c62828';
+      if(!lyr) return;
+      const style = selected ? { color:'#22c55e', weight:4, fillColor:'#22c55e', fillOpacity:0.28 } : { color, weight:3, fillColor:color, fillOpacity:.25 };
+      try { lyr.setStyle ? lyr.setStyle(style) : null; lyr.eachLayer && lyr.eachLayer(l=>l.setStyle && l.setStyle(style)); } catch {}
+    }
+    function selectResult(idx){ if(idx<0 || idx>=resultLayers.length || selectedResultIds.has(idx)) return; selectedResultIds.add(idx); setResultLayerStyle(idx,true); updateSelectedCount(); }
+    function deselectResult(idx){ if(!selectedResultIds.has(idx)) return; selectedResultIds.delete(idx); setResultLayerStyle(idx,false); updateSelectedCount(); }
+    function toggleResult(idx){ selectedResultIds.has(idx) ? deselectResult(idx) : selectResult(idx); }
 
-    function clearAll(){ for(const {layer} of allItems.values()){ try{ map.removeLayer(layer);}catch{} } allItems.clear(); selectedIds.clear(); updateSelectedCount(); document.getElementById('list').innerHTML=''; for(const l of resultLayers){ try{ map.removeLayer(l);}catch{} } resultLayers.length=0; resultFeatures.length=0; resultColors.length=0; lastResult=null; }
+    function computeSelectedAreaHa(){
+      try {
+        let totalM2=0;
+        for(const id of selectedIds){
+          const it=allItems.get(id); if(!it||!it.feature) continue;
+          const a=turf.area(it.feature); if(Number.isFinite(a)) totalM2+=a;
+        }
+        for(const idx of selectedResultIds){
+          const f=resultFeatures[idx]; if(!f) continue;
+          const a=turf.area(f); if(Number.isFinite(a)) totalM2+=a;
+        }
+        return Math.round((totalM2/10000)*100)/100;
+      } catch { return 0; }
+    }
+    function computeTotalAreaHa(){
+      try{
+        let totalM2=0;
+        for(const it of allItems.values()){
+          if(!it||!it.feature) continue;
+          const a=turf.area(it.feature); if(Number.isFinite(a)) totalM2+=a;
+        }
+        for(const f of resultFeatures){
+          if(!f) continue;
+          const a=turf.area(f); if(Number.isFinite(a)) totalM2+=a;
+        }
+        return Math.round((totalM2/10000)*100)/100;
+      }catch{return 0;}
+    }
+    function updateSelectedCount(){
+      const n = selectedIds.size + selectedResultIds.size;
+      const ha = computeSelectedAreaHa();
+      const elN=document.getElementById('countSelected'); const elHa=document.getElementById('haSelected');
+      if(elN) elN.textContent=String(n);
+      if(elHa) elHa.textContent=ha.toFixed(2);
+      const totalHa=document.getElementById('totalHa');
+      if(totalHa) totalHa.textContent = computeTotalAreaHa().toFixed(2);
+    }
+
+    function clearAll(){ stopFillMode(); for(const {layer} of allItems.values()){ try{ map.removeLayer(layer);}catch{} } allItems.clear(); selectedIds.clear(); selectedResultIds.clear(); updateSelectedCount(); document.getElementById('list').innerHTML=''; for(const l of resultLayers){ try{ map.removeLayer(l);}catch{} } for(const lbl of resultLabels){ try{ map.removeLayer(lbl);}catch{} } resultLayers.length=0; resultFeatures.length=0; resultColors.length=0; resultLabels.length=0; lastResult=null; updateSelectedCount(); }
 
     function fitAllBounds(){ const group = L.featureGroup([...Array.from(allItems.values()).map(it=>it.layer)]); if(group.getLayers().length){ map.fitBounds(group.getBounds().pad(0.15)); } }
 
@@ -204,13 +286,34 @@
       if(fileArr.length){ const nm = fileArr[0].name || ''; const idx = nm.lastIndexOf('.'); lastInputBaseName = (idx>0 ? nm.slice(0,idx) : nm) || 'talhoes'; }
       for(const file of fileArr){ if(!file.name.toLowerCase().endsWith('.kml')) continue; const text = await readKmlText(file); if(!text.trim()) continue; const xml = new DOMParser().parseFromString(text, 'text/xml'); if(!toGeoJSON || !toGeoJSON.kml){ alert('toGeoJSON indisponível.'); return; } const gj = toGeoJSON.kml(xml); if(!gj || !gj.features) continue; let count=0; gj.features.forEach((f,idx)=>{ const list = extractPolygonFeaturesFromFeature(f); list.forEach((pf,k)=>{ const nm = pf.properties && pf.properties.name ? pf.properties.name : `${file.name} #${idx+1}${list.length>1?'-'+(k+1):''}`; addFeatureToMap(pf,nm,file.name); count++; }); }); console.log(`Carregado: ${file.name} (${count} polígonos)`); }
       fitAllBounds();
+      updateSelectedCount();
     }
 
     function safeClean(feature){ try { const cleaned = turf.buffer(feature, 0, { units:'meters' }); if(cleaned && cleaned.geometry) return cleaned; } catch {} return feature; }
     function safeUnion(a,b){ try { const u=turf.union(a,b); if(u) return u; } catch {} try { const fc={ type:'FeatureCollection', features:[a,b] }; const c=turf.combine(fc); if(c&&c.features&&c.features[0]) return c.features[0]; } catch {} return a; }
     function toSingleFeature(geo){ if(!geo) return null; if(geo.type==='Feature') return geo; if(geo.type==='FeatureCollection'){ if(!geo.features||!geo.features.length) return null; let acc=geo.features[0]; for(let i=1;i<geo.features.length;i++) acc=safeUnion(acc,geo.features[i]); return acc; } return { type:'Feature', properties:{}, geometry: geo.geometry||geo } }
+    function makeAreaLabel(feature, text){
+      try{
+        const center = (turf.centroid(feature).geometry && turf.centroid(feature).geometry.coordinates) || null;
+        const coords = center ? [center[1],center[0]] : null;
+        if(!coords) return null;
+        return L.marker(coords,{ interactive:false, icon:L.divIcon({ className:'area-label', html:`<div>${escapeHtml(text)}</div>`})});
+      }catch{return null;}
+    }
+    function addResultLabel(idx, feature){
+      const ha = computeAreaHa(feature);
+      const text = ha!==null ? `${ha.toFixed(2)} ha` : '';
+      const lbl = makeAreaLabel(feature,text);
+      if(lbl){ lbl.addTo(map); resultLabels[idx]=lbl; }
+    }
+    function removeResultLabel(idx){ const lbl=resultLabels[idx]; if(lbl){ try{ map.removeLayer(lbl);}catch{} } resultLabels[idx]=undefined; }
 
-    function getSelectedFeatures(){ const feats=[]; for(const id of selectedIds){ const it=allItems.get(id); if(it) feats.push(it.feature); } return feats; }
+    function getSelectedFeatures(){
+      const feats=[];
+      for(const id of selectedIds){ const it=allItems.get(id); if(it) feats.push(it.feature); }
+      for(const idx of selectedResultIds){ const f=resultFeatures[idx]; if(f) feats.push(f); }
+      return feats;
+    }
 
     function mergeSelected(){
       const feats = getSelectedFeatures(); if(!feats.length){ alert('Selecione ao menos um talhão.'); return; }
@@ -224,12 +327,23 @@
         // remove originais selecionados
         for(const id of Array.from(selectedIds)){ const it = allItems.get(id); if(it){ try{ map.removeLayer(it.layer);}catch{} const row=document.getElementById('item-'+id); if(row&&row.parentNode) row.parentNode.removeChild(row); allItems.delete(id); } }
         selectedIds.clear(); updateSelectedCount();
+        // remover resultados selecionados (para não duplicar)
+        const toRemove = Array.from(selectedResultIds).sort((a,b)=>b-a);
+        for(const idx of toRemove){
+          const lyr=resultLayers[idx]; try{ map.removeLayer(lyr);}catch{}
+          removeResultLabel(idx);
+          resultLayers.splice(idx,1); resultFeatures.splice(idx,1); resultColors.splice(idx,1); resultLabels.splice(idx,1);
+        }
+        selectedIds.clear(); selectedResultIds.clear(); updateSelectedCount();
         // adicionar resultado com cor distinta
         resultFeatures.push(one);
         const palette=['#ef4444','#22c55e','#3b82f6','#f59e0b','#a855f7','#14b8a6','#e11d48','#10b981','#6366f1','#84cc16'];
         const color = palette[(resultFeatures.length-1)%palette.length]; resultColors.push(color);
+        const idxNew = resultFeatures.length-1;
         const rLayer = L.geoJSON(one, { style: ()=>({ color, weight:3, fillColor:color, fillOpacity:.25 }) }).addTo(map);
+        rLayer.eachLayer && rLayer.eachLayer(l=>{ l.on('click',()=>toggleResult(idxNew)); });
         resultLayers.push(rLayer);
+        addResultLabel(idxNew, one);
         try{ map.fitBounds(rLayer.getBounds().pad(0.15)); }catch{}
         lastResult = { type:'FeatureCollection', features:[...resultFeatures] };
         notifyCenter('Mescla concluída','success',1600);
@@ -317,13 +431,136 @@
     function enableEditSelected(){ for(const [id,item] of allItems){ setEditableForItem(item, selectedIds.has(id)); } for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,true);} editActive=true; notifyCenter('Edição ativada','success',1200); }
     function disableAllEditing(){ for(const [,item] of allItems){ setEditableForItem(item,false);} for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,false);} editActive=false; }
     function toSingleFeatureFromLayer(layer){ try{ const gj=layer.toGeoJSON(); if(!gj) return null; if(gj.type==='Feature') return gj; if(gj.type==='FeatureCollection'){ if(!gj.features||!gj.features.length) return null; let acc=gj.features[0]; for(let i=1;i<gj.features.length;i++) acc=safeUnion(acc,gj.features[i]); return acc; } return { type:'Feature', properties:{}, geometry:(gj.geometry||gj) }; } catch { return null; } }
-    function saveEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; const one=toSingleFeatureFromLayer(it.layer); if(one&&one.geometry){ it.feature=one; } setEditableForItem(it,false);} for(let i=0;i<resultLayers.length;i++){ const lyr=resultLayers[i]; const one=toSingleFeatureFromLayer(lyr); if(one&&one.geometry){ resultFeatures[i]=one; } setEditableForResultIndex(i,false);} lastResult={ type:'FeatureCollection', features:[...resultFeatures] }; editActive=false; notifyCenter('Edições salvas','success',1200); }
-    function cancelEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; try{ map.removeLayer(it.layer);}catch{} const layer=L.geoJSON(it.feature,{ style:()=>({...selectedStyle}) }).addTo(map); layer.eachLayer(l=>{ l.on('click',()=>toggleSelect(id)); l.options.pmIgnore=true; }); it.layer=layer; } for(let i=0;i<resultLayers.length;i++){ const feat=resultFeatures[i]; const old=resultLayers[i]; try{ map.removeLayer(old);}catch{} const layer=L.geoJSON(feat,{ style:()=>({ color: resultColors[i]||'#f97316', weight:3, fillColor: resultColors[i]||'#f97316', fillOpacity:.25 }) }).addTo(map); resultLayers[i]=layer; } disableAllEditing(); notifyCenter('Edições canceladas','success',1200); }
+    function saveEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; const one=toSingleFeatureFromLayer(it.layer); if(one&&one.geometry){ it.feature=one; } setEditableForItem(it,false);} for(let i=0;i<resultLayers.length;i++){ const lyr=resultLayers[i]; const one=toSingleFeatureFromLayer(lyr); if(one&&one.geometry){ resultFeatures[i]=one; removeResultLabel(i); addResultLabel(i,one); } setEditableForResultIndex(i,false);} lastResult={ type:'FeatureCollection', features:[...resultFeatures] }; editActive=false; updateSelectedCount(); notifyCenter('Edições salvas','success',1200); }
+    function cancelEdits(){
+      for(const id of selectedIds){
+        const it=allItems.get(id); if(!it) continue;
+        try{ map.removeLayer(it.layer);}catch{}
+        const color = it.color || baseStyle.color;
+        const layer=L.geoJSON(it.feature,{ style:()=>({ ...baseStyle, color, fillColor: color }) }).addTo(map);
+        layer.eachLayer(l=>{ l.on('click',()=>toggleSelect(id)); l.options.pmIgnore=true; });
+        it.layer=layer;
+      }
+      for(let i=0;i<resultLayers.length;i++){
+        const feat=resultFeatures[i]; const old=resultLayers[i];
+        try{ map.removeLayer(old);}catch{}
+        removeResultLabel(i);
+        const layer=L.geoJSON(feat,{ style:()=>({ color: resultColors[i]||'#f97316', weight:3, fillColor: resultColors[i]||'#f97316', fillOpacity:.25 }) }).addTo(map);
+        layer.eachLayer && layer.eachLayer(l=>{ l.on('click',()=>toggleResult(i)); });
+        addResultLabel(i, feat);
+        if(selectedResultIds.has(i)) setResultLayerStyle(i,true);
+        resultLayers[i]=layer;
+      }
+      disableAllEditing(); stopFillMode(); notifyCenter('Edições canceladas','success',1200);
+    }
+
+    // Preencher buracos desenhando um patch e unindo ao polígono alvo
+    function stopFillMode(){ if(!fillMode) return; fillMode=false; if(fillControlBtn) fillControlBtn.classList.remove('active'); try{ map.pm.disableDraw('Polygon'); }catch{} }
+    function startFillMode(){
+      if(!map.pm){ alert('Ferramenta de desenho indisponível.'); return; }
+      stopFillMode();
+      fillMode = true;
+      if(fillControlBtn) fillControlBtn.classList.add('active');
+      try { map.pm.enableDraw('Polygon', { snappable:true, snapDistance:20, templineStyle:{color:'#c62828'}, hintlineStyle:{color:'#c62828',dashArray:[5,5]} }); } catch {}
+      notifyCenter('Desenhe o polígono que deseja preencher e finalize o desenho.','success',1800);
+    }
+    function applyPatchToLayer(layer, color, style){
+      const patch = toSingleFeatureFromLayer(layer); try{ map.removeLayer(layer);}catch{}
+      if(!patch||!patch.geometry){ notifyCenter('Falha ao capturar o desenho.','error',1500); return false; }
+      let target=null; let targetId=null; let targetType='result'; // result|item
+      // Prioriza itens selecionados
+      for(const id of selectedIds){ const it=allItems.get(id); if(!it||!it.feature) continue; try{ if(turf.booleanIntersects(it.feature, patch)){ target=it; targetId=id; targetType='item'; break; } }catch{} if(!target){ target=it; targetId=id; targetType='item'; break; }
+      }
+      // Senão, tenta resultados
+      if(!target && resultFeatures.length){
+        for(let i=0;i<resultFeatures.length;i++){
+          const f=resultFeatures[i]; if(!f||!f.geometry) continue;
+          try{ if(turf.booleanIntersects(f,patch)){ target=i; targetType='result'; break; } }catch{}
+        }
+        if(target===null) target = resultFeatures.length-1 >=0 ? resultFeatures.length-1 : null;
+      }
+      if(target===null){ notifyCenter('Nenhum polígono para aplicar o preenchimento. Selecione um alvo.','error',1800); return false; }
+      if(targetType==='item'){
+        const it = target;
+        const merged = safeUnion(safeClean(it.feature), safeClean(patch));
+        if(!merged||!merged.geometry){ notifyCenter('Não foi possível unir ao talhão.','error',1600); return false; }
+        it.feature = merged;
+        try{ map.removeLayer(it.layer);}catch{}
+        const newLayer=L.geoJSON(merged,{ style:()=>({...selectedStyle}) }).addTo(map);
+        newLayer.eachLayer(l=>{ l.on('click',()=>toggleSelect(it.id)); l.options.pmIgnore=true; });
+        it.layer=newLayer;
+      } else {
+        const idx = typeof target==='number'?target:0;
+        const merged = safeUnion(safeClean(resultFeatures[idx]), safeClean(patch));
+        if(!merged||!merged.geometry){ notifyCenter('Não foi possível unir ao resultado.','error',1600); return false; }
+        resultFeatures[idx]=merged;
+        const oldLayer=resultLayers[idx];
+        try{ map.removeLayer(oldLayer);}catch{}
+        removeResultLabel(idx);
+        const newLayer=L.geoJSON(merged,{ style:()=>({ color: resultColors[idx]||color||'#c62828', weight:3, fillColor: resultColors[idx]||color||'#c62828', fillOpacity:.25 }) }).addTo(map);
+        resultLayers[idx]=newLayer;
+        addResultLabel(idx, merged);
+        try{ map.fitBounds(newLayer.getBounds().pad(0.05)); }catch{}
+      }
+      lastResult={ type:'FeatureCollection', features:[...resultFeatures] };
+      updateSelectedCount();
+      notifyCenter('Preenchimento aplicado','success',1400);
+      return true;
+    }
+    function onPmCreate(e){
+      if(!fillMode) return;
+      stopFillMode();
+      applyPatchToLayer(e.layer, '#c62828', selectedStyle);
+    }
+
+    function applyButtonIcons(){
+      const mapIcons = [
+        ['btnClear','clear','Limpar tudo'],
+        ['btnMerge','merge','Mesclar selecionados'],
+        ['btnEdit','edit','Editar'],
+        ['btnSaveEdits','save','Salvar edições'],
+        ['btnCancelEdits','cancel','Cancelar edições'],
+        ['btnExportKML','kml','Exportar KML'],
+        ['btnExportSHP','shapefile','Exportar Shapefile']
+      ];
+      mapIcons.forEach(([id,name,label])=>{
+        const el=document.getElementById(id);
+        if(!el) return;
+        el.innerHTML = ICONS[name] || '';
+        if(!el.classList.contains('icon-btn')) el.classList.add('icon-btn');
+        if(label){
+          el.title = label;
+          el.setAttribute('aria-label', label);
+        }
+      });
+    }
+
+    function addFillHoleControl(){
+      if(!map || !L || !L.control) return;
+      const ctrl = L.control({ position:'topleft' });
+      ctrl.onAdd = function(){
+        const container = L.DomUtil.create('div','leaflet-bar');
+        const btn = L.DomUtil.create('a','leaflet-bar-part leaflet-bar-part-single icon-btn', container);
+        btn.href = '#';
+        btn.title = 'Preencher buraco';
+        btn.setAttribute('aria-label','Preencher buraco');
+        btn.innerHTML = ICONS.patch;
+        L.DomEvent.on(btn,'click', L.DomEvent.stop)
+          .on(btn,'mousedown', L.DomEvent.stopPropagation)
+          .on(btn,'dblclick', L.DomEvent.stopPropagation)
+          .on(btn,'click', () => startFillMode());
+        fillControlBtn = btn;
+        return container;
+      };
+      ctrl.addTo(map);
+    }
 
     function escapeHtml(str){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
 
     window.addEventListener('DOMContentLoaded', () => {
       initMap();
+      if(map && map.on){ map.on('pm:create', onPmCreate); }
+      applyButtonIcons();
       document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
       document.getElementById('btnClear').addEventListener('click', () => { if(confirm('Remover todas as camadas e seleção?')) clearAll(); });
       document.getElementById('btnMerge').addEventListener('click', mergeSelected);
@@ -332,11 +569,9 @@
       document.getElementById('btnCancelEdits').addEventListener('click', cancelEdits);
       document.getElementById('btnExportKML').addEventListener('click', exportKML);
       document.getElementById('btnExportSHP').addEventListener('click', exportSHP);
-      document.getElementById('btnSelectAll').addEventListener('click', () => { for(const id of allItems.keys()) select(id); });
-      document.getElementById('btnSelectNone').addEventListener('click', () => { for(const id of Array.from(selectedIds)) deselect(id); });
+      document.getElementById('btnSelectAll').addEventListener('click', () => { for(const id of allItems.keys()) select(id); for(let i=0;i<resultLayers.length;i++) selectResult(i); });
+      document.getElementById('btnSelectNone').addEventListener('click', () => { for(const id of Array.from(selectedIds)) deselect(id); for(const idx of Array.from(selectedResultIds)) deselectResult(idx); });
     });
   </script>
 </body>
 </html>
-
-
