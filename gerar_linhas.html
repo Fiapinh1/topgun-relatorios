@@ -144,7 +144,7 @@
           </div>
           <div class="field">
             <label for="bordadura">Bordadura interna (m)</label>
-            <input id="bordadura" type="number" min="0" step="1" value="0">
+            <input id="bordadura" type="number" min="0" step="1" value="10">
           </div>
         </div>
 
@@ -168,8 +168,8 @@
             </select>
           </div>
           <div class="field">
-            <label for="iterSuavizar">Iterações para suavizar</label>
-            <input id="iterSuavizar" type="number" min="1" max="6" step="1" value="2">
+            <label for="iterSuavizar">Interações para suavizar</label>
+            <input id="iterSuavizar" type="number" min="1" max="6" step="1" value="3">
           </div>
         </div>
 
@@ -246,16 +246,15 @@
       const deg = Math.max(0, Math.min(359, parseFloat(angEl.value||'0')));
       angleDial.style.setProperty('--deg', deg+'deg');
       angleDial.style.transform = 'rotate(0deg)';
-      const hand = angleDial;
-      if(hand){
-        hand.style.setProperty('--angle-rotate', deg+'deg');
-        hand.style.setProperty('--angle-deg', deg);
-        hand.style.transform = 'rotate(0deg)';
-        hand.querySelector?.('::after');
-        hand.style.setProperty('--deg', deg+'deg');
-        hand.style.setProperty('--needle', deg);
-        hand.style.position = 'relative';
-      }
+        const hand = angleDial;
+        if(hand){
+          hand.style.setProperty('--angle-rotate', deg+'deg');
+          hand.style.setProperty('--angle-deg', deg);
+          hand.style.transform = 'rotate(0deg)';
+          hand.style.setProperty('--deg', deg+'deg');
+          hand.style.setProperty('--needle', deg);
+          hand.style.position = 'relative';
+        }
       angleDial.style.setProperty('--needle-rot', deg+'deg');
       angleDial.style.setProperty('--needle', deg);
       angleDial.querySelectorAll('*');
@@ -661,28 +660,32 @@
       return { pathLL, segmentsLL };
     }
 
-    function smoothCorners(points, factor = 0.2) {
-      if (!points || points.length < 3) return points || [];
-      const clamp = (v, mn, mx) => Math.max(mn, Math.min(mx, v));
-      const dist = (a, b) => Math.hypot(a.lon - b.lon, a.lat - b.lat);
-      const move = (from, to, d) => {
-        const len = dist(from, to) || 1e-9;
-        const t = d / len;
-        return {
-          lat: from.lat + (to.lat - from.lat) * t,
-          lon: from.lon + (to.lon - from.lon) * t
-        };
+    function smoothRounded(points, iter = 2){
+      if(!points || points.length < 3) return points || [];
+      const clamp = (v,mn,mx)=>Math.max(mn,Math.min(mx,v));
+      const dist = (a,b)=>Math.hypot(a.lon-b.lon,a.lat-b.lat);
+      const move = (from,to,d)=>{
+        const len = dist(from,to) || 1e-9;
+        const t = d/len;
+        return { lat: from.lat + (to.lat-from.lat)*t, lon: from.lon + (to.lon-from.lon)*t };
       };
-      const out = [];
-      out.push(points[0]);
-      for (let i = 1; i < points.length - 1; i++) {
-        const prev = points[i-1], cur = points[i], next = points[i+1];
-        const len1 = dist(prev, cur);
-        const len2 = dist(cur, next);
-        const maxOffset = Math.min(len1, len2) * clamp(factor, 0.05, 0.45);
-        const p1 = move(cur, prev, maxOffset);
-        const p2 = move(cur, next, maxOffset);
-        out.push(p1, p2);
+      const samples = clamp(iter*3, 3, 12);
+      const alpha = clamp(0.12 + (iter-1)*0.06, 0.12, 0.4);
+      const out=[points[0]];
+      for(let i=1;i<points.length-1;i++){
+        const p0=points[i-1], p1=points[i], p2=points[i+1];
+        const len1=dist(p0,p1), len2=dist(p1,p2);
+        const off = clamp(Math.min(len1,len2)*alpha, 0, Math.min(len1,len2)/2);
+        const a = move(p1,p0,off);
+        const b = move(p1,p2,off);
+        // quadratic bezier a -> p1 -> b
+        for(let s=0;s<=samples;s++){
+          const t = s/samples;
+          const u = 1-t;
+          const lat = u*u*a.lat + 2*u*t*p1.lat + t*t*b.lat;
+          const lon = u*u*a.lon + 2*u*t*p1.lon + t*t*b.lon;
+          if(s>0) out.push({lat,lon});
+        }
       }
       out.push(points[points.length-1]);
       return out;
@@ -693,8 +696,7 @@
       const mode = modoLinhaEl.value;
       if (mode === 'suavizado') {
         const iters = Math.max(1, Math.min(6, parseInt(iterSuavizarEl.value || '2', 10)));
-        const factor = Math.max(0.05, Math.min(0.4, iters * 0.1));
-        return smoothCorners(pathLL, factor);
+        return smoothRounded(pathLL, iters);
       }
       return pathLL;
     }
