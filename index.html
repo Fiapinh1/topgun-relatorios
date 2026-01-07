@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina Inicial - Ano Novo Top Gun 2026</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary-color: #d9b24c;
@@ -22,9 +22,7 @@
             --dark-color: #0a0f1f;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -36,27 +34,13 @@
         }
 
         /* Header Styles */
-        .navbar {
-            padding: 1rem 0;
-            transition: all 0.3s ease;
-        }
+        .navbar { padding: 1rem 0; transition: all 0.3s ease; }
 
-        .logo-container {
-            width: 60px;
-            height: 60px;
-            position: relative;
-        }
+        .logo-container { width: 60px; height: 60px; position: relative; }
 
-        .logo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
+        .logo { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
 
-        .logo-placeholder:hover {
-            transform: scale(1.05);
-        }
+        .logo-placeholder:hover { transform: scale(1.05); }
 
         /* Hero Section */
         .bg-gradient-primary {
@@ -93,22 +77,14 @@
             pointer-events: none;
         }
 
-        .hero-section {
-            position: relative;
-            z-index: 1;
-        }
+        .hero-section { position: relative; z-index: 1; }
+        .min-vh-50 { min-height: 50vh; }
 
-        .min-vh-50 {
-            min-height: 50vh;
-        }
-
-        .hero-illustration {
-            animation: float 6s ease-in-out infinite;
-        }
+        .hero-illustration { animation: float 6s ease-in-out infinite; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(-5deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-18px) rotate(2deg); }
         }
 
         @keyframes aurora {
@@ -145,11 +121,7 @@
         }
 
         /* Navigation Cards */
-        .main-nav {
-            margin-top: -50px;
-            position: relative;
-            z-index: 2;
-        }
+        .main-nav { margin-top: -50px; position: relative; z-index: 2; }
 
         .nav-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
@@ -160,9 +132,7 @@
             color: #f5f5f5;
         }
 
-        .nav-card .text-muted {
-            color: #e5e7eb !important;
-        }
+        .nav-card .text-muted { color: #e5e7eb !important; }
 
         .nav-card::before {
             content: '';
@@ -180,17 +150,10 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
         }
 
-        .nav-card:hover::before {
-            left: 100%;
-        }
+        .nav-card:hover::before { left: 100%; }
 
-        .nav-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .nav-card:hover .nav-icon {
-            transform: scale(1.1);
-        }
+        .nav-icon { transition: transform 0.3s ease; }
+        .nav-card:hover .nav-icon { transform: scale(1.1); }
 
         .btn {
             border-radius: 8px;
@@ -214,46 +177,17 @@
             transition: width 0.3s ease, height 0.3s ease;
         }
 
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+        .btn:hover::before { width: 300px; height: 300px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
+        .btn-primary { background-color: #d9b24c; border-color: #c79d33; color: #0b0f1f; }
+        .btn-primary:hover { background-color: #cfa53a; border-color: #b98e25; color: #0b0f1f; }
 
-        .btn-primary {
-          background-color: #d9b24c;
-          border-color: #c79d33;
-          color: #0b0f1f;
-        }
-        .btn-primary:hover {
-          background-color: #cfa53a;
-          border-color: #b98e25;
-          color: #0b0f1f;
-        }
-        .btn-success {
-          background-color: #ffffff;
-          border-color: #d9b24c;
-          color: #0b0f1f;
-        }
-        .btn-success:hover {
-          background-color: #f7f7f7;
-          border-color: #c79d33;
-          color: #0b0f1f;
-        }
-        .btn-info {
-          background-color: #0c1224 !important;
-          border-color: #d9b24c !important;
-          color: #f5f5f5 !important;
-        }
-        .btn-info:hover, .btn-info:focus {
-          background-color: #0a0f1f !important;
-          border-color: #c79d33 !important;
-          color: #ffffff !important;
-        }
+        .btn-success { background-color: #ffffff; border-color: #d9b24c; color: #0b0f1f; }
+        .btn-success:hover { background-color: #f7f7f7; border-color: #c79d33; color: #0b0f1f; }
+
+        .btn-info { background-color: #0c1224 !important; border-color: #d9b24c !important; color: #f5f5f5 !important; }
+        .btn-info:hover, .btn-info:focus { background-color: #0a0f1f !important; border-color: #c79d33 !important; color: #ffffff !important; }
 
         /* Features Section */
         .features-section {
@@ -270,36 +204,16 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
-        .feature-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
-        }
+        .feature-item:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
 
-        .feature-icon {
-            transition: transform 0.3s ease;
-            color: #d9b24c;
-        }
-
-        .feature-item h4 {
-            color: #ffffff;
-        }
-
-        .feature-item p {
-            color: #e5e7eb;
-        }
-
-        .feature-item:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .features-section .text-muted {
-            color: #e5e7eb !important;
-        }
+        .feature-icon { transition: transform 0.3s ease; color: #d9b24c; }
+        .feature-item h4 { color: #ffffff; }
+        .feature-item p { color: #e5e7eb; }
+        .feature-item:hover .feature-icon { transform: scale(1.1) rotate(5deg); }
+        .features-section .text-muted { color: #e5e7eb !important; }
 
         /* Footer */
-        footer {
-            background: linear-gradient(135deg, #0b1021 0%, #0f172a 100%) !important;
-        }
+        footer { background: linear-gradient(135deg, #0b1021 0%, #0f172a 100%) !important; }
 
         .social-links a {
             transition: all 0.3s ease;
@@ -312,56 +226,23 @@
             height: 40px;
         }
 
-        .social-links a:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
+        .social-links a:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .display-4 {
-                font-size: 2.5rem;
-            }
-            
-            .display-5 {
-                font-size: 2rem;
-            }
-            
-            .nav-card {
-                margin-bottom: 1rem;
-            }
-            
-            .main-nav {
-                margin-top: -30px;
-            }
-            
-            .hero-section {
-                padding: 3rem 0;
-            }
-            
-            .logo-container {
-                width: 50px;
-                height: 50px;
-            }
+            .display-4 { font-size: 2.5rem; }
+            .display-5 { font-size: 2rem; }
+            .nav-card { margin-bottom: 1rem; }
+            .main-nav { margin-top: -30px; }
+            .hero-section { padding: 3rem 0; }
+            .logo-container { width: 50px; height: 50px; }
         }
 
         @media (max-width: 576px) {
-            .display-4 {
-                font-size: 2rem;
-            }
-            
-            .lead {
-                font-size: 1rem;
-            }
-            
-            .btn-lg {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-            
-            .nav-card {
-                padding: 1.5rem !important;
-            }
+            .display-4 { font-size: 2rem; }
+            .lead { font-size: 1rem; }
+            .btn-lg { padding: 10px 20px; font-size: 1rem; }
+            .nav-card { padding: 1.5rem !important; }
         }
 
         /* Animations */
@@ -371,18 +252,10 @@
             animation: fadeInUp 0.8s ease forwards;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
         /* Loading Animation */
-        .loading {
-            position: relative;
-        }
-
+        .loading { position: relative; }
         .loading::after {
             content: '';
             position: absolute;
@@ -398,38 +271,17 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
-        .loading.active::after {
-            opacity: 1;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loading.active::after { opacity: 1; }
+        @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
 
         /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #1f2937;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1f2937; }
 
         /* Modal */
         .modal-content {
@@ -438,17 +290,9 @@
           border: 1px solid rgba(217,178,76,0.35);
           box-shadow: 0 18px 45px rgba(0,0,0,0.45);
         }
-        .modal-header, .modal-footer {
-          border-color: rgba(217,178,76,0.25);
-        }
-        .modal-title {
-          color: #f7e7a1;
-          letter-spacing: 0.3px;
-        }
-        .modal-body label,
-        .modal-body p {
-          color: #e5e7eb;
-        }
+        .modal-header, .modal-footer { border-color: rgba(217,178,76,0.25); }
+        .modal-title { color: #f7e7a1; letter-spacing: 0.3px; }
+        .modal-body label, .modal-body p { color: #e5e7eb; }
         .form-control {
           background-color: #0f1628;
           color: #f5f5f5;
@@ -460,9 +304,7 @@
           border-color: #d9b24c;
           box-shadow: 0 0 0 0.2rem rgba(217,178,76,0.25);
         }
-        .btn-close {
-          filter: invert(1) brightness(1.4);
-        }
+        .btn-close { filter: invert(1) brightness(1.4); }
 
         /* Header Fixo */
         .header-fixo {
@@ -519,8 +361,74 @@
           box-shadow: 0 6px 12px rgba(0,0,0,0.18);
         }
 
-  </style>
+        /* ====== NOVO: CARD RANKING ====== */
+        .ranking-card {
+          background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+          border: 1px solid rgba(217,178,76,0.45);
+          border-radius: 16px;
+          box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+          backdrop-filter: blur(6px);
+          padding: 18px;
+          text-align: left;
+        }
+        .ranking-card .badge {
+          border: 1px solid rgba(217,178,76,0.55);
+          background: rgba(217,178,76,0.12);
+          color: #f7e7a1;
+        }
+        .ranking-metric {
+          background: rgba(0,0,0,0.22);
+          border: 1px solid rgba(217,178,76,0.25);
+          border-radius: 12px;
+          padding: 10px 12px;
+        }
+        .ranking-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 12px;
+          font-size: 0.95rem;
+        }
+        .ranking-table th, .ranking-table td {
+          padding: 10px 10px;
+          border-bottom: 1px solid rgba(255,255,255,0.10);
+          vertical-align: middle;
+        }
+        .ranking-table th {
+          color: #f7e7a1;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+        }
+        .rank-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 34px;
+          height: 26px;
+          padding: 0 10px;
+          border-radius: 999px;
+          border: 1px solid rgba(217,178,76,0.55);
+          background: rgba(217,178,76,0.10);
+          color: #f7e7a1;
+          font-weight: 800;
+          font-size: 0.9rem;
+        }
+        .small-muted { color: #e5e7eb; opacity: 0.9; }
+        .skeleton {
+          background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+          background-size: 200% 100%;
+          animation: shimmer 1.4s infinite;
+          border-radius: 10px;
+          height: 14px;
+        }
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+    </style>
 </head>
+
 <body>
     <!-- Efeito de brilhos de Ano Novo -->
     <div id="sparkContainer"></div>
@@ -569,58 +477,82 @@
             <div class="row align-items-center min-vh-50">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4">Bem-vindo ao Ano Novo 2026</h1>
-                                        <p class="lead mb-4">Entramos em um novo ciclo com energia renovada: precisao aerea, seguranca e inovacao para acelerar sua producao neste Ano Novo. Conte conosco para transformar planejamento em resultados e celebrar colheitas ainda maiores em 2026.</p>
+                    <p class="lead mb-4">
+                      Entramos em um novo ciclo com energia renovada: precisao aerea, seguranca e inovacao para acelerar sua producao neste Ano Novo.
+                      Conte conosco para transformar planejamento em resultados e celebrar colheitas ainda maiores em 2026.
+                    </p>
                 </div>
-                
+
+                <!-- AQUI: substitui o SVG por um CARD com ranking -->
                 <div class="col-lg-6 text-center">
                     <div class="hero-illustration">
-                        <!-- SVG: Ano Novo 2026 -->
-                        <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="goldGlow" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#f7e7a1"/>
-                                    <stop offset="100%" stop-color="#d9b24c"/>
-                                </linearGradient>
-                                <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
-                                    <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.35"/>
-                                </filter>
-                            </defs>
-                            <g stroke="url(#goldGlow)" stroke-width="3" stroke-linecap="round" opacity="0.9">
-                                <path d="M30 120 C60 60, 140 60, 170 120" />
-                                <path d="M50 125 C80 80, 120 80, 150 125" stroke-opacity="0.65"/>
-                            </g>
-                            <g fill="#f7e7a1" filter="url(#softShadow)">
-                                <circle cx="100" cy="40" r="4"/>
-                                <circle cx="70" cy="48" r="3"/>
-                                <circle cx="130" cy="48" r="3"/>
-                                <circle cx="50" cy="70" r="2.8"/>
-                                <circle cx="150" cy="70" r="2.8"/>
-                            </g>
-                            <g stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.9">
-                                <line x1="100" y1="20" x2="100" y2="34"/>
-                                <line x1="93" y1="27" x2="107" y2="27"/>
-                                <line x1="86" y1="52" x2="94" y2="60"/>
-                                <line x1="86" y1="60" x2="94" y2="52"/>
-                                <line x1="114" y1="52" x2="122" y2="60"/>
-                                <line x1="114" y1="60" x2="122" y2="52"/>
-                            </g>
-                            <g filter="url(#softShadow)">
-                                <rect x="60" y="85" width="80" height="36" rx="10" fill="url(#goldGlow)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
-                                <text x="100" y="108" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#0b0f1f">2026</text>
-                            </g>
-                            <line x1="50" y1="130" x2="150" y2="130" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
-                            <g transform="translate(100,118)" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="-12" y="-6" width="24" height="12" rx="4" fill="rgba(255,255,255,0.08)" stroke="url(#goldGlow)"/>
-                                <line x1="-20" y1="-6" x2="-30" y2="-12"/>
-                                <line x1="20" y1="-6" x2="30" y2="-12"/>
-                                <line x1="-20" y1="6" x2="-30" y2="12"/>
-                                <line x1="20" y1="6" x2="30" y2="12"/>
-                                <circle cx="-32" cy="-14" r="4" fill="rgba(255,255,255,0.15)"/>
-                                <circle cx="32" cy="-14" r="4" fill="rgba(255,255,255,0.15)"/>
-                                <circle cx="-32" cy="14" r="4" fill="rgba(255,255,255,0.15)"/>
-                                <circle cx="32" cy="14" r="4" fill="rgba(255,255,255,0.15)"/>
-                            </g>
-                        </svg>
+                      <div class="ranking-card mx-auto" style="max-width: 520px;">
+                        <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                          <div class="text-start">
+                            <div class="d-flex align-items-center gap-2">
+                              <i class="bi bi-trophy-fill" style="color:#f7e7a1;"></i>
+                              <h3 class="h5 fw-bold mb-0">Ranking de Aplicação</h3>
+                            </div>
+                            <div class="small-muted mt-1">
+                              Últimos <strong>7 dias</strong> (atualiza automaticamente)
+                            </div>
+                          </div>
+                          <span class="badge rounded-pill px-3 py-2">
+                            <i class="bi bi-calendar-week me-1"></i> 7D
+                          </span>
+                        </div>
+
+                        <div class="row g-2 mt-2">
+                          <div class="col-6">
+                            <div class="ranking-metric text-start">
+                              <div class="small-muted">Área total</div>
+                              <div class="fw-bold" id="rkTotalArea">—</div>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="ranking-metric text-start">
+                              <div class="small-muted">Voos</div>
+                              <div class="fw-bold" id="rkTotalFlights">—</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-3 text-start">
+                          <div class="d-flex align-items-center justify-content-between">
+                            <div class="small-muted">Top pilotos</div>
+                            <button class="btn btn-sm btn-outline-light" id="rkRefreshBtn" type="button" style="border-color: rgba(217,178,76,0.45);">
+                              <i class="bi bi-arrow-clockwise me-1"></i> Atualizar
+                            </button>
+                          </div>
+
+                          <div id="rkLoading" class="mt-2">
+                            <div class="skeleton mb-2" style="height: 18px;"></div>
+                            <div class="skeleton mb-2"></div>
+                            <div class="skeleton mb-2"></div>
+                            <div class="skeleton mb-2"></div>
+                            <div class="skeleton" style="width: 70%;"></div>
+                          </div>
+
+                          <div id="rkError" class="alert alert-danger mt-2 py-2 px-3" style="display:none; background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.35); color:#ffd5d5;">
+                            Falha ao carregar ranking.
+                          </div>
+
+                          <div id="rkTableWrap" style="display:none;">
+                            <table class="ranking-table">
+                              <thead>
+                                <tr>
+                                  <th style="width:60px;">#</th>
+                                  <th>Piloto</th>
+                                  <th class="text-end">Área</th>
+                                </tr>
+                              </thead>
+                              <tbody id="rkTbody"></tbody>
+                            </table>
+
+                            <div class="small-muted mt-2" id="rkUpdatedAt"></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -635,7 +567,6 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
                         <div class="nav-icon mb-3">
-                            <!-- Substitua o ícone da gota por este SVG -->
                             <div class="icon" style="margin-bottom: 12px;">
                               <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                 <circle cx="24" cy="24" r="6" stroke="#d9b24c" stroke-width="2" fill="#fff"/>
@@ -661,7 +592,7 @@
                         </button>
                         <div id="pulverizacao-opcoes" class="opcoes" style="display:none; margin-top:10px;">
                           <button class="btn btn-outline-primary" onclick="window.location.href='programacao_aplicacao.html'">Programação</button>
-                            <button class="btn btn-outline-primary" onclick="window.location.href='status_operacional_aplicacao.html'">Status Operacional</button>
+                          <button class="btn btn-outline-primary" onclick="window.location.href='status_operacional_aplicacao.html'">Status Operacional</button>
                           <button class="btn btn-outline-primary" onclick="window.location.href='rendimento_aplicacao.html'">Rendimento</button>
                           <button class="btn btn-outline-primary" onclick="window.location.href='enc_kml_uplo.html'">Buscar KML ou PDF</button>
                         </div>
@@ -672,7 +603,6 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
                         <div class="nav-icon mb-3">
-                            <!-- Substitua o ícone da calculadora por este SVG -->
                             <div class="icon" style="margin-bottom: 12px;">
                               <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                 <ellipse cx="24" cy="32" rx="6" ry="12" fill="#d9b24c" />
@@ -705,7 +635,6 @@
                 <div class="col-lg-4 col-md-6 mx-auto">
                     <div class="nav-card h-100 text-center p-4 border rounded-3 shadow-sm">
                         <div class="nav-icon mb-3">
-                            <!-- Icone representando ovos microbiologicos -->
                             <div class="icon" style="margin-bottom: 12px;">
                               <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                 <defs>
@@ -714,11 +643,8 @@
                                     <stop offset="100%" stop-color="#f3d8a7"/>
                                   </linearGradient>
                                 </defs>
-                                <!-- Ovo principal -->
                                 <path d="M24 8c-6 0-11 8-11 15s4.9 13 11 13 11-6 11-13S30 8 24 8z" fill="url(#eggShell)" stroke="#caa06a" stroke-width="2"/>
-                                <!-- Ovo secundario -->
                                 <path d="M34 16c-3 0-6 5-6 9s2.5 8 6 8 6-3.7 6-8-3-9-6-9z" fill="#fff3d6" stroke="#caa06a" stroke-width="1.5"/>
-                                <!-- Pequeninos ovos -->
                                 <circle cx="16" cy="30" r="5" fill="#fffbf0" stroke="#caa06a" stroke-width="1.5"/>
                                 <circle cx="12" cy="36" r="3" fill="#fff5dd" stroke="#caa06a" stroke-width="1.2"/>
                               </svg>
@@ -750,7 +676,7 @@
                     <p class="lead text-muted">Seguimos entregando precisão, segurança e tecnologia aérea para que seu planejamento de 2026 seja ainda mais produtivo.</p>
                 </div>
             </div>
-            
+
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-item text-center">
@@ -761,7 +687,7 @@
                         <p class="text-muted">Serviços com padrão de excelência e garantia de qualidade.</p>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-item text-center">
                         <div class="feature-icon mb-3">
@@ -771,7 +697,7 @@
                         <p class="text-muted">Processos otimizados para entregas rápidas e eficientes.</p>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-item text-center">
                         <div class="feature-icon mb-3">
@@ -781,7 +707,7 @@
                         <p class="text-muted">Equipe qualificada para atender suas necessidades.</p>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-item text-center">
                         <div class="feature-icon mb-3">
@@ -818,15 +744,13 @@
         </div>
     </footer>
 
-    <!-- Selo do Mês
-    <div class="selo-mes">
-      <img src="setembro_amarelo.png" alt="Selo do Mês" style="height:200px;">
-    </div> -->
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
+        // ======== CONFIG: COLE AQUI SUA URL DO APPS SCRIPT ========
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby1vZSlo0QbWkonHAsstQhVZNGI9R6IwN8GUgAVNuywRVTculgmaZ4_usklWnVHMwIBdA/exec";
+
         // Variaveis globais
         let isLoading = false;
         let passwordModal;
@@ -876,38 +800,12 @@
             }
         }
 
-        // Funcao para navegacao entre sessoes
-        function navigateTo(section) {
-            if (isLoading) return;
-
-            const button = event.target.closest('button');
-            showLoading(button);
-
-            setTimeout(() => {
-                hideLoading(button);
-
-                switch(section) {
-                    case 'pulverizacao':
-                        showNotification('Redirecionando para Pulverizacao...', 'info');
-                        break;
-                    case 'cotesia':
-                        showNotification('Redirecionando para Cotesia...', 'success');
-                        break;
-                    case 'relatorios':
-                        showNotification('Redirecionando para Relatorios...', 'info');
-                        break;
-                    default:
-                        showNotification('Secao nao encontrada', 'error');
-                }
-            }, 1500);
-        }
-
         function showLoading(button) {
             if (!button) return;
             isLoading = true;
             button.classList.add('loading', 'active');
             button.disabled = true;
-            button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Carregando...';
+            button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Carregando.';
         }
 
         function hideLoading(button) {
@@ -920,126 +818,27 @@
 
         function showNotification(message, type = 'info') {
             const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
+            if (existingNotification) existingNotification.remove();
 
             const notification = document.createElement('div');
-            notification.className = `notification alert alert-${getBootstrapClass(type)} alert-dismissible fade show`;
-            notification.style.cssText = `
-                position: fixed;
-                bottom: 24px;
-                right: 24px;
-                z-index: 9999;
-                min-width: 300px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                border: none;
-                border-radius: 8px;
-            `;
+            notification.className = `notification alert alert-${type === 'error' ? 'danger' : type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+            notification.style.zIndex = '9999';
             notification.innerHTML = `
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-${getIcon(type)} me-2"></i>
+                    <i class="bi bi-info-circle me-2"></i>
                     <span>${message}</span>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close ms-3" aria-label="Close"></button>
                 </div>
             `;
 
             document.body.appendChild(notification);
 
+            const closeBtn = notification.querySelector('.btn-close');
+            closeBtn.addEventListener('click', () => notification.remove());
+
             setTimeout(() => {
-                if (notification && notification.parentNode) {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.remove();
-                        }
-                    }, 150);
-                }
+                if (notification.parentNode) notification.remove();
             }, 4000);
-        }
-
-        function getBootstrapClass(type) {
-            const classes = {
-                success: 'success',
-                error: 'danger',
-                warning: 'warning',
-                info: 'info'
-            };
-            return classes[type] || 'info';
-        }
-
-        function getIcon(type) {
-            const icons = {
-                success: 'check-circle-fill',
-                error: 'exclamation-triangle-fill',
-                warning: 'exclamation-triangle-fill',
-                info: 'info-circle-fill'
-            };
-            return icons[type] || 'info-circle-fill';
-        }
-
-        function uploadLogo() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        const logoImg = document.getElementById('companyLogo');
-                        const logoPlaceholder = document.getElementById('logoPlaceholder');
-                        if (logoImg) {
-                            logoImg.src = evt.target.result;
-                            logoImg.classList.remove('d-none');
-                        }
-                        if (logoPlaceholder) {
-                            logoPlaceholder.classList.add('d-none');
-                        }
-                        showNotification('Logo carregada com sucesso!', 'success');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
-
-        function initAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.nav-card, .feature-item').forEach(el => {
-                observer.observe(el);
-            });
-        }
-
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        function initParallax() {
-            window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
-                const heroSection = document.querySelector('.hero-section');
-                if (heroSection) {
-                    const speed = scrolled * 0.5;
-                    heroSection.style.transform = `translateY(${speed}px)`;
-                }
-            });
         }
 
         function isMobile() {
@@ -1047,42 +846,166 @@
         }
 
         function optimizeForMobile() {
-            if (isMobile()) {
-                document.body.classList.add('mobile-optimized');
-                const mobileCSS = `
-                    .mobile-optimized .hero-illustration { animation: none; }
-                    .mobile-optimized .nav-card:hover { transform: none; }
-                `;
-                const style = document.createElement('style');
-                style.textContent = mobileCSS;
-                document.head.appendChild(style);
-            }
+            // Ajustes extras se precisar
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            createSparkles();
-            initAnimations();
-            optimizeForMobile();
-            if (!isMobile()) {
-                initParallax();
+        // ======== NOVO: JSONP para GitHub Pages (sem CORS) ========
+        function loadJsonp(url) {
+          return new Promise((resolve, reject) => {
+            const cbName = "cb_" + Math.random().toString(36).slice(2);
+            const script = document.createElement("script");
+
+            window[cbName] = (data) => {
+              cleanup();
+              resolve(data);
+            };
+
+            const cleanup = () => {
+              try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+              if (script && script.parentNode) script.parentNode.removeChild(script);
+            };
+
+            script.onerror = () => {
+              cleanup();
+              reject(new Error("Falha ao carregar JSONP"));
+            };
+
+            const sep = url.includes("?") ? "&" : "?";
+            script.src = url + sep + "callback=" + encodeURIComponent(cbName) + "&_=" + Date.now();
+            document.body.appendChild(script);
+          });
+        }
+
+        function fmtNumber(n, decimals = 2) {
+          const num = Number(n);
+          if (!isFinite(num)) return "0";
+          return num.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        function fmtInt(n) {
+          const num = Number(n);
+          if (!isFinite(num)) return "0";
+          return num.toLocaleString("pt-BR");
+        }
+
+        function showRankingLoading(on) {
+          const elLoading = document.getElementById("rkLoading");
+          const elWrap = document.getElementById("rkTableWrap");
+          const elErr = document.getElementById("rkError");
+          if (elLoading) elLoading.style.display = on ? "block" : "none";
+          if (elWrap) elWrap.style.display = on ? "none" : (elWrap.dataset.hasData === "1" ? "block" : "none");
+          if (elErr) elErr.style.display = "none";
+        }
+
+        function showRankingError(msg) {
+          const elErr = document.getElementById("rkError");
+          const elLoading = document.getElementById("rkLoading");
+          const elWrap = document.getElementById("rkTableWrap");
+          if (elLoading) elLoading.style.display = "none";
+          if (elWrap) elWrap.style.display = "none";
+          if (elErr) {
+            elErr.textContent = msg || "Falha ao carregar ranking.";
+            elErr.style.display = "block";
+          }
+        }
+
+        async function fetchRanking7d() {
+          showRankingLoading(true);
+
+          try {
+            const url = `${GAS_URL}?action=getRanking&periodDays=7`;
+            const data = await loadJsonp(url);
+
+            // GAS retorna array ou {ok:false,message:"..."}
+            if (!data) throw new Error("Resposta vazia");
+            if (data.ok === false) throw new Error(data.message || "Erro no servidor");
+
+            const list = Array.isArray(data) ? data : (data.data || []);
+            if (!Array.isArray(list) || list.length === 0) {
+              // sem dados
+              document.getElementById("rkTotalArea").textContent = "0,00 ha";
+              document.getElementById("rkTotalFlights").textContent = "0";
+              const wrap = document.getElementById("rkTableWrap");
+              if (wrap) { wrap.dataset.hasData = "0"; wrap.style.display = "none"; }
+              showRankingLoading(false);
+              return;
             }
 
-            const logoPlaceholder = document.getElementById('logoPlaceholder');
-            if (logoPlaceholder) {
-                logoPlaceholder.addEventListener('click', uploadLogo);
-                logoPlaceholder.style.cursor = 'pointer';
-                logoPlaceholder.title = 'Clique para adicionar sua logo';
+            // totais
+            const totalArea = list.reduce((s, x) => s + (Number(x.area) || 0), 0);
+            const totalFlights = list.reduce((s, x) => s + (Number(x.flights) || 0), 0);
+
+            document.getElementById("rkTotalArea").textContent = `${fmtNumber(totalArea, 2)} ha`;
+            document.getElementById("rkTotalFlights").textContent = fmtInt(totalFlights);
+
+            // top 5
+            const top = list.slice(0, 5);
+            const tbody = document.getElementById("rkTbody");
+            tbody.innerHTML = "";
+
+            top.forEach((x, i) => {
+              const tr = document.createElement("tr");
+
+              const tdRank = document.createElement("td");
+              tdRank.innerHTML = `<span class="rank-pill">${i + 1}</span>`;
+
+              const tdPilot = document.createElement("td");
+              tdPilot.innerHTML = `
+                <div class="fw-semibold">${(x.pilot || "SEM PILOTO")}</div>
+                <div class="small-muted">Voos: <strong>${fmtInt(x.flights || 0)}</strong> • L/ha: <strong>${fmtNumber(x.lpha || 0, 2)}</strong></div>
+              `;
+
+              const tdArea = document.createElement("td");
+              tdArea.className = "text-end";
+              tdArea.innerHTML = `<div class="fw-bold">${fmtNumber(x.area || 0, 2)} ha</div>`;
+
+              tr.appendChild(tdRank);
+              tr.appendChild(tdPilot);
+              tr.appendChild(tdArea);
+              tbody.appendChild(tr);
+            });
+
+            const wrap = document.getElementById("rkTableWrap");
+            if (wrap) { wrap.dataset.hasData = "1"; wrap.style.display = "block"; }
+
+            const updated = document.getElementById("rkUpdatedAt");
+            if (updated) {
+              const now = new Date();
+              updated.textContent = `Atualizado em ${now.toLocaleString("pt-BR")}`;
             }
-            passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'), { backdrop: 'static', focus: true });
+
+            showRankingLoading(false);
+          } catch (err) {
+            console.error(err);
+            showRankingError("Falha ao carregar ranking (7 dias).");
+          }
+        }
+
+        function debugInfo() {
+            console.log('Pagina carregada com sucesso!');
+            console.log('Dispositivo movel:', isMobile());
+            console.log('Versao do navegador:', navigator.userAgent);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Modal bootstrap
+            const modalEl = document.getElementById('passwordModal');
+            if (modalEl) passwordModal = new bootstrap.Modal(modalEl);
+
+            // Sparkles
+            createSparkles();
+            optimizeForMobile();
+
+            // Botão lock
             const lockButton = document.getElementById('lockButton');
             if (lockButton) {
                 lockButton.addEventListener('click', openPasswordModal);
                 lockButton.title = 'Area restrita';
             }
+
             const passwordSubmit = document.getElementById('passwordSubmit');
-            if (passwordSubmit) {
-                passwordSubmit.addEventListener('click', submitPassword);
-            }
+            if (passwordSubmit) passwordSubmit.addEventListener('click', submitPassword);
+
             const passwordInput = document.getElementById('passwordInput');
             if (passwordInput) {
                 passwordInput.addEventListener('keydown', (e) => {
@@ -1093,26 +1016,30 @@
                 });
             }
 
+            // Títulos ícones sociais
             document.querySelectorAll('.social-links a').forEach(link => {
                 const icon = link.querySelector('i');
                 if (icon) {
-                    if (icon.classList.contains('bi-facebook')) {
-                        link.title = 'Facebook';
-                    } else if (icon.classList.contains('bi-instagram')) {
-                        link.title = 'Instagram';
-                    } else if (icon.classList.contains('bi-linkedin')) {
-                        link.title = 'LinkedIn';
-                    } else if (icon.classList.contains('bi-envelope')) {
-                        link.title = 'Email';
-                    } else if (icon.classList.contains('bi-whatsapp')) {
-                        link.title = 'WhatsApp';
-                    }
+                    if (icon.classList.contains('bi-facebook')) link.title = 'Facebook';
+                    else if (icon.classList.contains('bi-instagram')) link.title = 'Instagram';
+                    else if (icon.classList.contains('bi-linkedin')) link.title = 'LinkedIn';
+                    else if (icon.classList.contains('bi-envelope')) link.title = 'Email';
+                    else if (icon.classList.contains('bi-whatsapp')) link.title = 'WhatsApp';
                 }
             });
 
             setTimeout(() => {
                 showNotification('Boas-vindas a 2026! Vamos decolar juntos.', 'info');
             }, 1000);
+
+            // Carrega ranking 7D automático
+            fetchRanking7d();
+
+            // Botão atualizar ranking
+            const btn = document.getElementById("rkRefreshBtn");
+            if (btn) btn.addEventListener("click", fetchRanking7d);
+
+            debugInfo();
         });
 
         window.addEventListener('resize', function() {
@@ -1124,14 +1051,6 @@
             console.error('Erro capturado:', e.error);
             showNotification('Ocorreu um erro inesperado. Tente novamente.', 'error');
         });
-
-        function debugInfo() {
-            console.log('Pagina carregada com sucesso!');
-            console.log('Dispositivo movel:', isMobile());
-            console.log('Versao do navegador:', navigator.userAgent);
-        }
-
-        document.addEventListener('DOMContentLoaded', debugInfo);
 
         function toggleOpcoes(id) {
           document.querySelectorAll('.opcoes').forEach(div => {
@@ -1145,9 +1064,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
