@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página em Construção | Pulvion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+      overflow: hidden;
+    }
+    /* SVG ferramentas no fundo */
+    .svg-bg-tools {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+    .container {
+      position: relative;
+      background: rgba(255,255,255,0.95);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 48px 32px 32px 32px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      overflow: hidden;
+      z-index: 1;
+      animation: card-swing 3.5s cubic-bezier(.36,1.6,.64,1) infinite alternate;
+    }
+    @keyframes card-swing {
+      0% { transform: rotate(-2deg) scale(1.01); }
+      50% { transform: rotate(2deg) scale(1.015); }
+      100% { transform: rotate(-2deg) scale(1.01); }
+    }
+    /* Removido bg-svg do card */
+    .logo {
+      width: 120px;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.10));
+      position: relative;
+      z-index: 1;
+    }
+    h1, .construction, p {
+      position: relative;
+      z-index: 1;
+    }
+    .construction {
+      font-size: 3.5rem;
+      color: #d9b24c;
+      margin: 24px 0 12px 0;
+      letter-spacing: 2px;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(217,178,76,0.10);
+    }
+    /* SVG Animations */
+    .tech-c1 {
+      animation: move-c1 6s linear infinite alternate;
+    }
+    .tech-c2 {
+      animation: move-c2 7s linear infinite alternate;
+    }
+    .tech-r1 {
+      animation: move-r1 8s ease-in-out infinite alternate;
+    }
+    .tech-r2 {
+      animation: move-r2 9s ease-in-out infinite alternate;
+    }
+    .tech-line1 {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: dash-line1 5s linear infinite;
+    }
+    .tech-line2 {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: dash-line2 6s linear infinite;
+    }
+    @keyframes move-c1 {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(20px, 10px) scale(1.08); }
+    }
+    @keyframes move-c2 {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-18px, -12px) scale(1.12); }
+    }
+    @keyframes move-r1 {
+      0% { transform: rotate(0deg) translate(0,0); }
+      100% { transform: rotate(8deg) translate(10px,-8px); }
+    }
+    @keyframes move-r2 {
+      0% { transform: rotate(0deg) translate(0,0); }
+      100% { transform: rotate(-10deg) translate(-8px,12px); }
+    }
+    @keyframes dash-line1 {
+      0% { stroke-dashoffset: 400; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes dash-line2 {
+      0% { stroke-dashoffset: 400; }
+      100% { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- SVGs de ferramentas animadas no fundo -->
+  <svg class="svg-bg-tools" width="100vw" height="100vh" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g style="transform-origin: 200px 200px; animation: hammer-rotate 7s linear infinite alternate;">
+      <rect x="180" y="120" width="40" height="120" rx="12" fill="#b0a16b"/>
+      <rect x="170" y="110" width="60" height="30" rx="8" fill="#888"/>
+      <rect x="170" y="230" width="60" height="18" rx="6" fill="#888"/>
+    </g>
+    <g style="transform-origin: 1200px 700px; animation: wrench-rotate 9s ease-in-out infinite alternate;">
+      <rect x="1180" y="650" width="40" height="120" rx="12" fill="#b0a16b"/>
+      <ellipse cx="1200" cy="650" rx="28" ry="18" fill="#888"/>
+      <rect x="1190" y="770" width="20" height="30" rx="6" fill="#888"/>
+    </g>
+    <g style="transform-origin: 700px 400px; animation: screwdriver-rotate 11s ease-in-out infinite alternate;">
+      <rect x="690" y="350" width="20" height="80" rx="6" fill="#b0a16b"/>
+      <polygon points="690,350 710,350 700,320" fill="#888"/>
+    </g>
+  </svg>
+  <div class="container">
+    <img src="logo_pulvion_preta.png" alt="Logo Pulvion" class="logo">
+    <div class="construction">🚧</div>
+    <h1>Página em Construção</h1>
+    <p>Estamos trabalhando para trazer novidades.<br>Volte em breve!</p>
+  </div>
+  <style>
+    @keyframes hammer-rotate {
+      0% { transform: rotate(-10deg); }
+      100% { transform: rotate(12deg); }
+    }
+    @keyframes wrench-rotate {
+      0% { transform: rotate(8deg); }
+      100% { transform: rotate(-14deg); }
+    }
+    @keyframes screwdriver-rotate {
+      0% { transform: rotate(-6deg); }
+      100% { transform: rotate(10deg); }
+    }
+  </style>
+</body>
+</html>
