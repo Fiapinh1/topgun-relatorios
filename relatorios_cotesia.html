@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório de Aplicação - Top Gun</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/togeojson@0.16.0/togeojson.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+  <style>
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+      #fileKML, #fileTalhao, #btnPrint, .actions { display: none !important; }
+      /* Remova ou comente as linhas abaixo para manter o visual igual ao da tela */
+      /*
+      body::before {
+        top: -7cm; left: -17cm;
+        width: 36cm; height: 22cm;
+      }
+      body::after {
+        bottom: 8cm; right: 32,5cm;
+        width: 13cm; height: 35cm;
+      }
+      */
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      top:-7cm; left: -17cm;
+      width: 36cm; height: 22cm;
+      background: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g opacity="0.18"><path d="M10,50 Q10,20 50,10 Q90,20 90,50 Q90,80 50,90 Q10,80 10,50 Z" fill="%236b7a4b"/><path d="M20,50 Q20,25 50,20 Q80,25 80,50 Q80,75 50,80 Q20,75 20,50 Z" fill="white"/></g></svg>') no-repeat center/contain;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      bottom: 8cm; right: 32.5cm;
+      width: 13cm; height: 35cm;
+      background: url('data:image/svg+xml;utf8,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><g opacity="0.12"><path d="M40,10 Q70,20 70,40 Q70,60 40,70 Q10,60 10,40 Q10,20 40,10 Z" fill="%236b7a4b"/></g></svg>') no-repeat center/contain;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Garante que na impressão também fique dentro da folha */
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+      #fileKML, #fileTalhao, #btnPrint { display: none; }
+      /* Remova ou comente as linhas abaixo para manter o visual igual ao da tela */
+      /*
+      body::before {
+        top: -7cm; left: -17cm;
+        width: 36cm; height: 22cm;
+      }
+      body::after {
+        bottom: 8cm; right: 32,5cm;
+        width: 13cm; height: 35cm;
+      }
+      */
+    }
+    .container { width: 21cm; height: 29.7cm; padding: 1cm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 1; }
+    .header {
+      background: black;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .header .title {
+      flex: 1;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .header img {
+      height: 60px;
+      max-width: 120px;
+      object-fit: contain;
+      padding: 0;
+    }
+    .header .logo-left {
+      margin-right: 20px;
+    }
+    .header .logo-right {
+      margin-left: 20px;
+    }
+    .title { font-size: 20px; font-weight: bold; }
+    .section-title { margin-top: 15px; font-size: 14px; font-weight: 700; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 20px; margin-top: 10px; }
+    .grid label { font-weight: 600; font-size: 13px; color: #444; }
+    .grid .value { font-size: 13px; color: #111; display: flex; align-items: center; }
+    .grid input[type=text], .grid input[type=date] {
+      width: 100%; border: none; border-bottom: 1px solid #aaa; font-size: 13px; background: transparent;
+    }
+    /* Deixa o select do Piloto com a mesma indentação/estilo dos inputs */
+    .grid select {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #aaa;
+      font-size: 13px;
+      background: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #map { width: 100%; height: 500px; margin-top: 20px; border: 1px solid #ccc; }
+    .actions {
+      text-align: center;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    .upload-btn:hover { background: #222; box-shadow: 0 6px 14px rgba(0,0,0,0.18); transform: translateY(-1px); }
+    .upload-btn:active { transform: translateY(0); box-shadow: none; }
+    .upload-btn svg { width: 18px; height: 18px; }
+    .actions input[type=file] { display: none; }
+    .actions .helper-text { font-size: 12px; color: #555; max-width: 640px; }
+    .footer { font-size: 11px; text-align: center; color: #555; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 5px; }
+
+    /* Adicione este CSS para a seta norte */
+    
+    .leaflet-control.legend {
+      background: #fdfdfd8a;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    /* Aparência de impressão: campos como texto */
+    @media print {
+      .grid input[type=text],
+      .grid input[type=date],
+      .grid select,
+      input[type=text],
+      input[type=date],
+      select {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-appearance: none;
+        appearance: none;
+        padding: 0 !important;
+      }
+      select::-ms-expand { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <div class="header">
+        <img class="logo-left" src="https://i.imgur.com/AuO3E5y.png" alt="Logo Esquerda" />
+        <div class="title">RELATÓRIO DE APLICAÇÃO</div>
+        <img class="logo-right" src="https://i.imgur.com/RMtSHww.png" alt="Logo Direita" />
+      </div>
+
+      <div class="section-title">Identificação</div>
+      <div class="grid">
+        <div><label>Ordem de Serviço:</label><input id="os" type="text" /></div>
+        <div><label>Data de Liberação:</label><input id="data" type="date" /></div>
+        <div><label>Piloto:</label><select id="piloto"><option value="Victor Hugo">Victor Hugo</option><option value="Guilherme">Guilherme</option></select></div>
+        <div><label>Distância percorrida pelo drone:</label><div id="distTotal" class="value">-</div></div>
+        <div><label>Velocidade média de aplicação (m/s):</label><input id="velMedia" type="text" value="9~10 m/s" /></div>
+        <div><label>Equipamento:</label><input id="equip" type="text" value="Xfly 800" /></div>
+      </div>
+
+      <div class="section-title">Dados Climáticos</div>
+      <div class="grid">
+        <div>
+          <label>Temperatura Inicial (°C):</label>
+          <input id="tempIni" type="text" value="" />
+        </div>
+        <div>
+          <label>Temperatura Final (°C):</label>
+          <input id="tempFim" type="text" value="" />
+        </div>
+        <div>
+          <label>Umidade Inicial (%):</label>
+          <input id="umiIni" type="text" value="" />
+        </div>
+        <div>
+          <label>Umidade Final (%):</label>
+          <input id="umiFim" type="text" value="" />
+        </div>
+        <div>
+          <label>Vento Inicial (km/h):</label>
+          <input id="ventoIni" type="text" value="" />
+        </div>
+        <div>
+          <label>Vento Final (km/h):</label>
+          <input id="ventoFim" type="text" value="" />
+        </div>
+      </div>
+
+      <div class="section-title">Resultados</div>
+      <div class="grid">
+        <div>
+          <label>Cultura:</label>
+          <input id="cultura" type="text" value="Cana de açúcar" />
+        </div>
+        <div>
+          <label>Área aplicada (ha):</label>
+          <input id="area" type="text" value="" />
+        </div>
+        <div>
+          <label>Altura média (m):</label>
+          <input id="altura" type="text" value="30 m" />
+        </div>
+        <div>
+          <label>Largura da faixa (m):</label>
+          <input id="larguraFaixa" type="text" value="" />
+        </div>
+        <div>
+          <label>Tubetes liberados:</label>
+          <div id="qtPontos" class="value">-</div>
+        </div>
+        <div>
+          <label>Distância entre tubetes (m):</label>
+          <div id="mediaPontos" class="value">40 m</div>
+        </div>
+      </div>
+
+      <div id="map" style="position: relative;">
+        <img src="https://raw.githubusercontent.com/robertoschiro/leaflet-north-arrow/main/example/north-arrow.svg" class="north-arrow" alt="Norte" />
+      </div>
+    </div>
+    <div class="actions">
+      <div class="action-buttons">
+        <button id="btnTalhaoUpload" class="upload-btn" type="button" title="Carregar limite do talhão (KML opcional)">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 17.5V6.5a1 1 0 0 1 .7-.95l7-2.2a1 1 0 0 1 .6 0l7 2.2a1 1 0 0 1 .7.95v11a1 1 0 0 1-.7.95l-7 2.2a1 1 0 0 1-.6 0l-7-2.2A1 1 0 0 1 3 17.5Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m8.5 12 3.5-3.5L15.5 12m-3-3.5V16"/></svg>
+          Talhão KML
+        </button>
+        <button id="btnPontosUpload" class="upload-btn" type="button" title="Carregar pontos / trajeto (KML)">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12h4.5L12 6l2.5 6H19l-5 3.5 1.9 5.5L12 16l-3.9 5 1.9-5.5L5 12Zm3-7h8"/></svg>
+          Pontos KML
+        </button>
+      </div>
+      <input type="file" id="fileTalhao" accept=".kml" />
+      <input type="file" id="fileKML" accept=".kml" />
+      <div class="helper-text">Use o KML do talhão para preencher a área automaticamente. Carregue o KML de pontos/linhas separadamente para exibir o trajeto.</div>
+      <button id="btnPrint" onclick="window.print()">Imprimir Relatório</button>
+    </div>
+    <div class="footer">
+      Top Gun Pulverizações - Tecnologia, excelência e resultado em pulverização agrícola com drones.
+    </div>
+  </div>
+
+<script>
+let map;
+function meters(a, b) { return turf.distance(turf.point(a), turf.point(b), { units: 'meters' }); }
+
+// Formata inputs para sempre exibirem a unidade automaticamente
+// e permite digitar decimais (ex.: 2,8) mantendo o cursor antes da unidade.
+function attachUnitInput(id, unit){
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const format = (allowTrailingSep = true) => {
+    const raw = String(el.value || '');
+    // Mantém apenas dígitos e separadores, converte ponto para vírgula
+    let filtered = raw.replace(/[^0-9,\.]/g, '').replace(/\./g, ',');
+    // Mantém apenas a primeira vírgula
+    let out = '';
+    let seenSep = false;
+    for (const ch of filtered){
+      if (ch >= '0' && ch <= '9') out += ch;
+      else if (ch === ',' && !seenSep){ out += ','; seenSep = true; }
+    }
+    if (!allowTrailingSep && out.endsWith(',')) out = out.slice(0, -1);
+
+    if (!out){ el.value = ''; return; }
+    el.value = `${out}${unit}`;
+    // Posiciona o cursor antes da unidade para continuar digitando
+    const pos = out.length;
+    try { el.setSelectionRange(pos, pos); } catch(_e){}
+  };
+
+  el.addEventListener('input', () => format(true));
+  el.addEventListener('blur', () => format(false));
+  // Inicializa formato atual
+  format(true);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Ajustes solicitados: remover distancia, adicionar Operacao e limitar Equipamento
+  try {
+    // Remove o campo de distancia (linha contendo o valor com id distTotal)
+    const distEl = document.getElementById('distTotal');
+    if (distEl && distEl.parentElement) {
+      distEl.parentElement.remove();
+    }
+
+    // Inserir campo Operacao apos o campo Piloto
+    const pilotoDiv = Array.from(document.querySelectorAll('.grid > div')).find(d => {
+      const lbl = d.querySelector('label');
+      return lbl && lbl.textContent.trim().toLowerCase().startsWith('piloto');
+    });
+    if (pilotoDiv && pilotoDiv.parentElement) {
+      const opDiv = document.createElement('div');
+      const lbl = document.createElement('label');
+      lbl.textContent = 'Operacão:';
+      const sel = document.createElement('select');
+      sel.id = 'operacao';
+      ['1ª LIB. COTESIA - DRONE','2ª LIB. COTESIA - DRONE','3ª LIB. COTESIA - DRONE','4ª LIB. COTESIA - DRONE','5ª LIB. COTESIA - DRONE'].forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t; opt.textContent = t; sel.appendChild(opt);
+      });
+      opDiv.appendChild(lbl);
+      opDiv.appendChild(sel);
+      pilotoDiv.insertAdjacentElement('afterend', opDiv);
+    }
+
+    // Transformar Equipamento em select com duas opcoes
+    const equipInput = document.getElementById('equip');
+    if (equipInput) {
+      const sel = document.createElement('select');
+      sel.id = 'equip';
+      ['XFLY X800','NEXUS NX6'].forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t; opt.textContent = t; sel.appendChild(opt);
+      });
+      equipInput.parentElement.replaceChild(sel, equipInput);
+    }
+  } catch (e) { console.warn('Ajustes de UI nao aplicados:', e); }
+  map = L.map('map', { zoomDelta: 0.25, zoomSnap: 0.1, wheelPxPerZoomLevel: 120 }).setView([-15, -47], 12);
+  L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}').addTo(map);
+
+  // Adiciona legenda
+  const legend = L.control({ position: 'bottomright' });
+  legend.onAdd = function () {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = `
+      <b>Legenda</b><br>
+      <span style="display:inline-block;width:18px;height:3px;background:#111;border:2px solid #111;vertical-align:middle;margin-right:4px;"></span> Talhão<br>
+      <span style="display:inline-block;width:12px;height:12px;border:2px solid #ffffff;border-radius:50%;background:#d71d1d;vertical-align:middle;margin-right:4px;"></span> Tubetes<br>
+    `;
+    return div;
+  };
+  legend.addTo(map);
+
+  let kmlFileName = '';
+  let talhaoFileName = '';
+  let titleControl;
+  let polygonLayer;
+  let pointLayer;
+  let lineLayer;
+
+  const bindUploadButton = (btnId, inputId) => {
+    const btn = document.getElementById(btnId);
+    const input = document.getElementById(inputId);
+    if (btn && input) {
+      btn.addEventListener('click', () => input.click());
+    }
+  };
+
+  bindUploadButton('btnTalhaoUpload', 'fileTalhao');
+  bindUploadButton('btnPontosUpload', 'fileKML');
+
+  function updateTitle() {
+    if (titleControl) map.removeControl(titleControl);
+    if (!kmlFileName && !talhaoFileName) return;
+    titleControl = L.control({ position: 'topright' });
+    titleControl.onAdd = function () {
+      const div = L.DomUtil.create('div', 'leaflet-control legend');
+      div.style.fontWeight = 'bold';
+      div.style.fontSize = '14px';
+      div.innerHTML = `
+        ${talhaoFileName ? `Talhão: ${talhaoFileName}<br>` : ''}
+        ${kmlFileName ? `Pontos: ${kmlFileName}` : ''}
+      `.trim();
+      return div;
+    };
+    titleControl.addTo(map);
+  }
+
+  function applyPolygon(polygons, baseName) {
+    if (!polygons || polygons.length === 0) return;
+    if (polygonLayer) map.removeLayer(polygonLayer);
+    polygonLayer = L.geoJSON(polygons, {
+      style: { color: '#111', weight: 2, fillColor: '#111', fillOpacity: 0 }
+    }).addTo(map);
+
+    const totalAreaHa = polygons.reduce((acc, feature) => acc + turf.area(feature), 0) / 10000;
+    const areaEl = document.getElementById('area');
+    if (areaEl) {
+      const haVal = totalAreaHa.toFixed(2);
+      areaEl.value = `${haVal} ha`;
+    }
+    talhaoFileName = baseName || talhaoFileName;
+    updateTitle();
+  }
+
+  function refitView() {
+    if (polygonLayer) {
+      map.fitBounds(polygonLayer.getBounds());
+    } else if (lineLayer) {
+      map.fitBounds(lineLayer.getBounds());
+    } else if (pointLayer) {
+      map.fitBounds(pointLayer.getBounds());
+    }
+  }
+
+  document.getElementById('fileTalhao').addEventListener('change', evt => {
+    const f = evt.target.files[0];
+    if (!f) return;
+    const baseName = f.name.replace(/\.[^/.]+$/, "");
+    const rd = new FileReader();
+    rd.onload = () => {
+      const kmlDoc = new DOMParser().parseFromString(rd.result, 'text/xml');
+      const gj = toGeoJSON.kml(kmlDoc);
+      const polygons = gj.features.filter(feat => feat.geometry && (feat.geometry.type === 'Polygon' || feat.geometry.type === 'MultiPolygon'));
+      applyPolygon(polygons, baseName);
+      refitView();
+    };
+    rd.readAsText(f);
+  });
+
+  document.getElementById('fileKML').addEventListener('change', evt => {
+    const f = evt.target.files[0];
+    if (!f) return;
+    kmlFileName = f.name.replace(/\.[^/.]+$/, ""); // nome sem extensão
+    const rd = new FileReader();
+    rd.onload = () => {
+      const kmlDoc = new DOMParser().parseFromString(rd.result, 'text/xml');
+      const gj = toGeoJSON.kml(kmlDoc);
+      const points = gj.features.filter(feat => feat.geometry.type === 'Point');
+      const lines = gj.features.filter(feat => feat.geometry.type === 'LineString');
+      const polygons = gj.features.filter(feat => feat.geometry && (feat.geometry.type === 'Polygon' || feat.geometry.type === 'MultiPolygon'));
+
+      if (pointLayer) map.removeLayer(pointLayer);
+      if (lineLayer) map.removeLayer(lineLayer);
+
+      if (polygons.length > 0) {
+        applyPolygon(polygons, kmlFileName);
+      }
+
+      // Pontos com estilo: circulo (borda branca, preenchimento verde escuro)
+      if (points.length > 0) {
+        pointLayer = L.geoJSON(points, {
+          pointToLayer: (_, latlng) => L.circleMarker(latlng, {
+            radius: 3,
+            color: '#ffffff',
+            weight: 2,
+            fillColor: '#d71d1d',
+            fillOpacity: 0.9
+          }),
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(`<b>${kmlFileName}</b>`);
+          }
+        }).addTo(map);
+      } else {
+        pointLayer = null;
+      }
+
+      // Linhas com popup do nome do arquivo
+      if (lines.length > 0) {
+        lineLayer = L.geoJSON(lines, {
+          style: { color: '#ffcc00', weight: 2 },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(`<b>${kmlFileName}</b>`);
+          }
+        }).addTo(map);
+      } else {
+        lineLayer = null;
+      }
+
+      updateTitle();
+
+      refitView();
+
+      // distancia removida do relatorio
+
+      document.getElementById('qtPontos').innerText = points.length;
+
+      document.getElementById('mediaPontos').innerText = '40 m';
+    };
+    rd.readAsText(f);
+  });
+  // Anexa unidades automáticas aos campos
+  attachUnitInput('tempIni','°C');
+  attachUnitInput('tempFim','°C');
+  attachUnitInput('umiIni','%');
+  attachUnitInput('umiFim','%');
+  attachUnitInput('ventoIni',' km/h');
+  attachUnitInput('ventoFim',' km/h');
+  attachUnitInput('area',' ha');
+  attachUnitInput('altura',' m');
+  attachUnitInput('larguraFaixa',' m');
+});
+</script>
+</body>
+</html>
