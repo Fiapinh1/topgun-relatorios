@@ -1118,10 +1118,7 @@
                 showNotification('Boas-vindas a 2026! Vamos decolar juntos.', 'info');
             }, 1000);
 
-            // Carrega ranking 7D automático
-            fetchRanking();
-
-                        // Carrega ranking automático (padrão: últimos 7 dias)
+            // Carrega ranking automático (padrão: últimos 7 dias)
             updateRankingPeriodUI_();
             fetchRanking();
 
@@ -1166,9 +1163,20 @@
 
             if (btnApply) {
               btnApply.addEventListener("click", () => {
+                const from = (inFrom && inFrom.value) ? inFrom.value : "";
+                const to = (inTo && inTo.value) ? inTo.value : "";
+                if (!from && !to) {
+                  if (typeof showNotification === "function") {
+                    showNotification("Selecione a data inicial e/ou final.", "warning");
+                  } else {
+                    alert("Selecione a data inicial e/ou final.");
+                  }
+                  return;
+                }
                 rkState.mode = "range";
-                rkState.dateFrom = (inFrom && inFrom.value) ? inFrom.value : "";
-                rkState.dateTo = (inTo && inTo.value) ? inTo.value : "";
+                rkState.dateFrom = from;
+                rkState.dateTo = to;
+                if (sel) sel.value = "custom";
                 updateRankingPeriodUI_();
                 fetchRanking();
               });
@@ -1214,4 +1222,5 @@
     </script>
 </body>
 </html>
+
 
