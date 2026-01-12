@@ -180,14 +180,28 @@
       flex-direction:column;
       gap:10px;
       min-height:70vh;
+      position:relative;
     }
     .iframe-wrap.active{display:flex;}
+    .iframe-wrap.fullscreen{
+      position:fixed;
+      inset:10px;
+      margin:0;
+      z-index:200;
+      background:linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+      padding:16px;
+      border-radius:18px;
+      box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    }
     iframe{
       width:100%;
       height:70vh;
       border:1px solid var(--border);
       border-radius:14px;
       background:rgba(255,255,255,0.04);
+    }
+    .iframe-wrap.fullscreen iframe{
+      height:calc(100vh - 160px);
     }
     .calendar-wrap{
       display:grid;
@@ -360,6 +374,41 @@
     .sidebar .exit{ margin-top:auto; display:block; width:100%; padding-top:12px; border-top:1px solid var(--border); }
     .exit-btn{ width:100%; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:var(--text); border-radius:12px; padding:10px 12px; font-weight:700; display:flex; align-items:center; gap:8px; justify-content:center; cursor:pointer; transition:all .12s ease; }
     .exit-btn:hover{border-color:var(--accent);background:rgba(217,178,76,0.12);}
+    .fs-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      color:var(--accent);
+      border-radius:10px;
+      padding:8px 12px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      font-weight:700;
+      transition:all .12s ease;
+    }
+    .fs-btn:hover{border-color:var(--accent);background:rgba(217,178,76,0.12);}
+    .mobile-menu-btn{
+      display:none;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.06);
+      color:var(--accent);
+      border-radius:10px;
+      padding:8px 12px;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .mobile-menu-btn:hover{border-color:var(--accent);background:rgba(217,178,76,0.12);}
+    .backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      display:none;
+      z-index:110;
+    }
+    .backdrop.show{display:block;}
     .note-modal{
       position:fixed;
       inset:0;
@@ -420,18 +469,38 @@
     }
     @media (max-width:1100px){
       .calendar-wrap{grid-template-columns:1fr;}
-      .sidebar{position:fixed;z-index:10;left:0;top:0;height:100vh;}
       .content{margin-left:0;padding:12px;}
     }
     @media (max-width:640px){
-      .sidebar{width:74px;padding:10px 8px;}
-      .sidebar.collapsed{width:74px;}
-      .toggle{justify-content:center;}
-      .toggle span{display:none;}
       .content{padding:10px;}
       .calendar-grid{gap:4px;}
       .day{min-height:48px;font-size:.9rem;}
       .calc-grid button{padding:8px;}
+    }
+    @media (max-width:900px){
+      body{overflow-x:hidden;}
+      .layout{flex-direction:column;}
+      .sidebar{
+        position:fixed;
+        left:0;top:0;
+        height:100vh;
+        width:240px;
+        transform:translateX(-110%);
+        opacity:0;
+        pointer-events:none;
+        z-index:120;
+      }
+      .sidebar.mobile-open{
+        transform:translateX(0);
+        opacity:1;
+        pointer-events:auto;
+        box-shadow:12px 0 40px rgba(0,0,0,0.4);
+      }
+      .sidebar.collapsed{width:240px;}
+      .toggle span{display:none;}
+      .content{padding:10px;margin-left:0;}
+      .mobile-menu-btn{display:inline-flex;}
+    }
     }
   </style>
 </head>
@@ -465,11 +534,11 @@
               <i class="nav-icon" data-lucide="search"></i>
               <span class="label">Busca KML/MAPA</span>
             </button>
-            <button class="nav-link" data-src="index.ranking.html" data-label="Upload Ranking">
+            <button class="nav-link" data-src="ranking/index.ranking.html" data-label="Upload Ranking">
               <i class="nav-icon" data-lucide="upload"></i>
               <span class="label">Upload Ranking</span>
             </button>
-            <button class="nav-link" data-src="ranking.piloto.html" data-label="Ranking Pilotos">
+            <button class="nav-link" data-src="ranking/ranking.piloto.html" data-label="Ranking Pilotos">
               <i class="nav-icon" data-lucide="trophy"></i>
               <span class="label">Ranking Pilotos</span>
             </button>
@@ -519,6 +588,24 @@
             </button>
           </div>
         </div>
+
+        <div class="nav-group">
+          <button class="nav-main" data-group="operacao">
+            <i class="nav-icon" data-lucide="factory"></i>
+            <span class="label">Operação por Unidade</span>
+            <i class="nav-icon chevron" data-lucide="chevron-down"></i>
+          </button>
+          <div class="nav-sub" data-group="operacao">
+            <button class="nav-link" data-src="raizen_input.html" data-label="Raizen">
+              <i class="nav-icon" data-lucide="building-2"></i>
+              <span class="label">Raizen</span>
+            </button>
+            <button class="nav-link" data-src="delta_input.html" data-label="Delta">
+              <i class="nav-icon" data-lucide="building"></i>
+              <span class="label">Delta</span>
+            </button>
+          </div>
+        </div>
       </nav>
       <div class="exit">
         <a class="exit-btn" href="index.html">
@@ -534,7 +621,10 @@
           <div style="font-size:1.1rem;font-weight:800;">Painel do Administrador</div>
           <div style="color:var(--muted);">Clique no menu lateral para abrir cada página ao lado.</div>
         </div>
-
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="nav-icon" data-lucide="menu"></i>
+          <span class="label">Menu</span>
+        </button>
       </section>
 
       <div class="panel-grid">
@@ -606,6 +696,10 @@
               <div style="color: #ba9942;" id="frameHint">Clique em um item do menu para abrir aqui ao lado.</div>
             </div>
             <div class="chip" id="frameChip"></div>
+            <button class="fs-btn" id="btnFullscreen">
+              <i class="nav-icon" data-lucide="maximize-2"></i>
+              <span class="label">Tela inteira</span>
+            </button>
           </div>
           <iframe id="contentFrame" title="Conteúdo selecionado"></iframe>
         </section>
@@ -630,6 +724,8 @@
     </div>
   </div>
 
+  <div class="backdrop" id="backdrop"></div>
+
   <script>
     // --- Sidebar toggle ---
     const sidebar = document.getElementById('sidebar');
@@ -653,10 +749,36 @@
     const frameTitle = document.getElementById('frameTitle');
     const frameHint = document.getElementById('frameHint');
     const frameChip = document.getElementById('frameChip');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const backdrop = document.getElementById('backdrop');
+    let isFullscreen = false;
+    let isMobileMenuOpen = false;
 
     function setActiveLink(btn){
       document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
       if(btn) btn.classList.add('active');
+    }
+
+    function openMobileMenu(){
+      isMobileMenuOpen = true;
+      sidebar.classList.add('mobile-open');
+      backdrop.classList.add('show');
+      mobileMenuBtn.querySelector('i.nav-icon').setAttribute('data-lucide','x');
+      mobileMenuBtn.querySelector('.label').textContent = 'Fechar';
+      refreshIcons();
+    }
+    function closeMobileMenu(){
+      isMobileMenuOpen = false;
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('show');
+      mobileMenuBtn.querySelector('i.nav-icon').setAttribute('data-lucide','menu');
+      mobileMenuBtn.querySelector('.label').textContent = 'Menu';
+      refreshIcons();
+    }
+    function toggleMobileMenu(){
+      if(window.innerWidth > 900) return;
+      isMobileMenuOpen ? closeMobileMenu() : openMobileMenu();
     }
 
     document.querySelectorAll('.nav-link').forEach(btn=>{
@@ -669,6 +791,7 @@
         framePanel.classList.add('active');
         dashboardPanel.style.display='none';
         setActiveLink(btn);
+        if(window.innerWidth <= 900) closeMobileMenu();
       });
     });
 
@@ -677,6 +800,25 @@
       dashboardPanel.style.display='block';
       frame.src='about:blank';
       setActiveLink(null);
+      if(window.innerWidth <= 900) closeMobileMenu();
+    });
+
+    btnFullscreen.addEventListener('click',()=>{
+      isFullscreen = !isFullscreen;
+      framePanel.classList.toggle('fullscreen', isFullscreen);
+      btnFullscreen.querySelector('span.label').textContent = isFullscreen ? 'Minimizar' : 'Tela inteira';
+      btnFullscreen.querySelector('i.nav-icon').setAttribute('data-lucide', isFullscreen ? 'minimize-2' : 'maximize-2');
+      refreshIcons();
+    });
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    backdrop.addEventListener('click', closeMobileMenu);
+    window.addEventListener('resize',()=>{
+      if(window.innerWidth > 900){
+        closeMobileMenu();
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('show');
+      }
     });
 
     // --- Calendário + anotações ---
@@ -898,7 +1040,6 @@
   </script>
 </body>
 </html>
-
 
 
 
