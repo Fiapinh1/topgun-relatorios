@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raízen • Mapeamento (Kanban)</title>
+  <style>
+    :root{
+      --bg:#f4f7fb; --card:#fff; --line:#e7eef7; --txt:#0f172a; --muted:#64748b;
+      --shadow:0 10px 25px rgba(15,23,42,.06);
+      --r:18px;
+      --g:#16a34a; --y:#f59e0b; --b:#3b82f6; --c:#06b6d4; --err:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--txt)}
+    .wrap{max-width:1600px;margin:18px auto;padding:0 16px}
+    .topbar{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+    .title{flex:1 1 320px;min-width:260px}
+    .title h1{margin:0;font-size:22px}
+    .title p{margin:4px 0 0;color:var(--muted);line-height:1.25}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;flex:2 1 560px}
+
+    .search{
+      display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+      border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);
+      flex: 1 1 320px; min-width: 240px;
+    }
+    .search input{border:0;outline:none;width:100%;font-size:14px}
+    .unitFilter{
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+      box-shadow:var(--shadow);font-weight:900;color:var(--txt);
+      flex: 0 0 240px; min-width: 200px;
+    }
+    .sortSelect{
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+      box-shadow:var(--shadow);font-weight:900;color:var(--txt);
+      flex: 0 0 180px; min-width: 160px;
+    }
+    .btn{border:0;cursor:pointer;border-radius:12px;padding:10px 14px;font-weight:1000;display:inline-flex;align-items:center;gap:8px}
+    .btn.primary{background:var(--g);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--txt)}
+    .ico{display:inline-flex;align-items:center;justify-content:center}
+    .ico svg{display:block}
+
+    .stats{display:grid;grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));gap:12px;margin:14px 0}
+    .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+    .stat .k{color:var(--muted);font-size:13px}
+    .stat .v{font-size:26px;font-weight:1100;margin-top:4px}
+
+    .kanban{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px;width:100%}
+    .cols{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+    .col{flex:0 0 340px;min-height:280px;border:1px solid var(--line);border-radius:16px;background:#fbfdff;padding:10px;scroll-snap-align:start}
+    .list{max-height:65vh;overflow-y:auto;padding-right:6px}
+    .list::-webkit-scrollbar{width:8px}
+    .list::-webkit-scrollbar-thumb{background:#dbe7f5;border-radius:999px}
+    .list::-webkit-scrollbar-track{background:transparent}
+    .cols::-webkit-scrollbar{height:10px}
+    .cols::-webkit-scrollbar-thumb{background:#dbe7f5;border-radius:999px}
+    .cols::-webkit-scrollbar-track{background:transparent}
+    .colhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .colhead .name{display:flex;align-items:center;gap:8px;font-weight:1100}
+    .badge{background:#eef2ff;border:1px solid var(--line);padding:2px 10px;border-radius:999px;font-weight:1100;color:#334155}
+    .empty{color:#94a3b8;text-align:center;padding:28px 10px}
+
+    .cardOS{background:#fff;border:1px solid var(--line);border-left:5px solid var(--y);border-radius:16px;padding:12px;box-shadow:0 6px 18px rgba(15,23,42,.06);margin-bottom:10px}
+    .cardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .id{font-size:12px;color:var(--muted);margin-top:2px}
+    .pill{font-size:12px;font-weight:1100;padding:4px 10px;border-radius:999px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;white-space:nowrap}
+    .osCode{font-size:18px;font-weight:1200;letter-spacing:.6px;color:#0f172a}
+    .osFarm{font-size:14px;font-weight:1100;color:#334155;margin-top:2px}
+    .meta{display:grid;gap:6px;color:#334155;font-size:13px;margin-top:10px}
+    .meta span{color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px}
+    .mini{display:flex;gap:8px;align-items:center}
+    .mini select{border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff;font-weight:900}
+    .link{border:0;background:transparent;color:#2563eb;font-weight:1100;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:6px}
+    .link.danger{color:#dc2626}
+    .next{border:0;border-radius:12px;padding:8px 10px;font-weight:1100;cursor:pointer;background:#f1f5f9}
+    .toast{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+    .toast.ok{border-color:rgba(22,163,74,.35);color:#065f46}
+    .toast.err{border-color:rgba(239,68,68,.35);color:#7f1d1d}
+
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:14px;z-index:50;overflow-y:auto}
+    .modal.open{display:flex}
+    .panel{width:min(920px,100%);background:#fff;border-radius:22px;border:1px solid var(--line);box-shadow:0 25px 60px rgba(0,0,0,.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
+    .panelHead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+    .panelHead b{font-size:15px}
+    .panelBody{padding:16px;overflow-y:auto}
+    .form{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(max-width:700px){.form{grid-template-columns:1fr}}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:1100}
+    input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);outline:none;background:#fff}
+    input:focus,select:focus{border-color:rgba(22,163,74,.55)}
+    .full{grid-column:1/-1}
+    .panelFoot{display:flex;gap:10px;justify-content:flex-end;padding:14px 16px;border-top:1px solid var(--line)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <h1>• Raízen</h1>
+        <p id="subtitle">RAIZEN → <b>Mapeamento</b> (Kanban por Status)</p>
+      </div>
+      <div class="actions">
+        <div class="search">
+          <span class="ico" id="icoSearch"></span>
+          <input id="q" placeholder="Buscar OS por código, fazenda, unidade, piloto..." />
+        </div>
+
+        <select id="unitFilter" class="unitFilter"></select>
+        <select id="sortOrder" class="sortSelect">
+          <option value="asc">CRESCENTE</option>
+          <option value="desc">DECRESCENTE</option>
+        </select>
+
+        <button class="btn ghost" id="btnReload" title="Recarregar"><span class="ico" id="icoReload"></span></button>
+        <button class="btn primary" id="btnNew"><span class="ico" id="icoPlus"></span> Nova OS</button>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="kanban">
+      <div class="cols" id="cols"></div>
+      <div id="toast" class="toast">Pronto.</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="panel">
+      <div class="panelHead">
+        <b id="modalTitle">Nova OS (Mapeamento)</b>
+        <button class="btn ghost" id="btnClose">Fechar</button>
+      </div>
+      <div class="panelBody">
+        <form id="frm" class="form">
+          <input type="hidden" name="osId" />
+
+          <div>
+            <label>MÊS</label>
+            <select name="mes" required></select>
+          </div>
+
+          <div>
+            <label>DATA REC. (recebimento)</label>
+            <input type="date" name="dataRec" required />
+          </div>
+
+          <div>
+            <label>PILOTO</label>
+            <select name="piloto" required></select>
+          </div>
+
+          <div>
+            <label>UNIDADE</label>
+            <select name="unidade" required></select>
+          </div>
+
+          <div>
+            <label>CÓDIGO (fazenda)</label>
+            <input name="codigo" placeholder="Ex: 117-796" required />
+          </div>
+
+          <div>
+            <label>NOME FAZENDA</label>
+            <input name="nomeFazenda" placeholder="Ex: Refúgio" required />
+          </div>
+
+          <div>
+            <label>AREA (HA)</label>
+            <input name="areaHa" inputmode="decimal" placeholder="Ex: 10,5" required />
+          </div>
+
+          <div>
+            <label>RESPONSAVEL GEO</label>
+            <select name="responsavelGeo"></select>
+          </div>
+
+          <div>
+            <label>DT. VOO (preenche quando realizado)</label>
+            <input type="date" name="dtVoo" />
+          </div>
+
+          <div>
+            <label>AREA APLICAÇÃO (ha liberados)</label>
+            <input name="areaAplicacao" inputmode="decimal" placeholder="Ex: 7,2" />
+          </div>
+
+          <div>
+            <label>INDICE INFESTAÇÃO</label>
+            <input name="indiceInfestacao" inputmode="decimal" placeholder="Ex: 2,5" />
+          </div>
+
+          <div>
+            <label>DT MAPA ENVIO (quando enviado)</label>
+            <input type="date" name="dtMapaEnvio" />
+          </div>
+
+          <div class="full">
+            <label>STATUS</label>
+            <select name="status" required></select>
+          </div>
+        </form>
+      </div>
+      <div class="panelFoot">
+        <button class="btn ghost" id="btnCancel">Cancelar</button>
+        <button class="btn primary" id="btnSave">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIGURE SUA API (Apps Script Web App) ======
+    const API_URL = "https://script.google.com/macros/s/AKfycbwqRE-p0R2aI1kPG82IJpuo9Zg2siQHLwY_whQ1muyyFsjK4xpnx4VI8DSsQmcvjAIbaw/exec";
+
+    // ====== JSONP helper (funciona em file:// e GitHub Pages sem CORS) ======
+    function jsonp(action, params = {}, timeoutMs = 20000) {
+      return new Promise((resolve, reject) => {
+        const cb = "cb_" + Math.random().toString(16).slice(2);
+        const url = new URL(API_URL);
+
+        url.searchParams.set("action", action);
+        url.searchParams.set("callback", cb);
+        Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v ?? ""));
+
+        const script = document.createElement("script");
+        let done = false;
+
+        const t = setTimeout(() => {
+          if (done) return;
+          done = true;
+          cleanup();
+          reject(new Error("Timeout no JSONP (" + action + ")"));
+        }, timeoutMs);
+
+        function cleanup() {
+          clearTimeout(t);
+          try { delete window[cb]; } catch(_) {}
+          try { script.remove(); } catch(_) {}
+        }
+
+        window[cb] = (data) => {
+          if (done) return;
+          done = true;
+          cleanup();
+          resolve(data);
+        };
+
+        script.onerror = () => {
+          if (done) return;
+          done = true;
+          cleanup();
+          reject(new Error("Falha ao carregar script JSONP (" + action + ")"));
+        };
+
+        script.src = url.toString();
+        document.body.appendChild(script);
+      });
+    }
+
+    async function api(action, payload={}) {
+      const res = await jsonp(action, payload);
+      if (!res || res.ok === false) throw new Error(res?.error || "Erro na API");
+      return res;
+    }
+
+    let CONFIG = {
+      statuses: ["Pendente","Em Andamento","Processando","Concluído","Cancelado"],
+      pilotos: ["GUILHERME BIZINOTTO","MATHEUS PIAZ","DAVID COSTA","PEDRO AUGUSTO"],
+      unidades: ["RAIZEN BENALCOOL","COPI","DESTIVALE","DIAMANTE","GASA","IASF","IPAUSSU","LAGOA DA PRATA","LEME","MUNDIAL","UNIVALEM","BARRA BONITA","RAFAR"],
+      responsaveisGeo: ["BEATRIZ","DAVID","LUIZ FERNANDO","PEDRO","RONALDO"]
+    };
+
+    const ICONS = {
+      search: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path>
+      </svg>`,
+      reload: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path>
+      </svg>`,
+      plus: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14"></path><path d="M5 12h14"></path>
+      </svg>`,
+      edit: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+      </svg>`,
+      trash: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18"></path>
+        <path d="M8 6V4h8v2"></path>
+        <path d="M6 6l1 16h10l1-16"></path>
+        <path d="M10 11v6"></path>
+        <path d="M14 11v6"></path>
+      </svg>`,
+      pending: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path>
+      </svg>`,
+      running: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M8 5v14l11-7z"></path>
+      </svg>`,
+      processing: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 7h16"></path><path d="M4 17h16"></path><path d="M7 4v16"></path><path d="M17 4v16"></path>
+      </svg>`,
+      done: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>`,
+      canceled: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"></circle><path d="M8 8l8 8"></path><path d="M16 8l-8 8"></path>
+      </svg>`
+    };
+
+    const elCols = document.getElementById("cols");
+    const elStats = document.getElementById("stats");
+    const elToast = document.getElementById("toast");
+    const subtitle = document.getElementById("subtitle");
+    const q = document.getElementById("q");
+
+    const modal = document.getElementById("modal");
+    const frm = document.getElementById("frm");
+    const unitFilterEl = document.getElementById("unitFilter");
+    const sortOrderEl = document.getElementById("sortOrder");
+    const modalTitle = document.getElementById("modalTitle");
+
+    let ITEMS = [];
+    let ACTIVE_UNIT = localStorage.getItem("ACTIVE_UNIT") || "GERAL";
+    let SORT_DIR = localStorage.getItem("SORT_DIR") || "asc";
+
+    function toast(kind, text){
+      elToast.className = "toast " + (kind || "");
+      elToast.textContent = text || "";
+    }
+
+    function fillSelect(select, arr, withPlaceholder=false){
+      select.innerHTML = "";
+      if(withPlaceholder){
+        const op = document.createElement("option");
+        op.value = "";
+        op.textContent = "Selecione...";
+        select.appendChild(op);
+      }
+      arr.forEach(v => {
+        const op = document.createElement("option");
+        op.value = v;
+        op.textContent = v;
+        select.appendChild(op);
+      });
+    }
+
+    function setupUnitFilter(){
+      unitFilterEl.innerHTML = "";
+      const options = ["GERAL", ...CONFIG.unidades];
+      options.forEach(u => {
+        const op = document.createElement("option");
+        op.value = u;
+        op.textContent = u;
+        unitFilterEl.appendChild(op);
+      });
+
+      unitFilterEl.value = ACTIVE_UNIT;
+
+      unitFilterEl.addEventListener("change", () => {
+        ACTIVE_UNIT = unitFilterEl.value;
+        localStorage.setItem("ACTIVE_UNIT", ACTIVE_UNIT);
+        render();
+      });
+    }
+
+    function setupSortControl(){
+      sortOrderEl.value = SORT_DIR;
+      sortOrderEl.addEventListener("change", () => {
+        SORT_DIR = sortOrderEl.value || "asc";
+        localStorage.setItem("SORT_DIR", SORT_DIR);
+        render();
+      });
+    }
+
+    function openModal(mode, item){
+      modal.classList.add("open");
+      if(mode === "new"){
+        modalTitle.textContent = "Nova OS (Mapeamento)";
+        frm.reset();
+        frm.osId.value = "";
+        frm.status.value = "Pendente";
+        frm.dataRec.value = new Date().toISOString().slice(0,10);
+        if (ACTIVE_UNIT && ACTIVE_UNIT !== "GERAL") frm.unidade.value = ACTIVE_UNIT;
+      } else {
+        modalTitle.textContent = "Editar OS";
+        frm.osId.value = item.osId;
+        frm.mes.value = item.mes || "";
+        frm.dataRec.value = item.dataRec || "";
+        frm.piloto.value = item.piloto || "";
+        frm.unidade.value = item.unidade || "";
+        frm.codigo.value = item.codigo || "";
+        frm.nomeFazenda.value = item.nomeFazenda || "";
+        frm.areaHa.value = item.areaHa ?? "";
+        frm.responsavelGeo.value = item.responsavelGeo || "";
+        frm.dtVoo.value = item.dtVoo || "";
+        frm.areaAplicacao.value = item.areaAplicacao ?? "";
+        frm.indiceInfestacao.value = item.indiceInfestacao ?? "";
+        frm.dtMapaEnvio.value = item.dtMapaEnvio || "";
+        frm.status.value = item.status || "Pendente";
+      }
+    }
+    function closeModal(){ modal.classList.remove("open"); }
+
+    function normalize(s){ return (s||"").toString().toUpperCase().trim(); }
+    function toNumber(v){
+      if(v === undefined || v === null) return null;
+      const n = parseFloat(v.toString().replace(",", "."));
+      return Number.isFinite(n) ? n : null;
+    }
+    function formatPercent(v){
+      return Number.isFinite(v) ? v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}) : "";
+    }
+
+    function statusIcon(st){
+      if(st === "Pendente") return ICONS.pending;
+      if(st === "Em Andamento") return ICONS.running;
+      if(st === "Processando") return ICONS.processing;
+      if(st === "Concluído") return ICONS.done;
+      if(st === "Cancelado") return ICONS.canceled;
+      return ICONS.pending;
+    }
+
+    function DOT(status){
+      const map = {
+        "Pendente": "var(--y)",
+        "Em Andamento": "var(--b)",
+        "Processando": "var(--c)",
+        "Concluído": "var(--g)",
+        "Cancelado": "var(--err)"
+      };
+      return map[status] || "var(--y)";
+    }
+
+    function filterItems(items){
+      const term = normalize(q.value);
+      const unitOk = (it) => ACTIVE_UNIT === "GERAL" ? true : normalize(it.unidade) === normalize(ACTIVE_UNIT);
+      let out = items.filter(unitOk);
+      if(!term) return out;
+      return out.filter(it => {
+        const hay = normalize([it.codigo,it.nomeFazenda,it.unidade,it.piloto,it.responsavelGeo,it.status,it.mes].join(" | "));
+        return hay.includes(term);
+      });
+    }
+
+    function sortItems(items){
+      return [...items].sort((a, b) => {
+        const A = normalize(a.codigo || "");
+        const B = normalize(b.codigo || "");
+        if(A === B) return normalize(a.nomeFazenda || "") > normalize(b.nomeFazenda || "") ? 1 : -1;
+        if(SORT_DIR === "desc") return A < B ? 1 : -1;
+        return A > B ? 1 : -1;
+      });
+    }
+
+    function render(){
+      const filtered = sortItems(filterItems(ITEMS));
+      subtitle.innerHTML = `RAIZEN → <b>Mapeamento</b> • Unidade: <b>${ACTIVE_UNIT}</b>`;
+
+      const by = (st) => filtered.filter(x => x.status === st).length;
+      const total = filtered.length;
+
+      const cards = [
+        {label:"Total OS", value: total},
+        {label:"Pendentes", value: by("Pendente")},
+        {label:"Em Andamento", value: by("Em Andamento")},
+        {label:"Processando", value: by("Processando")},
+        {label:"Concluídos", value: by("Concluído")},
+        {label:"Cancelados", value: by("Cancelado")},
+      ];
+      elStats.innerHTML = cards.map(c => `
+        <div class="stat">
+          <div class="k">${c.label}</div>
+          <div class="v">${c.value}</div>
+        </div>
+      `).join("");
+
+      elCols.innerHTML = "";
+      CONFIG.statuses.forEach(st => {
+        const col = document.createElement("div");
+        col.className = "col";
+
+        const items = filtered.filter(x => x.status === st);
+
+        col.innerHTML = `
+          <div class="colhead">
+            <div class="name">
+              <span class="ico" style="color:${DOT(st)}">${statusIcon(st)}</span>
+              ${st}
+            </div>
+            <span class="badge">${items.length}</span>
+          </div>
+          <div class="list"></div>
+        `;
+
+        const list = col.querySelector(".list");
+        if(!items.length){
+          list.innerHTML = `<div class="empty">Nenhuma OS</div>`;
+        } else {
+          list.innerHTML = items.map(it => cardHtml(it)).join("");
+
+          list.querySelectorAll("[data-edit]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const osId = btn.getAttribute("data-edit");
+              const item = ITEMS.find(x => x.osId === osId);
+              if(item) openModal("edit", item);
+            });
+          });
+
+          list.querySelectorAll("[data-delete]").forEach(btn => {
+            btn.addEventListener("click", async () => {
+              const osId = btn.getAttribute("data-delete");
+              const item = ITEMS.find(x => x.osId === osId);
+              const label = item?.codigo ? ` (${item.codigo})` : "";
+              const ok = confirm(`Excluir esta OS${label}?
+
+Isso remove da planilha e não tem como desfazer.`);
+              if(!ok) return;
+              await deleteOS(osId);
+            });
+          });
+
+          list.querySelectorAll("[data-move]").forEach(sel => {
+            sel.addEventListener("change", async () => {
+              const osId = sel.getAttribute("data-move");
+              const newStatus = sel.value;
+              if(!newStatus) return;
+              await moveStatus(osId, newStatus);
+            });
+          });
+
+          list.querySelectorAll("[data-next]").forEach(btn => {
+            btn.addEventListener("click", async () => {
+              const osId = btn.getAttribute("data-next");
+              const item = ITEMS.find(x => x.osId === osId);
+              if(!item) return;
+              if(item.status === "Cancelado") return;
+
+              const idx = CONFIG.statuses.indexOf(item.status);
+              const next = CONFIG.statuses[Math.min(idx + 1, CONFIG.statuses.length - 1)];
+              if(next === item.status) return;
+              await moveStatus(osId, next);
+            });
+          });
+        }
+
+        elCols.appendChild(col);
+      });
+    }
+
+    function cardHtml(it){
+      const border = DOT(it.status);
+
+      const nextLabel = (() => {
+        if(it.status === "Cancelado") return "—";
+        const idx = CONFIG.statuses.indexOf(it.status);
+        const next = CONFIG.statuses[Math.min(idx + 1, CONFIG.statuses.length - 1)];
+        if(next === it.status) return "—";
+        return `Avançar → ${next}`;
+      })();
+
+      const pillStyle = (() => {
+        if (it.status === "Cancelado") return `style="background:#fef2f2;color:#991b1b;border-color:#fecaca"`;
+        if (it.status === "Concluído") return `style="background:#ecfdf5;color:#065f46;border-color:#bbf7d0"`;
+        if (it.status === "Processando") return `style="background:#ecfeff;color:#155e75;border-color:#a5f3fc"`;
+        if (it.status === "Em Andamento") return `style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe"`;
+        return ``;
+      })();
+
+      return `
+        <div class="cardOS" style="border-left-color:${border}">
+          <div class="cardTop">
+            <div>
+              <div class="osCode">${it.codigo || "—"}</div>
+              <div class="osFarm">${it.nomeFazenda || "Sem fazenda"}</div>
+              <div class="id">${it.unidade || "—"} • ${it.mes || "—"}</div>
+            </div>
+            <span class="pill" ${pillStyle}>${it.status}</span>
+          </div>
+
+          <div class="meta">
+            <div><span>Piloto:</span> ${it.piloto || "—"}</div>
+            <div><span>Área OS:</span> <b>${it.areaHa || "—"}</b> ha</div>
+            <div><span>Recebido:</span> ${it.dataRec || "—"}</div>
+          </div>
+
+          <div class="row">
+            <div style="display:flex;gap:12px;align-items:center">
+              <button class="link" data-edit="${it.osId}">${ICONS.edit} </button>
+              <button class="link danger" data-delete="${it.osId}">${ICONS.trash} </button>
+            </div>
+
+            <div class="mini">
+              <select data-move="${it.osId}">
+                <option value="">Mover para…</option>
+                ${CONFIG.statuses.map(s => `<option value="${s}">${s}</option>`).join("")}
+              </select>
+              <button class="next" data-next="${it.osId}">${nextLabel}</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadAll(){
+      toast("", "Carregando...");
+      const res = await api("listOS");
+
+      ITEMS = (res.items || []).map(it => {
+        let st = it.status || "Pendente";
+        if (st === "Aguardando Voo") st = "Em Andamento";
+        return {...it, status: st};
+      });
+
+      toast("ok", `Carregado: ${ITEMS.length} OS.`);
+      render();
+    }
+
+    async function moveStatus(osId, newStatus){
+      toast("", "Atualizando status...");
+      await api("updateStatus", { osId, status: newStatus });
+      const item = ITEMS.find(x => x.osId === osId);
+      if(item) item.status = newStatus;
+      toast("ok", "Status atualizado.");
+      render();
+    }
+
+    async function deleteOS(osId){
+      toast("", "Excluindo OS...");
+      await api("deleteOS", { osId });
+      ITEMS = ITEMS.filter(x => x.osId !== osId);
+      toast("ok", "OS excluída.");
+      render();
+    }
+
+    async function save(){
+      const fd = new FormData(frm);
+      const payload = Object.fromEntries(fd.entries());
+
+      if(!payload.osId){
+        toast("", "Criando OS...");
+        await api("createOS", payload);
+        closeModal();
+        await loadAll();
+      } else {
+        toast("", "Salvando edição...");
+        await api("updateOS", payload);
+        closeModal();
+        await loadAll();
+      }
+    }
+
+    async function init(){
+      document.getElementById("icoSearch").innerHTML = ICONS.search;
+      document.getElementById("icoReload").innerHTML = ICONS.reload;
+      document.getElementById("icoPlus").innerHTML = ICONS.plus;
+
+      fillSelect(frm.mes, ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"], true);
+      fillSelect(frm.piloto, CONFIG.pilotos, true);
+      fillSelect(frm.unidade, CONFIG.unidades, true);
+      fillSelect(frm.responsavelGeo, CONFIG.responsaveisGeo, true);
+      fillSelect(frm.status, CONFIG.statuses, true);
+
+      const autoCalc = () => {
+        const area = toNumber(frm.areaHa.value);
+        const liberada = toNumber(frm.areaAplicacao.value);
+        if(area && liberada){
+          const pct = (liberada / area) * 100;
+          frm.indiceInfestacao.value = formatPercent(pct);
+        }
+      };
+      ["input","change"].forEach(ev => {
+        frm.areaHa.addEventListener(ev, autoCalc);
+        frm.areaAplicacao.addEventListener(ev, autoCalc);
+      });
+
+      setupUnitFilter();
+      setupSortControl();
+      await loadAll();
+    }
+
+    document.getElementById("btnNew").addEventListener("click", () => openModal("new"));
+    document.getElementById("btnReload").addEventListener("click", loadAll);
+    document.getElementById("btnClose").addEventListener("click", closeModal);
+    document.getElementById("btnCancel").addEventListener("click", closeModal);
+    document.getElementById("btnSave").addEventListener("click", save);
+    q.addEventListener("input", render);
+    modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+    init();
+  </script>
+</body>
+</html>
