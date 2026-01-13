@@ -6,53 +6,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
-  :root {
-    --primary: #16a34a;
-    --primary-dark: #15803d;
-    --primary-light: #dcfce7;
-    --border: #e2e8f0;
-    --card: #fff;
-    --text: #1e293b;
-    --muted: #64748b;
-    --radius: 12px;
-    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  :root{
+    --primary:#d9b24c;
+    --primary-dark:#b48f2f;
+    --primary-light:rgba(217,178,76,0.16);
+    --border:rgba(217,178,76,0.35);
+    --card:#0c1224;
+    --text:#f5f5f5;
+    --muted:#cbd5e1;
+    --radius:12px;
+    --shadow:0 20px 50px rgba(0,0,0,0.32);
   }
-  body { background:#000000; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; margin:0; padding:20px; }
-  header { display:flex; align-items:center; gap:8px; margin-bottom:20px; justify-content:center; }
-  header h1 { font-size:1.2rem; color:var(--primary); display:flex; gap:8px; align-items:center; justify-content:center; }
-  .vasco-logo { height:20px; margin-right:8px; display:inline-block; vertical-align:middle; filter: drop-shadow(0 0 2px rgba(0,0,0,0.25)); }
-  .wrap { max-width:480px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
-  .card h2 { font-size:16px; color:var(--primary); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-  label { font-size:1rem; color:#000000; margin-top:10px; display:block; }
-  input, select, textarea {
-    width:100%; padding:12px; border:1px solid #1e304b; border-radius:8px;
-    font-size:1rem; margin-top:6px; box-sizing:border-box;
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 10% 20%, rgba(217,178,76,0.08), transparent 32%),
+      radial-gradient(circle at 80% 0%, rgba(255,255,255,0.07), transparent 38%),
+      #060912;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    margin:0;
+    padding:20px;
+    color:var(--text);
   }
-  .btn {
-    padding:14px; border-radius:10px; border:1px solid var(--border);
-    font-size:1rem; font-weight:600; cursor:pointer; display:flex; gap:6px; justify-content:center; align-items:center;
+  header{display:flex;align-items:center;gap:8px;margin-bottom:20px;justify-content:center;}
+  header h1{font-size:1.2rem;color:var(--primary);display:flex;gap:8px;align-items:center;justify-content:center;}
+  .vasco-logo{height:20px;margin-right:8px;display:inline-block;vertical-align:middle;filter:drop-shadow(0 0 2px rgba(0,0,0,0.25));}
+  .wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+  .card h2{font-size:16px;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  label{font-size:1rem;color:var(--text);margin-top:10px;display:block;font-weight:600;}
+  input,select,textarea{
+    width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;
+    font-size:1rem;margin-top:6px;background:#0b1425;color:var(--text);
+    outline:none;transition:border .2s,box-shadow .2s;
   }
-  .btn.neon { background:var(--primary); color:#fff; }
-  .btn.neon:hover { background:var(--primary-dark); }
-  .btn.light { background:var(--primary-light); color:var(--primary-dark); }
-  .preview { white-space:pre-wrap; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); padding:16px; min-height:200px; font-family:'Courier New', monospace; font-size:1rem; }
-  .sep { height:1px; background:var(--border); margin:12px 0; }
-  .notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--primary);
-    color: white;
-    padding: 12px 24px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    display: none;
-    animation: slideIn 0.3s ease-out;
+  input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(217,178,76,0.2);}
+  .btn{
+    padding:14px;border-radius:10px;border:1px solid var(--border);
+    font-size:1rem;font-weight:700;cursor:pointer;display:flex;gap:6px;justify-content:center;align-items:center;
+    background:var(--card);color:var(--text);box-shadow:var(--shadow);
   }
-  @keyframes slideIn {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  .btn.neon{background:var(--primary);color:#0b0f1f;border-color:var(--primary-dark);}
+  .btn.neon:hover{background:var(--primary-dark);color:#0b0f1f;}
+  .btn.light{background:var(--primary-light);color:var(--primary);border-color:var(--primary);}
+  .preview{white-space:pre-wrap;background:#0b1425;border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;font-family:'Courier New', monospace;font-size:1rem;color:var(--text);}
+  .sep{height:1px;background:var(--border);margin:12px 0;}
+  .notification{
+    position:fixed;bottom:20px;right:20px;
+    background:var(--primary);color:#0b0f1f;
+    padding:12px 24px;border-radius:var(--radius);
+    box-shadow:var(--shadow);display:none;font-weight:800;
+  }
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .chip{
+    background:var(--primary-light);color:var(--primary);border:1px solid var(--border);
+    border-radius:999px;padding:8px 12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:700;
+  }
+  .chip input{margin:0;}
+  @media(max-width:620px){
+    body{padding:12px;}
+    .btn{padding:12px;}
   }
 </style>
 </head>
@@ -63,7 +76,6 @@
 </header>
 
 <div class="wrap">
-  <!-- Dados gerais -->
   <section class="card">
     <h2><i data-lucide="list"></i> Dados</h2>
     <label>Data:</label>
@@ -72,9 +84,10 @@
     <label>Frente:</label>
     <select id="selFrente">
       <option value="">Selecione…</option>
-      <option value="Frente 01">Frente 01</option>
-      <option value="Frente 02">Frente 02</option>
-      <option value="Frente 03">Frente 03</option>
+      <option value="01">01</option>
+      <option value="02">02</option>
+      <option value="03">03</option>
+      <option value="04">04</option>
     </select>
 
     <label>Piloto:</label>
@@ -101,19 +114,27 @@
 
     <label>Status da Operação:</label>
     <select id="selStatus" onchange="toggleObs()">
-      <option value="🟠 Em andamento">🟠 Em andamento</option>
-      <option value="🚗 Em deslocamento">🚗 Em deslocamento</option>
-      <option value=" Finalizada">🔵 Finalizada</option>
-      <option value="⚠️ Ag. Condições">⚠️ Ag. Condições</option>
+      <option value="🟡 Em andamento">🟡 Em andamento</option>
+      <option value="🚌 Em deslocamento">🚌 Em deslocamento</option>
+      <option value="✅ Finalizada">✅ Finalizada</option>
+      <option value="⛔️ Ag. Condições">⛔️ Ag. Condições</option>
     </select>
 
-    <div id="obsBox" style="display:none;">
-      <label>Observação:</label>
-      <textarea id="txtObs"></textarea>
+    <div id="condBox" style="display:none;">
+      <label>Motivo:</label>
+      <div class="chip-row" id="condOptions">
+        <label class="chip"><input type="radio" name="cond" value="Chuva"> Chuva</label>
+        <label class="chip"><input type="radio" name="cond" value="Vento"> Vento</label>
+        <label class="chip"><input type="radio" name="cond" value="Clima"> Clima</label>
+        <label class="chip"><input type="radio" name="cond" value="Outros"> Outros</label>
+      </div>
+      <div id="obsBox" style="display:none;">
+        <label>Observação:</label>
+        <textarea id="txtObs" placeholder="Descreva o motivo"></textarea>
+      </div>
     </div>
   </section>
 
-  <!-- Prévia -->
   <section class="card">
     <h2><i data-lucide="eye"></i> Prévia WhatsApp</h2>
     <div class="preview" id="preview"></div>
@@ -124,25 +145,20 @@
   </section>
 </div>
 
-<div class="notification" id="notification">✅ Copiado com sucesso!</div>
+<div class="notification" id="notification">Copiado com sucesso!</div>
 
 <script>
 lucide.createIcons();
 
-/* Frente → Piloto */
-const PILOTOS = { "Frente 01":"Victor Hugo", "Frente 02":"Pedro", "Frente 03":"Guilherme" };
+const PILOTOS = { "01":"Victor Hugo", "02":"Pedro", "03":"Guilherme", "04":"Erick Frota" };
 document.getElementById("selFrente").addEventListener("change",()=>{
   document.getElementById("txtPiloto").value = PILOTOS[document.getElementById("selFrente").value] || "";
 });
 
-/* Data + Hora auto */
 document.getElementById("dtData").value = new Date().toISOString().split("T")[0];
 document.getElementById("txtHora").value = new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-// inicializar prévia automaticamente
-gerarPrevia();
 
-/* Buscar OS (via fetch ao Apps Script) */
-const API_URL = "https://script.google.com/macros/s/AKfycbx4JkGENMvPbqdcO2Id0qzRRobj6xrf_hW1FESTsZwktIj734pHsWm7DImvHIynObzCGg/exec"; // troque pelo seu /exec
+const API_URL = "https://script.google.com/macros/s/AKfycbx4JkGENMvPbqdcO2Id0qzRRobj6xrf_hW1FESTsZwktIj734pHsWm7DImvHIynObzCGg/exec";
 async function buscarOS(){
   const os = document.getElementById("txtOS").value.trim();
   if(!os){ alert("Digite a OS"); return; }
@@ -154,18 +170,12 @@ async function buscarOS(){
     document.getElementById("txtFaz").value = it.fazenda||"";
     document.getElementById("txtCod").value = it.codigo||"";
     document.getElementById("txtUnidade").value = it.unidade||"";
-    
-    // Busca quantidade de tubetes em vários campos possíveis
     const possible = ['copos','tubetes','tubete','qtd_copos','qtd_tubetes','qtcopos','qtd_tubete','copos_qtd','tubetes_qtd'];
     let qtdTubetes = "";
-    for(const field of possible) {
-      if(it[field] && !isNaN(it[field])) {
-        qtdTubetes = it[field];
-        break;
-      }
+    for(const field of possible){
+      if(it[field] && !isNaN(it[field])){ qtdTubetes = it[field]; break; }
     }
     document.getElementById("txtTubetes").value = qtdTubetes;
-    // atualizar prévia automaticamente após preencher os dados
     gerarPrevia();
   } else {
     alert("OS não encontrada.");
@@ -173,13 +183,32 @@ async function buscarOS(){
 }
 document.getElementById("btnBuscar").addEventListener("click",buscarOS);
 
-/* Mostrar/ocultar observação */
 function toggleObs(){
   const val = document.getElementById("selStatus").value;
-  document.getElementById("obsBox").style.display = val.includes("Ag. Condições") ? "block" : "none";
+  const condBox = document.getElementById("condBox");
+  const obsBox = document.getElementById("obsBox");
+  if(val.includes("Ag. Condições")){
+    condBox.style.display = "block";
+  } else {
+    condBox.style.display = "none";
+    obsBox.style.display = "none";
+    const checked = document.querySelector('input[name="cond"]:checked');
+    if(checked) checked.checked = false;
+    document.getElementById("txtObs").value = "";
+  }
 }
+document.getElementById("condOptions").addEventListener("change",(e)=>{
+  if(e.target.name !== "cond") return;
+  const obsBox = document.getElementById("obsBox");
+  if(e.target.value === "Outros"){
+    obsBox.style.display = "block";
+  } else {
+    obsBox.style.display = "none";
+    document.getElementById("txtObs").value = "";
+  }
+  gerarPrevia();
+});
 
-/* Montar mensagem */
 function gerarPrevia(){
   const dt = document.getElementById("dtData").value.split("-").reverse().join("/");
   const fr = document.getElementById("selFrente").value;
@@ -191,45 +220,42 @@ function gerarPrevia(){
   const uni= document.getElementById("txtUnidade").value;
   const tub= document.getElementById("txtTubetes").value;
   const st = document.getElementById("selStatus").value;
+  const condSel = document.querySelector('input[name="cond"]:checked')?.value || "";
   const obs= document.getElementById("txtObs").value;
 
-  let msg = `*Status Operação Cotésia*\n\n`;
+  let msg = `*Status Operação Cotesia*\n\n`;
   msg += `*Frente:* ${fr}\n*Piloto:* ${pi}\n*Data:* ${dt}\n*Horário:* ${hr}\n*OS:* ${os}\n*Faz:* ${faz}\n*Cód.:* ${cod}\n*Unidade:* ${uni}${tub ? '\n*Qtd. Tubetes:* ' + tub : ''}\n\n`;
   msg += `*Status da operação:* ${st}`;
-  if(st.includes("Ag. Condições") && obs){ msg += `\nObs.: ${obs}`; }
+  if(st.includes("Ag. Condições")){
+    msg += `\n*Motivo:* ${condSel || "Não informado"}`;
+    if(condSel === "Outros" && obs) msg += `\nObs.: ${obs}`;
+    else if(obs && condSel) msg += `\nObs.: ${obs}`;
+  }
   if(st.includes("Finalizada")){ msg += `\n\n--- OPERAÇÃO FINALIZADA ✅ ---`; }
 
   document.getElementById("preview").textContent = msg;
 }
 
-// Atualizar prévia automaticamente quando campos mudarem
 ['dtData','selFrente','txtPiloto','txtOS','txtFaz','txtCod','txtHora','txtUnidade','txtTubetes','selStatus','txtObs'].forEach(id=>{
   const el = document.getElementById(id);
   if (!el) return;
-  const ev = (el.tagName === 'SELECT' || el.tagName === 'BUTTON') ? 'change' : 'input';
+  const ev = (el.tagName === 'SELECT') ? 'change' : 'input';
   el.addEventListener(ev, () => gerarPrevia());
 });
 
-/* Copiar / WhatsApp */
 async function copiarMsg(){
   await navigator.clipboard.writeText(document.getElementById("preview").textContent);
   const notification = document.getElementById("notification");
   notification.style.display = "block";
-  setTimeout(() => {
-    notification.style.display = "none";
-  }, 2000);
+  setTimeout(() => { notification.style.display = "none"; }, 2000);
 }
 function abrirWhats(){
   const txt = document.getElementById("preview").textContent;
   window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank");
 }
+
+toggleObs();
+gerarPrevia();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
