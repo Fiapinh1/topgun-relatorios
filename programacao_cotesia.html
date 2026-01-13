@@ -8,29 +8,31 @@
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
   :root {
-    --primary: #16a34a;
-    --primary-light: #dcfce7;
-    --primary-dark: #15803d;
-    --background: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --accent: #3b82f6;
-    --accent-light: #dbeafe;
+    --primary: #d9b24c;
+    --primary-light: rgba(217,178,76,0.15);
+    --primary-dark: #b48f2f;
+    --background: #060912;
+    --card: #0c1224;
+    --text: #f5f5f5;
+    --text-muted: #cbd5e1;
+    --border: rgba(217,178,76,0.35);
+    --accent: #f7e7a1;
+    --accent-light: rgba(247,231,161,0.14);
     --warning: #f59e0b;
-    --warning-light: #fef3c7;
+    --warning-light: rgba(245,158,11,0.16);
     --danger: #ef4444;
-    --danger-light: #fee2e2;
+    --danger-light: rgba(239,68,68,0.14);
     --success: #10b981;
     --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow: 0 20px 50px rgba(0,0,0,0.32);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #00070e;
+    background: radial-gradient(circle at 10% 20%, rgba(217,178,76,0.08), transparent 32%),
+                radial-gradient(circle at 80% 0%, rgba(255,255,255,0.07), transparent 38%),
+                var(--background);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -44,7 +46,7 @@
     justify-content: flex-start;
     gap: 0;
     padding: 0;
-    background: #000000;
+    background: linear-gradient(135deg,#0a0f1f 0%,#0c1224 100%);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -69,7 +71,7 @@
     text-align: center;
     margin: 0 auto 0 0;
     font-size: 1.2rem;
-    color: var(--primary);
+    color: var(--accent);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -97,22 +99,22 @@
     font-size: 1.1rem;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow);
     width: 100%;
     margin-bottom: 12px;
     -webkit-tap-highlight-color: transparent;
   }
-  .btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
-  .btn.neon:hover { background: var(--primary-dark); }
-  .btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+  .btn.neon { background: var(--primary); color: #0b0f1f; border-color: var(--primary-dark); }
+  .btn.neon:hover { background: var(--primary-dark); color: #0b0f1f; }
+  .btn.light { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
   .btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
 
   /* Layout principal */
-  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; margin: 0 auto; width: 100%; }
+  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 520px; margin: 0 auto; width: 100%; }
 
   /* Cards */
   .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); width: 100%; max-width: 100%; }
-  .card h2 { margin: 0 0 16px 0; font-size: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .card h2 { margin: 0 0 16px 0; font-size: 16px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
 
   /* Formulários */
   .grid { display: flex; flex-direction: column; gap: 12px; }
@@ -133,29 +135,29 @@
     .farm .remover, .farm .buscar { width: 100%; }
   }
 
-  label { color: #2f361f; font-size: 1rem; font-weight: 500; display: block; margin-top: 0; }
+  label { color: var(--text); font-size: 1rem; font-weight: 600; display: block; margin-top: 0; }
 
   input, select, textarea {
     width: 100%;
-    background: #f8fafc;
+    background: #0b1425;
     color: var(--text);
-    border: 1px solid #1e304b;
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px 12px;
     font-size: 1rem;
     outline: none;
-    transition: border 0.3s, box-shadow 0.2s;
+    transition: border 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
     margin-bottom: 10px;
   }
-  input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-  input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(217,178,76,0.22); }
+  input[readonly] { background-color: #0f182c; color: var(--text-muted); }
 
   .preview {
     white-space: pre-wrap;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    background: #0b1425;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px;
     min-height: 200px;
@@ -175,6 +177,7 @@
   .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); background: var(--background); margin-top: 8px; text-align: center; justify-content: center; }
   .warn { color: var(--warning); }
   .success { color: var(--success); }
+  .muted { color: var(--text-muted); }
 
   .flex-1 { flex: 1; }
   .mt-2 { margin-top: 8px; }
@@ -208,9 +211,10 @@
         <label for="selFrente">Frente:</label>
         <select id="selFrente">
           <option value="" selected>Selecione…</option>
-          <option value="Frente 01">Frente 01</option>
-          <option value="Frente 02">Frente 02</option>
-          <option value="Frente 03">Frente 03</option> 
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option> 
         </select>
       </div>
 
@@ -220,8 +224,12 @@
       </div>
 
       <div class="row">
-        <label for="txtDrone">Drone:</label>
-        <input type="text" id="txtDrone" value="X 800">
+        <label for="selDrone">Drone:</label>
+        <select id="selDrone">
+          <option value="" selected>Selecione...</option>
+          <option value="XFLY X800">XFLY X800</option>
+          <option value="NEXUS NX6">NEXUS NX6</option>
+        </select>
       </div>
 
       <div class="row">
@@ -230,6 +238,7 @@
           <option value="" selected>Selecione…</option>
           <option value="Delta - Delta">Delta - Delta</option>
           <option value="Delta - Volta Grande">Delta - Volta Grande</option>
+          <option value="Cresciumal Bioenergia ">Cresciumal Bioenergia</option>
         </select>
       </div>
 
@@ -248,7 +257,7 @@
 
     <div class="inline mt-2">
       <button class="btn" id="btnAdd"><i data-lucide="plus" width="16" height="16"></i> Adicionar fazenda</button>
-      <span class="muted">Preencha a <b>OS</b> e clique "Buscar" para auto-preencher.</span>
+      <span class="muted">Preencha a <b>OS</b> e clique "Buscar".</span>
     </div>
 
     <div class="totals">
@@ -278,6 +287,7 @@
       <button class="btn neon" id="btnGerar"><i data-lucide="refresh-cw" width="16" height="16"></i> Gerar prévia</button>
       <button class="btn" id="btnCopiar"><i data-lucide="copy" width="16" height="16"></i> Copiar mensagem</button>
       <button class="btn light" id="btnWhats"><i data-lucide="message-circle" width="16" height="16"></i> Abrir no WhatsApp</button>
+      <button class="btn" id="btnReport"><i data-lucide="printer" width="16" height="16"></i> Imprimir resumo</button>
       <span class="badge" id="lblInfo"></span>
     </div>
   </section>
@@ -296,7 +306,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Pedro', 'Frente 03': 'Guilherme' };
+const PILOTOS = { '01': 'Victor Hugo', '02': 'Pedro', '03': 'Guilherme', '04': 'Erick Frota' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -322,7 +332,7 @@ function makeRow(prefill={}){
       <div class="inline">
         <div class="inline-row">
           <input type="text" class="os small-input" placeholder="Nº OS">
-          <button class="btn light buscar"><i data-lucide="search" width="14" height="14"></i> Buscar</button>
+          <button class="btn light buscar"><i data-lucide="search" width="14" height="14"></i>Busca</button>
         </div>
         <button class="btn warning remover" title="Remover"><i data-lucide="trash-2" width="14" height="14"></i> Remover fazenda</button>
       </div>
@@ -433,7 +443,7 @@ function buildMessage(){
   const dt   = document.getElementById('dtData').value;
   const fr   = document.getElementById('selFrente').value || '—';
   const pil  = document.getElementById('txtPiloto').value || '—';
-  const dr   = document.getElementById('txtDrone').value  || '—';
+  const dr   = document.getElementById('selDrone').value  || '—';
   const uni  = document.getElementById('selUnidade').value || '—';
   const objG = document.getElementById('txtObjetivo').value || '';
 
@@ -474,6 +484,145 @@ function updatePreview(andScroll=true){
   if (andScroll) p.scrollTop = p.scrollHeight;
 }
 
+function collectFarms(){
+  const farms = [];
+  rowsEl.querySelectorAll('.farm').forEach(el=>{
+    farms.push({
+      os:  (el.querySelector('.os').value || '').trim(),
+      faz: (el.querySelector('.faz').value || '').trim(),
+      cod: (el.querySelector('.cod').value || '').trim(),
+      ha:  toNumBR(el.querySelector('.ha').value),
+      cop: toNumBR(el.querySelector('.copos').value),
+      obj: (el.querySelector('.objetivo').value || '').trim(),
+    });
+  });
+  return farms;
+}
+
+function buildReportHtml(){
+  const farms = collectFarms();
+  const totalHa = farms.reduce((s,f)=>s+f.ha,0);
+  const totalCop = farms.reduce((s,f)=>s+f.cop,0);
+  const now = nowStrSP();
+  const unidade = document.getElementById('selUnidade').value || 'Unidade não selecionada';
+
+  const rows = farms.map(f => `
+    <tr>
+      <td>${f.os || '-'}</td>
+      <td>${f.faz || '-'}</td>
+      <td>${f.cod || '-'}</td>
+      <td style="text-align:right">${fmtBR(f.ha)}</td>
+      <td style="text-align:right">${fmtBR(f.cop,0)}</td>
+      <td>${f.obj || '-'}</td>
+    </tr>
+  `).join('');
+
+  return `<!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Resumo de Fazendas</title>
+    <style>
+      @page{margin:12mm;}
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        margin:0;
+        padding:18px 22px;
+        color:#0f172a;
+        background:#f8fafc;
+      }
+      .header{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-end;
+        border-bottom:2px solid #d9b24c;
+        padding-bottom:10px;
+      }
+      .title{
+        font-size:15px;
+        font-weight:800;
+        color:#0f172a;
+        letter-spacing:.02em;
+      }
+      .unit{
+        font-size:22px;
+        font-weight:900;
+        color:#b48f2f;
+        text-transform:uppercase;
+      }
+      .meta{margin-top:8px;color:#334155;font-size:14px;}
+      small{color:#64748b;}
+      table{width:100%;border-collapse:collapse;margin-top:14px;}
+      th,td{border:1px solid #d9d9d9;padding:9px 10px;font-size:13px;}
+      th{
+        background:linear-gradient(135deg,rgba(217,178,76,0.14),rgba(217,178,76,0.06));
+        text-align:left;
+        color:#0f172a;
+        font-weight:800;
+      }
+      tfoot td{font-weight:800;background:#f1f5f9;}
+      .totals{margin-top:6px;font-weight:700;color:#0f172a;}
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div>
+        <div class="title">Resumo por Fazenda (Cotesia)</div>
+        <div class="unit">${unidade}</div>
+        <div class="meta">Gerado em ${now}</div>
+      </div>
+      <small>Top Gun • Operação</small>
+    </div>
+
+    <div class="totals">Fazendas: ${farms.length} | Hectares: ${fmtBR(totalHa)} | Copos: ${fmtBR(totalCop,0)}</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>OS</th>
+          <th>Fazenda</th>
+          <th>Código</th>
+          <th>Hectares</th>
+          <th>Copos</th>
+          <th>Objetivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows || '<tr><td colspan="6" style="text-align:center;color:#666;">Sem fazendas preenchidas.</td></tr>'}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Totais</td>
+          <td style="text-align:right">${fmtBR(totalHa)}</td>
+          <td style="text-align:right">${fmtBR(totalCop,0)}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+  </html>`;
+}
+
+function printReport(){
+  const html = buildReportHtml();
+  const frame = document.createElement('iframe');
+  frame.style.position = 'fixed';
+  frame.style.right = '0';
+  frame.style.bottom = '0';
+  frame.style.width = '0';
+  frame.style.height = '0';
+  frame.style.border = '0';
+  document.body.appendChild(frame);
+  frame.contentDocument.open();
+  frame.contentDocument.write(html);
+  frame.contentDocument.close();
+  frame.onload = () => {
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
+    setTimeout(()=> frame.remove(), 500);
+  };
+}
+
 /* ===== Init & eventos ===== */
 (function init(){
   document.getElementById('dtData').value = todaySP();
@@ -508,7 +657,9 @@ function updatePreview(andScroll=true){
     window.open(url, '_blank');
   });
 
-  ['dtData','selFrente','txtPiloto','txtDrone','selUnidade','txtObjetivo'].forEach(id=>{
+  document.getElementById('btnReport').addEventListener('click', printReport);
+
+  ['dtData','selFrente','txtPiloto','selDrone','selUnidade','txtObjetivo'].forEach(id=>{
     document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
   });
 
@@ -521,6 +672,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
