@@ -8,29 +8,32 @@
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
   :root {
-    --primary: #16a34a;
-    --primary-light: #dcfce7;
-    --primary-dark: #15803d;
-    --background: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --accent: #3b82f6;
-    --accent-light: #dbeafe;
+    --primary: #d9b24c;
+    --primary-light: rgba(217,178,76,0.16);
+    --primary-dark: #b48f2f;
+    --background: #060912;
+    --card: #0c1224;
+    --text: #f5f5f5;
+    --text-muted: #cbd5e1;
+    --border: rgba(217,178,76,0.35);
+    --accent: #f7e7a1;
+    --accent-light: rgba(247,231,161,0.14);
     --warning: #f59e0b;
-    --warning-light: #fef3c7;
+    --warning-light: rgba(245,158,11,0.16);
     --danger: #ef4444;
-    --danger-light: #fee2e2;
+    --danger-light: rgba(239,68,68,0.14);
     --success: #10b981;
     --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow: 0 20px 50px rgba(0,0,0,0.32);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #000000;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(217,178,76,0.08), transparent 32%),
+      radial-gradient(circle at 80% 0%, rgba(255,255,255,0.07), transparent 38%),
+      var(--background);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -44,7 +47,7 @@
     justify-content: flex-start;
     gap: 0;
     padding: 0;
-    background: #000000;
+    background: linear-gradient(135deg,#0a0f1f 0%,#0c1224 100%);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -92,22 +95,22 @@
     color: var(--text);
     padding: 16px 0;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.1rem;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow);
     width: 100%;
     margin-bottom: 12px;
     -webkit-tap-highlight-color: transparent;
   }
-  .btn.neon { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
-  .btn.neon:hover { background: var(--primary-dark); }
-  .btn.light { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+  .btn.neon { background: var(--primary); color: #0b0f1f; border-color: var(--primary-dark); }
+  .btn.neon:hover { background: var(--primary-dark); color: #0b0f1f; }
+  .btn.light { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
   .btn.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
 
   /* Layout principal */
-  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; margin: 0 auto; width: 100%; }
+  .wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 520px; margin: 0 auto; width: 100%; }
 
   /* Cards */
   .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); width: 100%; }
@@ -117,24 +120,24 @@
   .grid { display: flex; flex-direction: column; gap: 12px; }
   .row { display: flex; flex-direction: column; gap: 6px; }
 
-  label { color: #2f361f; font-size: 1rem; font-weight: 500; }
+  label { color: var(--text); font-size: 1rem; font-weight: 600; }
 
   input, select, textarea {
     width: 100%;
-    background: #f8fafc;
+    background: #0b1425;
     color: var(--text);
-    border: 1px solid #1e304b;
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px 12px;
     font-size: 1rem;
     outline: none;
-    transition: border 0.3s, box-shadow 0.2s;
+    transition: border 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
     margin-bottom: 10px;
   }
-  input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
-  input[readonly] { background-color: #f1f5f9; color: var(--text-muted); }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(217,178,76,.22); }
+  input[readonly] { background-color: #0f182c; color: var(--text-muted); }
 
   .rows { display: flex; flex-direction: column; gap: 16px; }
 
@@ -142,7 +145,7 @@
     border: 1px dashed var(--border);
     border-radius: var(--radius);
     padding: 16px;
-    background: #f8fafc;
+    background: #0b1425;
   }
   .farm .top { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
   .inline { display: flex; flex-direction: column; gap: 8px; }
@@ -153,8 +156,8 @@
 
   .preview {
     white-space: pre-wrap;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    background: #0b1425;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px;
     min-height: 200px;
@@ -195,9 +198,10 @@
         <label for="selFrente">Frente</label>
         <select id="selFrente">
           <option value="" selected>Selecione…</option>
-          <option value="Frente 01">Frente 01</option>
-          <option value="Frente 02">Frente 02</option>
-          <option value="Frente 03">Frente 03</option>  
+          <option value=" 01"> 01</option>
+          <option value=" 02"> 02</option>
+          <option value=" 03"> 03</option>
+          <option value=" 04"> 04</option>
         </select>
       </div>
 
@@ -207,8 +211,12 @@
       </div>
 
       <div class="row">
-        <label for="txtDrone">Drone</label>
-        <input type="text" id="txtDrone" value="X 800">
+        <label for="selDrone">Drone</label>
+        <select id="selDrone">
+          <option value="" selected>Selecione...</option>
+          <option value="XFLY X800">XFLY X800</option>
+          <option value="NEXUS NX6">NEXUS NX6</option>
+        </select>
       </div>
 
       <div class="row">
@@ -217,6 +225,7 @@
           <option value="" selected>Selecione…</option>
           <option value="Delta - Delta">Delta - Delta</option>
           <option value="Delta - Volta Grande">Delta - Volta Grande</option>
+          <option value="Cresciumal Bioenergia">Cresciumal Bioenergia</option>
         </select>
       </div>
     </div>
@@ -278,7 +287,7 @@ function fmtDateBRfromInput(yyyy_mm_dd){ if (!yyyy_mm_dd) return ''; const [y,m,
 function nowStrSP(){ const f = new Intl.DateTimeFormat('pt-BR', { timeZone:'America/Sao_Paulo', dateStyle:'short', timeStyle:'short' }); return f.format(new Date()); }
 
 /* ===== Frente → Piloto ===== */
-const PILOTOS = { 'Frente 01': 'Victor Hugo', 'Frente 02': 'Pedro', 'Frente 03': 'Guilherme' };
+const PILOTOS = { ' 01': 'Victor Hugo', ' 02': 'Pedro', ' 03': 'Guilherme', ' 04': 'Erick Frota' };
 function setPilotByFrente(){ const frente = document.getElementById('selFrente').value || ''; document.getElementById('txtPiloto').value = PILOTOS[frente] || ''; }
 
 /* ===== API (Apps Script Web App) ===== */
@@ -431,7 +440,7 @@ function buildMessage(){
   const dt   = document.getElementById('dtData').value;
   const fr   = document.getElementById('selFrente').value || '—';
   const pil  = document.getElementById('txtPiloto').value || '—';
-  const dr   = document.getElementById('txtDrone').value  || '—';
+  const dr   = document.getElementById('selDrone').value  || '—';
   const uni  = document.getElementById('selUnidade').value || '—';
 
   let msg = `*Rendimento _Cotesia_Top Gun*\n\n` +
@@ -520,7 +529,7 @@ function updatePreview(andScroll=true){
   });
 
   // atualiza prévia ao mudar os dados gerais
-  ['dtData','selFrente','txtPiloto','txtDrone','selUnidade'].forEach(id=>{
+  ['dtData','selFrente','txtPiloto','selDrone','selUnidade'].forEach(id=>{
     document.getElementById(id).addEventListener('input', ()=> updatePreview(false));
   });
 
@@ -536,6 +545,7 @@ function updatePreview(andScroll=true){
 
 </body>
 </html>
+
 
 
 
