@@ -6,6 +6,9 @@
   <title>Mesclar Talhões (KML ⇄ KML/Shapefile)</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Edição -->
@@ -37,43 +40,51 @@
       --accent-2:#168f4b;
       --border:#e2e8f0;
     }
-    body { margin: 0; font-family: "Segoe UI", "Inter", system-ui, -apple-system, Roboto, Arial, sans-serif; background:
+    html, body { height: 100%; }
+    body { margin: 0; font-family: "Manrope","Segoe UI",system-ui,-apple-system,sans-serif; background:
       radial-gradient(circle at 20% 20%,rgba(198,40,40,0.08),transparent 36%),
       radial-gradient(circle at 80% 0%,rgba(22,143,75,0.08),transparent 42%),
       linear-gradient(160deg,#fdf7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
       color: var(--text);
     }
     .app { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
-    header { display: flex; gap: .75rem; align-items: center; padding: .75rem; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 5; box-shadow:0 10px 20px rgba(15,23,42,0.08); }
+    header { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .6rem .8rem; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 5; box-shadow:0 10px 20px rgba(15,23,42,0.08); }
     header h1 { font-size: 1rem; margin: 0 .5rem 0 0; font-weight: 700; color:var(--accent); letter-spacing:.02em; }
     header .grow { flex: 1; }
-    .btn { background: #fff; color: var(--text); border: 1px solid var(--border); padding: .5rem .75rem; border-radius: .75rem; cursor: pointer; box-shadow:0 8px 18px rgba(15,23,42,0.06); display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+    .btn { background: #fff; color: var(--text); border: 1px solid var(--border); padding: .48rem .75rem; border-radius: 10px; cursor: pointer; box-shadow:0 10px 20px rgba(15,23,42,0.08); display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 38px; }
     .btn:hover { border-color: var(--accent); background: rgba(198,40,40,0.06); }
-    .btn.primary { background: linear-gradient(135deg,var(--accent),#ef5350); border-color: transparent; color:#fff; box-shadow:0 12px 24px rgba(198,40,40,0.24); }
+    .btn.primary { background: linear-gradient(135deg,var(--accent),#ef5350); border-color: transparent; color:#fff; box-shadow:0 12px 24px rgba(198,40,40,0.22); }
     .btn.primary:hover { filter:brightness(1.05); }
-    .btn.ghost { background: transparent; border-color: #1d632a; }
+    .btn.ghost { background: #fff; border-color: #d7dfe8; color: var(--text); }
+    .btn.ghost.danger { color: var(--accent); border-color: #f4caca; background: #fff5f5; }
     .icon-btn { width: 38px; height: 38px; padding: .35rem; border-radius: 12px; }
-    .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+    .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; fill: none; }
     .icon-btn.active { background: rgba(198,40,40,0.12); border-color: var(--accent); color: var(--accent); }
-    .leaflet-bar .icon-btn { border-radius: 6px; width: 34px; height: 34px; border: none; box-shadow: none; padding: 0px; }
+    .leaflet-bar .icon-btn { border-radius: 10px; width: 34px; height: 34px; border: 1px solid #e4e7ec; box-shadow: 0 8px 24px rgba(15,23,42,0.16); padding: 0; }
     .leaflet-bar .icon-btn:hover { background:#f1f5f9; }
     .leaflet-bar .icon-btn svg { width: 16px; height: 16px; }
-    .area-label { color:#fff; font-weight:700; font-size:.9rem; text-shadow:0 1px 2px rgba(0,0,0,0.45); }
-    .area-label div { background: rgba(15,23,42,0.9); border:1px solid rgba(0,0,0,0.4); border-radius:12px; padding:4px 8px; box-shadow:0 2px 8px rgba(0,0,0,0.35); }
+    .area-label { color:#0f172a; font-weight:700; font-size:.85rem; text-shadow:none; }
+    .area-label .area-badge { background: #fff; color:#0f172a; border:1px solid rgba(15,23,42,0.1); border-radius:12px; padding:6px 12px; box-shadow:0 8px 18px rgba(15,23,42,0.2); display:inline-flex; align-items:center; gap:8px; }
+    .area-label .area-unit { font-size:.82rem; font-weight:600; color:#475569; }
     .controls { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
     .controls label { font-size: .85rem; opacity: .9; }
-    .controls input[type="number"] { width: 8rem; padding: .4rem .5rem; background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .4rem; }
-    .layout { display: grid; grid-template-columns: 320px 1fr; height: 100%; gap:12px; }
-    @media (max-width: 900px){ .layout { grid-template-columns: 1fr; grid-template-rows: 40vh 1fr; } }
-    aside { border: 1px solid var(--border); background: var(--card); overflow: auto; border-radius:14px; box-shadow:0 14px 28px rgba(15,23,42,0.08); }
-    aside header { position: sticky; top: 0; background: var(--card); border-bottom:1px solid var(--border); }
+    .controls input[type="number"] { width: 8rem; padding: .45rem .5rem; background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .5rem; min-height: 38px; }
+    .layout { display: grid; grid-template-columns: 320px 1fr; height: 100%; gap:12px; min-height: 0; }
+    @media (max-width: 900px){ header{flex-direction:column; align-items:flex-start;} .layout { grid-template-columns: 1fr; grid-template-rows: 40vh 1fr; } }
+    aside { border: 1px solid var(--border); background: var(--card); border-radius:14px; box-shadow:0 14px 28px rgba(15,23,42,0.08); display:flex; flex-direction:column; overflow:hidden; height: 100%; }
+    aside header { position: sticky; top: 0; background: var(--card); border-bottom:1px solid var(--border); z-index:2; }
     #map { height: 100%; width: 100%; }
-    .list { padding: .75rem; display: grid; gap: .5rem; }
+    .list { padding: .75rem; display: grid; gap: .5rem; flex:1; overflow: auto; max-height: none; min-height: 0; }
     .item { display: flex; gap: .5rem; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid var(--border); border-radius: .5rem; padding: .5rem .6rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
     .pill { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:40px; padding:.3rem .65rem; font-size: .75rem; background: #44814f; border-radius: 999px; border: 1px solid #44814f; color: #f9fbff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
     .pill .pill-num { font-size: .95rem; font-weight:700; line-height:1.1; }
     .pill .pill-label { font-size: .7rem; line-height:1; opacity: .92; }
     .help { font-size: .8rem; opacity: .9; padding: .4rem .75rem; color:var(--muted); }
+    /* Botão flutuante dentro do mapa */
+    #map { position: relative; }
+    .floating-merge { position: absolute; right: 16px; top: 16px; z-index: 1200; display:flex; gap:.4rem; align-items:center; }
+    .floating-merge .btn { border-radius: 14px; padding: .65rem .9rem; gap:.35rem; }
+    #btnMerge { display: none; }
     /* Notificação central */
     .notify-center { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.98);
       background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: .6rem; padding: .7rem 1rem;
@@ -82,6 +93,13 @@
     .notify-center.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     .notify-center.success { border-color: var(--accent-2); }
     .notify-center.error { border-color: var(--accent); }
+    /* ConfirmaÇõÇœo inline */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.45); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+    .confirm-card { background: #fff; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(15,23,42,0.22); padding: 1.1rem 1.2rem; width: min(440px, 92vw); }
+    .confirm-card h3 { margin: 0 0 .35rem 0; font-size: 1rem; color: var(--text); }
+    .confirm-card p { margin: 0 0 .9rem 0; color: var(--muted); font-size: .95rem; line-height: 1.45; }
+    .confirm-actions { display: flex; justify-content: flex-end; gap: .6rem; }
+    .confirm-actions button { min-width: 92px; }
   </style>
 </head>
 <body>
@@ -90,7 +108,7 @@
       <h1>Mesclar Talhões</h1>
       <div class="controls">
         <input id="fileInput" type="file" accept=".kml" multiple />
-        <button id="btnClear" class="btn ghost icon-btn" title="Limpar tudo" aria-label="Limpar tudo"></button> 
+        <button id="btnClear" class="btn ghost danger icon-btn" title="Limpar tudo" aria-label="Limpar tudo"></button> 
       </div>
       <div class="grow"></div>
       <div class="controls">
@@ -127,7 +145,7 @@
           </div>
         </header>
         <div id="list" class="list"></div>
-        <div class="footer">
+        <div class="footer" style="padding:.6rem .75rem; border-top:1px solid var(--border); background:var(--card); position: sticky; bottom: 0; z-index:2; display:flex; gap:.5rem; flex-wrap:wrap;">
           <button id="btnSelectAll" class="btn ghost">Selecionar todos</button>
           <button id="btnSelectNone" class="btn ghost">Limpar seleção</button>
         </div>
@@ -152,6 +170,8 @@
     let fillControlBtn = null;
     const selectedResultIds = new Set(); // índices dos resultFeatures/layers
     let lastInputBaseName = 'talhoes';
+    const undoStack = [];
+    const redoStack = [];
 
     // Estilos
     const basePalette = ['#3b82f6','#10b981','#f59e0b','#a855f7','#14b8a6','#ef4444','#6366f1','#84cc16','#f97316','#0ea5e9','#d946ef','#06b6d4'];
@@ -165,7 +185,9 @@
       kml: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a15.3 15.3 0 0 0 0 18" /><path d="M12 3a15.3 15.3 0 0 1 0 18" /></svg>',
       shapefile: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7Z" /><path d="M14 3v5h5" /><path d="M9 12h3" /><path d="M9 16h6" /></svg>',
       patch: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 10h6v10" /><path d="M14 4v6h6" /></svg>',
-      clear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>'
+      clear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>',
+      undo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5" /><path d="M20 20v-2a6 6 0 0 0-6-6H4" /></svg>',
+      redo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 9 5 5-5 5" /><path d="M4 4v2a6 6 0 0 0 6 6h10" /></svg>'
     };
 
     // Notificação central
@@ -178,6 +200,30 @@
         requestAnimationFrame(() => el.classList.add('show'));
         setTimeout(() => { el.classList.remove('show'); setTimeout(() => { try { el.remove(); } catch {} }, 220); }, ms);
       } catch {}
+    }
+    // ConfirmaÇõÇœo inline para evitar o alerta do navegador
+    function inlineConfirm(message, title = 'Confirmacao'){
+      return new Promise(resolve => {
+        const overlay = document.createElement('div'); overlay.className = 'confirm-overlay';
+        const card = document.createElement('div'); card.className = 'confirm-card';
+        const h3 = document.createElement('h3'); h3.textContent = title;
+        const p = document.createElement('p'); p.textContent = message;
+        const actions = document.createElement('div'); actions.className = 'confirm-actions';
+        const btnCancel = document.createElement('button'); btnCancel.className = 'btn ghost'; btnCancel.textContent = 'Cancelar';
+        const btnOk = document.createElement('button'); btnOk.className = 'btn primary'; btnOk.textContent = 'OK';
+        actions.appendChild(btnCancel); actions.appendChild(btnOk);
+        card.appendChild(h3); card.appendChild(p); card.appendChild(actions);
+        overlay.appendChild(card); document.body.appendChild(overlay);
+        const cleanup = () => { try { overlay.remove(); } catch {} document.removeEventListener('keydown', onKey); };
+        const resolveFalse = () => { cleanup(); resolve(false); };
+        const resolveTrue = () => { cleanup(); resolve(true); };
+        const onKey = e => { if(e.key === 'Escape'){ resolveFalse(); } if(e.key === 'Enter'){ resolveTrue(); } };
+        btnCancel.addEventListener('click', resolveFalse);
+        btnOk.addEventListener('click', resolveTrue);
+        overlay.addEventListener('click', e => { if(e.target === overlay) resolveFalse(); });
+        document.addEventListener('keydown', onKey);
+        btnOk.focus();
+      });
     }
 
     function initMap(){
@@ -297,12 +343,13 @@
         const center = (turf.centroid(feature).geometry && turf.centroid(feature).geometry.coordinates) || null;
         const coords = center ? [center[1],center[0]] : null;
         if(!coords) return null;
-        return L.marker(coords,{ interactive:false, icon:L.divIcon({ className:'area-label', html:`<div>${escapeHtml(text)}</div>`})});
+        const html = `<div class="area-badge"><span class="area-num">${escapeHtml(text)}</span><span class="area-unit">ha</span></div>`;
+        return L.marker(coords,{ interactive:false, icon:L.divIcon({ className:'area-label', html })});
       }catch{return null;}
     }
     function addResultLabel(idx, feature){
       const ha = computeAreaHa(feature);
-      const text = ha!==null ? `${ha.toFixed(2)} ha` : '';
+      const text = ha!==null ? `${ha.toFixed(2)}` : '';
       const lbl = makeAreaLabel(feature,text);
       if(lbl){ lbl.addTo(map); resultLabels[idx]=lbl; }
     }
@@ -315,10 +362,86 @@
       return feats;
     }
 
+    function captureState(){
+      const deep = obj => JSON.parse(JSON.stringify(obj));
+      return {
+        nextId,
+        lastInputBaseName,
+        items: Array.from(allItems.values()).map(it => ({
+          id: it.id,
+          name: it.name,
+          fileName: it.fileName,
+          color: it.color,
+          feature: deep(it.feature)
+        })),
+        results: resultFeatures.map((f,i)=>({ feature: deep(f), color: resultColors[i] || null })),
+        selectedIds: Array.from(selectedIds),
+        selectedResultIds: Array.from(selectedResultIds)
+      };
+    }
+    function restoreState(snapshot){
+      if(!snapshot) return;
+      clearAll();
+      nextId = 1;
+      lastInputBaseName = snapshot.lastInputBaseName || 'talhoes';
+      for(const it of snapshot.items || []){
+        const id = it.id || nextId++;
+        const color = it.color || basePalette[(id-1)%basePalette.length];
+        const layer=L.geoJSON(it.feature,{ style:()=>({ ...baseStyle, color, fillColor: color }) }).addTo(map);
+        layer.eachLayer(l=>{ l.on('click',()=>toggleSelect(id)); l.options.pmIgnore=true; });
+        allItems.set(id,{ id, layer, feature: it.feature, name: it.name, fileName: it.fileName, color });
+        nextId = Math.max(nextId, id+1);
+      }
+      for(let i=0;i<(snapshot.results||[]).length;i++){
+        const r = snapshot.results[i];
+        if(!r || !r.feature) continue;
+        const color = r.color || '#c62828';
+        const layer=L.geoJSON(r.feature,{ style:()=>({ color, weight:3, fillColor: color, fillOpacity:.25 }) }).addTo(map);
+        layer.eachLayer && layer.eachLayer(l=>{ l.on('click',()=>toggleResult(i)); });
+        resultFeatures.push(r.feature);
+        resultLayers.push(layer);
+        resultColors.push(color);
+        addResultLabel(i, r.feature);
+      }
+      selectedIds.clear(); (snapshot.selectedIds||[]).forEach(id=>select(id));
+      selectedResultIds.clear(); (snapshot.selectedResultIds||[]).forEach(idx=>selectResult(idx));
+      lastResult = { type:'FeatureCollection', features:[...resultFeatures] };
+      updateSelectedCount();
+    }
+    function pushUndo(){
+      undoStack.push(captureState());
+      if(undoStack.length>30) undoStack.shift();
+      redoStack.length = 0;
+      updateUndoButtons();
+    }
+    function undo(){
+      if(!undoStack.length) return;
+      const snap = undoStack.pop();
+      redoStack.push(captureState());
+      restoreState(snap);
+      updateUndoButtons();
+      notifyCenter('Desfeito','success',1000);
+    }
+    function redo(){
+      if(!redoStack.length) return;
+      const snap = redoStack.pop();
+      undoStack.push(captureState());
+      restoreState(snap);
+      updateUndoButtons();
+      notifyCenter('Refeito','success',1000);
+    }
+    function updateUndoButtons(){
+      const undoBtn = document.getElementById('btnUndoFloating');
+      const redoBtn = document.getElementById('btnRedoFloating');
+      if(undoBtn) undoBtn.disabled = undoStack.length===0;
+      if(redoBtn) redoBtn.disabled = redoStack.length===0;
+    }
+
     function mergeSelected(){
       const feats = getSelectedFeatures(); if(!feats.length){ alert('Selecione ao menos um talhão.'); return; }
       const tolM = Number(document.getElementById('tol').value||0);
       try {
+        pushUndo();
         const cleaned = feats.map(safeClean);
         let merged = null;
         if(tolM>0){ const buffered = cleaned.map(f => turf.buffer(f,tolM,{units:'meters'})); merged = buffered.reduce((acc,cur)=>acc?safeUnion(acc,cur):cur,null); try{ const shr = turf.buffer(merged,-tolM,{units:'meters'}); if(shr&&shr.geometry) merged = shr; } catch{} } else { merged = cleaned.reduce((acc,cur)=>acc?safeUnion(acc,cur):cur,null); }
@@ -405,12 +528,12 @@
 
     async function ensureShpWrite(){
       if(typeof window.shpwrite !== 'undefined') return true;
-      const cdnList = [
-        'https://cdn.jsdelivr.net/npm/shp-write@0.4.4/dist/shpwrite.js',
-        'https://unpkg.com/shp-write@0.4.4/dist/shpwrite.js',
-        'https://cdn.jsdelivr.net/gh/mapbox/shp-write@0.4.4/dist/shpwrite.js'
+      const sources = [
+        'lib/shpwrite.min.js',
+        'https://unpkg.com/shp-write@0.3.2/shpwrite.js',
+        'https://cdn.jsdelivr.net/gh/mapbox/shp-write@0.3.2/shpwrite.js'
       ];
-      for(const src of cdnList){
+      for(const src of sources){
         try { await loadScriptOnce(src); if(typeof window.shpwrite !== 'undefined') return true; } catch {}
       }
       return typeof window.shpwrite !== 'undefined';
@@ -431,7 +554,7 @@
     function enableEditSelected(){ for(const [id,item] of allItems){ setEditableForItem(item, selectedIds.has(id)); } for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,true);} editActive=true; notifyCenter('Edição ativada','success',1200); }
     function disableAllEditing(){ for(const [,item] of allItems){ setEditableForItem(item,false);} for(let i=0;i<resultLayers.length;i++){ setEditableForResultIndex(i,false);} editActive=false; }
     function toSingleFeatureFromLayer(layer){ try{ const gj=layer.toGeoJSON(); if(!gj) return null; if(gj.type==='Feature') return gj; if(gj.type==='FeatureCollection'){ if(!gj.features||!gj.features.length) return null; let acc=gj.features[0]; for(let i=1;i<gj.features.length;i++) acc=safeUnion(acc,gj.features[i]); return acc; } return { type:'Feature', properties:{}, geometry:(gj.geometry||gj) }; } catch { return null; } }
-    function saveEdits(){ for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; const one=toSingleFeatureFromLayer(it.layer); if(one&&one.geometry){ it.feature=one; } setEditableForItem(it,false);} for(let i=0;i<resultLayers.length;i++){ const lyr=resultLayers[i]; const one=toSingleFeatureFromLayer(lyr); if(one&&one.geometry){ resultFeatures[i]=one; removeResultLabel(i); addResultLabel(i,one); } setEditableForResultIndex(i,false);} lastResult={ type:'FeatureCollection', features:[...resultFeatures] }; editActive=false; updateSelectedCount(); notifyCenter('Edições salvas','success',1200); }
+    function saveEdits(){  pushUndo(); for(const id of selectedIds){ const it=allItems.get(id); if(!it) continue; const one=toSingleFeatureFromLayer(it.layer); if(one&&one.geometry){ it.feature=one; } setEditableForItem(it,false);} for(let i=0;i<resultLayers.length;i++){ const lyr=resultLayers[i]; const one=toSingleFeatureFromLayer(lyr); if(one&&one.geometry){ resultFeatures[i]=one; removeResultLabel(i); addResultLabel(i,one); } setEditableForResultIndex(i,false);} lastResult={ type:'FeatureCollection', features:[...resultFeatures] }; editActive=false; updateSelectedCount(); notifyCenter('Edições salvas','success',1200); }
     function cancelEdits(){
       for(const id of selectedIds){
         const it=allItems.get(id); if(!it) continue;
@@ -465,6 +588,7 @@
       notifyCenter('Desenhe o polígono que deseja preencher e finalize o desenho.','success',1800);
     }
     function applyPatchToLayer(layer, color, style){
+      pushUndo();
       const patch = toSingleFeatureFromLayer(layer); try{ map.removeLayer(layer);}catch{}
       if(!patch||!patch.geometry){ notifyCenter('Falha ao capturar o desenho.','error',1500); return false; }
       let target=null; let targetId=null; let targetType='result'; // result|item
@@ -555,14 +679,57 @@
       ctrl.addTo(map);
     }
 
+    function addFloatingMergeButton(){
+      const mapEl = document.getElementById('map');
+      if(!mapEl) return;
+      let wrap = document.getElementById('floatingMergeWrap');
+      if(wrap) return;
+      wrap = document.createElement('div');
+      wrap.id = 'floatingMergeWrap';
+      wrap.className = 'floating-merge';
+      const btnUndo = document.createElement('button');
+      btnUndo.id = 'btnUndoFloating';
+      btnUndo.className = 'btn ghost icon-btn';
+      btnUndo.title = 'Desfazer';
+      btnUndo.setAttribute('aria-label','Desfazer');
+      btnUndo.innerHTML = ICONS.undo || 'Undo';
+      btnUndo.addEventListener('click', undo);
+      wrap.appendChild(btnUndo);
+
+      const btnRedo = document.createElement('button');
+      btnRedo.id = 'btnRedoFloating';
+      btnRedo.className = 'btn ghost icon-btn';
+      btnRedo.title = 'Refazer';
+      btnRedo.setAttribute('aria-label','Refazer');
+      btnRedo.innerHTML = ICONS.redo || 'Redo';
+      btnRedo.addEventListener('click', redo);
+      wrap.appendChild(btnRedo);
+
+      const btn = document.createElement('button');
+      btn.id = 'btnMergeFloating';
+      btn.className = 'btn primary';
+      btn.title = 'Mesclar selecionados';
+      btn.setAttribute('aria-label','Mesclar selecionados');
+      btn.innerHTML = `${ICONS.merge || ''}<span>Mesclar</span>`;
+      btn.addEventListener('click', mergeSelected);
+      wrap.appendChild(btn);
+      mapEl.appendChild(wrap);
+      updateUndoButtons();
+    }
+
     function escapeHtml(str){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
 
     window.addEventListener('DOMContentLoaded', () => {
       initMap();
       if(map && map.on){ map.on('pm:create', onPmCreate); }
       applyButtonIcons();
+      addFloatingMergeButton();
+      updateUndoButtons();
       document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
-      document.getElementById('btnClear').addEventListener('click', () => { if(confirm('Remover todas as camadas e seleção?')) clearAll(); });
+      document.getElementById('btnClear').addEventListener('click', async () => {
+        const ok = await inlineConfirm('Remover todas as camadas e sele??es?','Limpar mapa');
+        if(ok){ pushUndo(); clearAll(); updateUndoButtons(); }
+      });
       document.getElementById('btnMerge').addEventListener('click', mergeSelected);
       document.getElementById('btnEdit').addEventListener('click', () => { if(!editActive) enableEditSelected(); else disableAllEditing(); });
       document.getElementById('btnSaveEdits').addEventListener('click', saveEdits);
