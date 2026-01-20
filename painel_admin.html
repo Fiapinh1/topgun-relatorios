@@ -150,6 +150,7 @@
       display:flex;
       flex-direction:column;
       gap:12px;
+      position:relative;
     }
     .chip{
       padding:6px 10px;
@@ -185,7 +186,7 @@
     .iframe-wrap.active{display:flex;}
     .iframe-wrap.fullscreen{
       position:fixed;
-      inset:10px;
+      inset:0;
       margin:0;
       z-index:200;
       background:linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
@@ -201,8 +202,9 @@
       background:rgba(255,255,255,0.04);
     }
     .iframe-wrap.fullscreen iframe{
-      height:calc(100vh - 160px);
+      height:calc(100vh - 120px);
     }
+    body.fullscreen-mode .hero{display:none;}
     .calendar-wrap{
       display:grid;
       grid-template-columns:1.4fr 1fr;
@@ -501,7 +503,7 @@
       .content{padding:10px;margin-left:0;}
       .mobile-menu-btn{display:inline-flex;}
     }
-    }
+
   </style>
 </head>
 <body>
@@ -534,7 +536,7 @@
               <i class="nav-icon" data-lucide="search"></i>
               <span class="label">Busca KML/MAPA</span>
             </button>
-            <button class="nav-link" data-src="index.ranking.html" data-label="Upload Ranking">
+            <button class="nav-link" data-src="ranking/index.ranking.html" data-label="Upload Ranking">
               <i class="nav-icon" data-lucide="upload"></i>
               <span class="label">Upload Ranking</span>
             </button>
@@ -596,7 +598,7 @@
             <i class="nav-icon chevron" data-lucide="chevron-down"></i>
           </button>
           <div class="nav-sub" data-group="operacao">
-            <button class="nav-link" data-src="raizen_input.html" data-label="Raizen">
+            <button class="nav-link" data-src="mapeamento_raizen.html" data-label="Raizen">
               <i class="nav-icon" data-lucide="building-2"></i>
               <span class="label">Raizen</span>
             </button>
@@ -619,7 +621,7 @@
       <section class="hero">
         <div>
           <div style="font-size:1.1rem;font-weight:800;">Painel do Administrador</div>
-          <div style="color:var(--muted);">Clique no menu lateral para abrir cada página ao lado.</div>
+          <div style="color:var(--muted);"></div>
         </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn">
           <i class="nav-icon" data-lucide="menu"></i>
@@ -806,6 +808,7 @@
     btnFullscreen.addEventListener('click',()=>{
       isFullscreen = !isFullscreen;
       framePanel.classList.toggle('fullscreen', isFullscreen);
+      document.body.classList.toggle('fullscreen-mode', isFullscreen);
       btnFullscreen.querySelector('span.label').textContent = isFullscreen ? 'Minimizar' : 'Tela inteira';
       btnFullscreen.querySelector('i.nav-icon').setAttribute('data-lucide', isFullscreen ? 'minimize-2' : 'maximize-2');
       refreshIcons();
@@ -1040,7 +1043,6 @@
   </script>
 </body>
 </html>
-
 
 
 
