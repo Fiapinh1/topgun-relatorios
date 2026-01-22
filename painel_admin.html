@@ -3,31 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Administrador - Natal</title>
+  <title>Painel do Administrador</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.281.0/dist/umd/lucide.min.js"></script>
   <style>
     :root{
-      --bg:#060912;
-      --card:#0c1224;
+      --bg:#0a0f1f;
+      --card:#0f1628;
       --text:#f5f5f5;
       --muted:#cbd5e1;
       --accent:#d9b24c;
       --accent-2:#ffffff;
       --gold:#f7e7a1;
-      --border:rgba(217,178,76,0.35);
-      --shadow:0 20px 50px rgba(0,0,0,0.32);
+      --border:rgba(217,178,76,0.28);
+      --shadow:0 16px 40px rgba(0,0,0,0.28);
     }
     *{box-sizing:border-box;}
     body{
       margin:0;
       min-height:100vh;
       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-      background:
-        radial-gradient(circle at 10% 20%, rgba(217,178,76,0.08), transparent 32%),
-        radial-gradient(circle at 80% 0%, rgba(255,255,255,0.07), transparent 38%),
-        #060912;
+      background:linear-gradient(135deg,#0b1021 0%,#0f172a 45%,#0a0f1f 100%);
       color:var(--text);
       display:flex;
     }
@@ -37,35 +34,36 @@
       min-height:100vh;
       background:linear-gradient(135deg,#0a0f1f 0%,#0c1224 100%);
       border-right:1px solid var(--border);
-      padding:12px 10px;
-      box-shadow:4px 0 18px rgba(0,0,0,0.04);
+      padding:16px 12px;
+      box-shadow:4px 0 18px rgba(0,0,0,0.08);
       position:sticky;
       top:0;
-      transition:width .18s ease, padding .18s ease;
+      transition:width .18s ease, padding .18s ease, transform .18s ease;
       overflow:hidden;
       display:flex;
       flex-direction:column;
+      z-index:130;
     }
-    .sidebar.collapsed{width:78px;padding:12px 8px;}
+    .sidebar.mini{width:86px;padding:16px 8px;}
     .toggle{
       margin-top:8px;
       width:100%;
       border:1px solid var(--border);
       background:rgba(255,255,255,0.04);
       border-radius:14px;
-      padding:8px 10px;
+      padding:10px 12px;
       display:flex;
       align-items:center;
       gap:8px;
       cursor:pointer;
-      font-weight:600;
+      font-weight:700;
       transition:all .14s ease;
       color:#ffffff;
     }
     .toggle:hover{border-color:var(--accent);}
     .toggle span{color:#ffffff;}
     .toggle .nav-icon{color:#ffffff;}
-    .sidebar.collapsed .toggle span{display:none;}
+    .sidebar.mini .toggle span{display:none;}
     .menu{
       margin-top:16px;
       display:flex;
@@ -133,23 +131,21 @@
       align-items:center;
       justify-content:center;
     }
-    .sidebar.collapsed .brand h1,
-    .sidebar.collapsed .brand small,
-    .sidebar.collapsed .nav-main span.label,
-    .sidebar.collapsed .nav-main .chevron,
-    .sidebar.collapsed .nav-link span.label,
-    .sidebar.collapsed .nav-link .bullet-text,
-    .sidebar.collapsed .exit-btn .label,
-    .sidebar.collapsed .exit .label{display:none!important;}
-    .sidebar.collapsed .nav-sub{padding-left:0;}
-    .sidebar.collapsed .exit-btn{justify-content:center;}
+    .sidebar.mini .nav-main span.label,
+    .sidebar.mini .nav-main .chevron,
+    .sidebar.mini .nav-link span.label,
+    .sidebar.mini .nav-link .bullet-text,
+    .sidebar.mini .exit-btn .label,
+    .sidebar.mini .exit .label{display:none!important;}
+    .sidebar.mini .nav-sub{padding-left:0;}
+    .sidebar.mini .exit-btn{justify-content:center;}
 
     .content{
       flex:1;
-      padding:14px;
+      padding:20px;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:14px;
       position:relative;
     }
     .chip{
@@ -170,10 +166,10 @@
       gap:14px;
     }
     .card{
-      background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      background:rgba(255,255,255,0.04);
       border:1px solid var(--border);
       border-radius:16px;
-      padding:16px;
+      padding:18px;
       box-shadow:var(--shadow);
     }
     .iframe-wrap{
@@ -200,7 +196,9 @@
       border:1px solid var(--border);
       border-radius:14px;
       background:rgba(255,255,255,0.04);
+      display:none;
     }
+    .iframe-wrap.active iframe{display:block;}
     .iframe-wrap.fullscreen iframe{
       height:calc(100vh - 120px);
     }
@@ -490,7 +488,7 @@
         transform:translateX(-110%);
         opacity:0;
         pointer-events:none;
-        z-index:120;
+        z-index:140;
       }
       .sidebar.mobile-open{
         transform:translateX(0);
@@ -578,7 +576,7 @@
           <div class="nav-sub" data-group="relatorios">
             <button class="nav-link" data-src="relatorios_cotesia.html" data-label="Cotésia">
               <i class="nav-icon" data-lucide="map-pin"></i>
-              <span class="label">Cotésia</span>
+            <span class="label">Cotésia</span>
             </button>
             <button class="nav-link" data-src="relatorios_pulverizacao.html" data-label="Pulverização">
               <i class="nav-icon" data-lucide="spray-can"></i>
@@ -732,9 +730,14 @@
     // --- Sidebar toggle ---
     const sidebar = document.getElementById('sidebar');
     const toggleSidebar = document.getElementById('toggleSidebar');
-    sidebar.classList.add('collapsed');
-    toggleSidebar.addEventListener('click', ()=> sidebar.classList.toggle('collapsed'));
-    if(window.innerWidth < 800){ sidebar.classList.add('collapsed'); }
+    const prefersMini = localStorage.getItem('sidebarMini') === '1';
+    if(prefersMini) sidebar.classList.add('mini');
+    toggleSidebar.addEventListener('click', ()=>{
+      sidebar.classList.toggle('mini');
+      localStorage.setItem('sidebarMini', sidebar.classList.contains('mini') ? '1' : '0');
+      refreshIcons();
+    });
+    if(window.innerWidth < 800){ sidebar.classList.add('mini'); }
 
     // --- Accordion menu ---
     document.querySelectorAll('.nav-main[data-group]').forEach(btn=>{
@@ -789,7 +792,7 @@
         const label = btn.dataset.label || 'Conteúdo';
         frame.src = src;
         frameTitle.textContent = label;
-        frameHint.textContent = src;
+        frameHint.textContent = label;
         framePanel.classList.add('active');
         dashboardPanel.style.display='none';
         setActiveLink(btn);
