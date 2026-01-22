@@ -93,6 +93,34 @@
       padding:12px;display:flex;align-items:center;gap:12px;min-width:220px;
       z-index:1100;
     }
+    .map-floating-actions{
+      position:absolute;top:16px;left:88px;
+      display:flex;gap:8px;z-index:1100;flex-wrap:wrap;
+    }
+    .export-btn{
+      display:inline-flex;align-items:center;gap:10px;
+      background:linear-gradient(135deg,var(--accent),#ef5350);
+      color:#fff;text-decoration:none;
+      padding:12px 16px;border-radius:12px;font-weight:800;
+      border:1px solid rgba(0,0,0,0.06);box-shadow:0 12px 26px rgba(198,40,40,0.25);
+      letter-spacing:0.2px;
+      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .export-btn:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(198,40,40,0.3);filter:saturate(1.05);}
+    .export-btn:active{transform:translateY(0);box-shadow:0 10px 20px rgba(198,40,40,0.22);}
+    .drop-target{position:relative;}
+    .drop-target.dropping::after{
+      content:'Solte o KML aqui';
+      position:absolute;inset:0;
+      background:rgba(22,143,75,0.1);
+      border:2px dashed var(--accent-2);
+      border-radius:12px;
+      color:var(--accent-2);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:1.05rem;
+      z-index:1200;
+      pointer-events:none;
+    }
     .angle-dial{
       width:68px;height:68px;border-radius:50%;
       border:1px solid var(--border);
@@ -105,6 +133,10 @@
       width:2px;height:26px;background:var(--accent);
       transform-origin:bottom center;
       transform:translate(-50%,-100%) rotate(var(--needle-rot,0deg));
+    }
+    .angle-dial .angle-value{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:.95rem;color:var(--text);
     }
     .angle-controls{flex:1;display:flex;flex-direction:column;gap:6px;}
     .angle-label{font-weight:700;}
@@ -125,9 +157,11 @@
       <a href="gerar_pontos.html" class="nav-btn">Gerar Pontos</a>
     </div>
     <div class="layout-grid">
-      <div class="card">
+      <div class="card drop-target" id="formCard">
         <h1>Criar Linhas Paralelas dentro de Polígono (KML)</h1>
         <p class="helper">Carregue um KML com a área demarcada.</p>
+        <p class="helper" style="margin-top:-4px;color:var(--muted);">
+        </p>
 
         <div class="row single">
           <div class="field">
@@ -174,8 +208,7 @@
         </div>
 
         <div class="actions">
-          <button id="btnGerar" disabled>Gerar Linhas</button>
-          <a id="downloadLink" class="secondary" href="#" download style="display:none;">Exportar Projeto (KML)</a>
+          <a id="downloadLink" class="export-btn" href="#" download style="display:none;">Exportar Projeto (KML)</a>
           <button id="btnLimpar" class="secondary">Limpar Linhas</button>
           <button id="btnProximo" class="secondary" disabled>Próximo Talhão</button>
           <button id="btnLimparProjeto" class="secondary" disabled>Limpar Projeto</button>
@@ -183,10 +216,13 @@
       </div>
 
       <div class="card map-card">
-        <div class="map-wrap">
+        <div class="map-wrap drop-target">
+          <div class="map-floating-actions">
+            <button id="btnGerar" aria-label="Gerar linhas paralelas" disabled>Gerar Linhas</button>
+          </div>
           <div id="map"></div>
           <div class="angle-overlay">
-            <div class="angle-dial" id="angleDial"></div>
+            <div class="angle-dial" id="angleDial"><div class="angle-value" aria-hidden="true">0°</div></div>
             <div class="angle-controls">
               <div class="angle-label">Ângulo</div>
               <input id="angulo" type="range" min="0" max="359" step="1" value="0">
@@ -197,10 +233,10 @@
             </div>
           </div>
         </div>
-        <div id="log" class="log hint" style="margin-top:12px;">Carregue um KML de polígono para começar.</div>
+        <div id="log" class="log hint" aria-live="polite" style="margin-top:12px;">Carregue um KML de polígono para começar.</div>
       </div>
     </div>
-    <div class="footer">Base satélite: Esri World Imagery · Mapas por Leaflet</div>
+    <div class="footer"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -222,13 +258,20 @@
     const btnLimparProjeto = document.getElementById('btnLimparProjeto');
     const dlEl = document.getElementById('downloadLink');
 
-    let map, polygons = [], polygonCoords = null, selectedIdx = -1;
+    let map, polygons = [], polygonCoords = null, selectedIdx = -1, kmlFileName = '';
     let polyLayer, linesLayer, projectLayer;
     let projectPaths = [];
 
     function logMsg(msg, type='hint'){
       logEl.className = 'log ' + (type === 'error' ? 'error' : type === 'success' ? 'success' : 'hint');
       logEl.textContent = msg;
+    }
+
+    function buildDownloadName(defaultName){
+      const base = (kmlFileName || '').trim();
+      if (!base) return defaultName;
+      const clean = base.toLowerCase().endsWith('.kml') ? base.slice(0,-4) : base;
+      return `${clean}_Linhas.kml`;
     }
 
     function initMap(){
@@ -243,118 +286,10 @@
     initMap();
 
     function updateAngleDial(){
-      const deg = Math.max(0, Math.min(359, parseFloat(angEl.value||'0')));
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.style.transform = 'rotate(0deg)';
-        const hand = angleDial;
-        if(hand){
-          hand.style.setProperty('--angle-rotate', deg+'deg');
-          hand.style.setProperty('--angle-deg', deg);
-          hand.style.transform = 'rotate(0deg)';
-          hand.style.setProperty('--deg', deg+'deg');
-          hand.style.setProperty('--needle', deg);
-          hand.style.position = 'relative';
-        }
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle', deg);
-      angleDial.querySelectorAll('*');
-      angleDial.style.setProperty('--needle-angle', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.style.setProperty('--angle', deg);
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.querySelectorAll;
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      // actual rotation of hand
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.querySelector(':after');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      // inject rotation via inline transform
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      // simpler:
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.position='relative';
-      angleDial.style.setProperty('transform','rotate(0deg)');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle', deg);
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.style.setProperty('--angle', deg);
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle', deg);
-      angleDial.style.setProperty('--deg', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle', deg);
-      angleDial.style.setProperty('--deg', deg+'deg');
-      // apply via inline CSS for pseudo-element
-      angleDial.style.setProperty('--rotation', deg+'deg');
-      angleDial.dataset.deg = deg;
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
-      angleDial.style.setProperty('--needle-rot', deg+'deg');
+      const deg = Math.max(0, Math.min(359, parseFloat(angEl.value || '0')));
+      angleDial.style.setProperty('--needle-rot', deg + 'deg');
+      const val = angleDial.querySelector('.angle-value');
+      if (val) val.textContent = `${deg}°`;
     }
 
     angEl.addEventListener('input', () => { angBoxEl.value = angEl.value; updateAngleDial(); updatePreview(); });
@@ -371,14 +306,8 @@
 
     kmlFileEl.addEventListener('change', async (e) => {
       const f = e.target.files && e.target.files[0];
-      if (!f) return;
-      const text = await f.text();
-      const res = extractPolygons(text);
-      if (!res || res.length === 0) { logMsg('Nenhum polígono válido encontrado no KML.', 'error'); btnGerar.disabled = true; btnProximo.disabled = true; return; }
-      polygons = res; selectedIdx = -1; polygonCoords = null; btnGerar.disabled = true; btnProximo.disabled = (polygons.length <= 1); dlEl.style.display = 'none';
-      drawAllPolygons(polygons);
-      const totalVerts = polygons.reduce((s,p)=>s+p.coords.length,0);
-      logMsg(`Carregados ${polygons.length} talhão(ões), ${totalVerts} vértices no total. Clique em um talhão para selecionar.`);
+      if (!f) { kmlFileName = ''; return; }
+      await loadKmlFile(f);
     });
 
     btnLimpar.addEventListener('click', () => { linesLayer.clearLayers(); logMsg('Pré-visualização removida.'); });
@@ -400,7 +329,7 @@
       const spacing = Math.max(1, parseFloat(espEl.value || '40'));
       const angleDeg = Math.max(0, Math.min(359, parseFloat(angEl.value || '0')));
       const altitude = Math.max(0, parseFloat(altEl.value || '30'));
-      const baseName = (selectedIdx>=0 && polygons[selectedIdx]?.name ? polygons[selectedIdx].name : 'Talhao');
+      const baseName = (selectedIdx>=0 && polygons[selectedIdx]?.name ? polygons[selectedIdx].name : 'Talhão');
       const prefix = (namePrefixEl.value || (baseName + ' ')).trim();
       const { pathLL, segmentsLL } = buildParallelPathInsidePolygon(polygonCoords, spacing, angleDeg, Math.max(0, parseFloat(borderEl.value || '0')));
       const finalPath = getProcessedPath(pathLL);
@@ -408,10 +337,10 @@
       const kml = exportPathToKml(finalPath, altitude, prefix);
       const blob = new Blob([kml], { type:'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
-      dlEl.href = url; dlEl.download = 'linhas-geradas.kml'; dlEl.style.display = 'inline-block';
+      dlEl.href = url; dlEl.download = buildDownloadName('KML_Linhas.kml'); dlEl.style.display = 'inline-block';
       addPathToProject(prefix || baseName, altitude, finalPath);
       updateExportLink();
-      logMsg(`Caminho continuo gerado para "${prefix || 'Talhao'}" com ${segmentsLL.length} faixas.`, 'success');
+      logMsg(`Caminho continuo gerado para "${prefix || 'Talhão'}" com ${segmentsLL.length} faixas.`, 'success');
       updateAngleDial();
     });
 
@@ -424,7 +353,7 @@
       items.forEach((pg, idx) => {
         const latlngs = pg.coords.map(p => [p.lat, p.lon]);
         const poly = L.polygon(latlngs, defaultStyle).addTo(polyLayer);
-        poly.bindTooltip((pg.name || `Talhao ${idx+1}`), {sticky: true});
+        poly.bindTooltip((pg.name || `Talhão ${idx+1}`), {sticky: true});
         poly.on('click', () => selectPolygon(idx, true));
         pg._leaflet = poly;
       });
@@ -487,7 +416,7 @@
       out += '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n  <Document>\n';
       out += '    <name>Caminho Boustrophedon</name>\n';
       out += '    <Style id="lineStyle"><LineStyle><color>ff5fa8fa</color><width>3</width></LineStyle></Style>\n';
-      const name = (prefix ? esc(prefix) : 'Missao ');
+      const name = (prefix ? esc(prefix) : 'Missão ');
       out += '    <Placemark>\n';
       out += `      <name>${name}Caminho</name>\n`;
       out += '      <styleUrl>#lineStyle</styleUrl>\n';
@@ -511,7 +440,7 @@
       out += '    <Style id="lineStyle"><LineStyle><color>ff5fa8fa</color><width>3</width></LineStyle></Style>\n';
       items.forEach((it) => {
         out += '    <Placemark>\n';
-        out += `      <name>${esc(it.name || 'Talhao')}</name>\n`;
+        out += `      <name>${esc(it.name || 'Talhão')}</name>\n`;
         out += '      <styleUrl>#lineStyle</styleUrl>\n';
         out += '      <LineString>\n';
         out += '        <tessellate>1</tessellate>\n';
@@ -531,7 +460,7 @@
       const kml = exportProjectToKml(projectPaths);
       const blob = new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
-      dlEl.href = url; dlEl.download = 'projeto-linhas.kml'; dlEl.style.display = 'inline-block';
+      dlEl.href = url; dlEl.download = buildDownloadName('KML_Linhas.kml'); dlEl.style.display = 'inline-block';
     }
 
     function parseCoordinates(text) {
@@ -560,7 +489,7 @@
         };
         for (let i = 0; i < placemarks.length; i++) {
           const pm = placemarks[i];
-          const name = getText(pm, 'name') || `Talhao ${i+1}`;
+          const name = getText(pm, 'name') || `Talhão ${i+1}`;
           const polys = pm.getElementsByTagName('Polygon');
           for (let j = 0; j < polys.length; j++) {
             const poly = polys[j];
@@ -597,10 +526,13 @@
       const step = Math.max(0.1, spacingMeters);
       const offsets = [];
       const lateral = Math.max(0, marginMeters || 0);
-      const startOff = minOff + lateral;
-      const endOff = maxOff - lateral;
-      if (endOff - startOff >= step) {
-        for (let off = startOff; off <= endOff + 1e-6; off += step) offsets.push(off);
+      // centraliza a malha para evitar linha grudada na borda
+      const startOff = minOff + lateral + step/2;
+      const endOff = maxOff - lateral - step/2;
+      if (endOff - startOff >= step/2) {
+        for (let off = startOff; off <= endOff + 1e-6; off += step) {
+          offsets.push(parseFloat(off.toFixed(3)));
+        }
       }
       const segments = [];
       for (const off of offsets) {
@@ -640,7 +572,8 @@
               continue;
             }
           }
-          segments.push({ a: p0, b: p1 });
+          const len = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+          if (len >= step * 0.6) segments.push({ a: p0, b: p1 });
         }
       }
       const segmentsLL = segments.map(seg => ({ a: toLL(seg.a), b: toLL(seg.b) }));
@@ -678,7 +611,6 @@
         const off = clamp(Math.min(len1,len2)*alpha, 0, Math.min(len1,len2)/2);
         const a = move(p1,p0,off);
         const b = move(p1,p2,off);
-        // quadratic bezier a -> p1 -> b
         for(let s=0;s<=samples;s++){
           const t = s/samples;
           const u = 1-t;
@@ -701,7 +633,33 @@
       return pathLL;
     }
 
+    async function loadKmlFile(file){
+      if (!file) return;
+      kmlFileName = file.name || '';
+      const text = await file.text();
+      const res = extractPolygons(text);
+      if (!res || res.length === 0) { logMsg('Nenhum polígono válido encontrado no KML.', 'error'); btnGerar.disabled = true; btnProximo.disabled = true; return; }
+      polygons = res; selectedIdx = -1; polygonCoords = null; btnGerar.disabled = true; btnProximo.disabled = (polygons.length <= 1); dlEl.style.display = 'none';
+      drawAllPolygons(polygons);
+      const totalVerts = polygons.reduce((s,p)=>s+p.coords.length,0);
+      logMsg(`Carregados ${polygons.length} talhão(ões), ${totalVerts} vértices no total. Clique em um talhão para selecionar.`);
+    }
+
     updateAngleDial();
+
+    const formCard = document.getElementById('formCard');
+    const mapWrap = document.querySelector('.map-wrap');
+    [formCard, mapWrap].forEach(zone => {
+      if (!zone) return;
+      zone.classList.add('drop-target');
+      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dropping'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dropping'));
+      zone.addEventListener('drop', async (e) => {
+        e.preventDefault(); zone.classList.remove('dropping');
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) await loadKmlFile(f);
+      });
+    });
   </script>
 </body>
 </html>
