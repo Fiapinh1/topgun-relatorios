@@ -159,9 +159,7 @@
           <a id="downloadLink" class="export-btn" href="#" download style="display:none;">
             <span class="icon-download" aria-hidden="true">⤓</span><span>Baixar KML</span>
           </a>
-          <a id="downloadLinkInline" class="export-btn" href="#" download style="display:none;">
-            <span class="icon-download" aria-hidden="true">⤓</span><span>Baixar KML</span>
-          </a>
+
           <button id="btnLimparPoligonos" class="secondary" title="Remove todas as áreas de exclusão">Limpar Áreas</button>
         </div>
 
@@ -480,7 +478,18 @@ Aviso: algumas linhas tem comprimento muito pequeno (ou foram totalmente excluid
         if (kmlRoot) kmlRoot = kmlRoot.cloneNode(true); else { kmlRoot = sourceDoc.createElement('kml'); kmlRoot.setAttribute('xmlns', 'http://www.opengis.net/kml/2.2'); kmlRoot.appendChild(sourceDoc.createElement('Document')); }
         let documentNode = kmlRoot.getElementsByTagName('Document')[0]; if (!documentNode) { documentNode = sourceDoc.createElement('Document'); kmlRoot.appendChild(documentNode); }
         const styleId = 'ptStyle';
-        if (!kmlRoot.querySelector(`#${styleId}`)) { const style = sourceDoc.createElement('Style'); style.setAttribute('id', styleId); const iconStyle = sourceDoc.createElement('IconStyle'); const color = sourceDoc.createElement('color'); color.textContent = 'ff00a5ff'; const scale = sourceDoc.createElement('scale'); scale.textContent = '1.1'; const icon = sourceDoc.createElement('Icon'); const href = sourceDoc.createElement('href'); href.textContent = 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'; icon.appendChild(href); iconStyle.appendChild(color); iconStyle.appendChild(scale); iconStyle.appendChild(icon); style.appendChild(iconStyle); documentNode.appendChild(style); }
+        if (!kmlRoot.querySelector(`#${styleId}`)) {
+          const style = sourceDoc.createElement('Style'); style.setAttribute('id', styleId);
+          const iconStyle = sourceDoc.createElement('IconStyle');
+          const color = sourceDoc.createElement('color'); color.textContent = 'ff2f78d8'; // ARGB (little-endian) -> blue-ish
+          const scale = sourceDoc.createElement('scale'); scale.textContent = '1.2';
+          const icon = sourceDoc.createElement('Icon'); const href = sourceDoc.createElement('href');
+          href.textContent = 'http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png';
+          icon.appendChild(href);
+          iconStyle.appendChild(color); iconStyle.appendChild(scale); iconStyle.appendChild(icon);
+          style.appendChild(iconStyle);
+          documentNode.appendChild(style);
+        }
         const folder = sourceDoc.createElement('Folder'); const fname = sourceDoc.createElement('name'); fname.textContent = 'Pontos Gerados'; folder.appendChild(fname);
         for (const p of points) { const pm = sourceDoc.createElement('Placemark'); const nm = sourceDoc.createElement('name'); nm.textContent = p.name; pm.appendChild(nm); const styleUrl = sourceDoc.createElement('styleUrl'); styleUrl.textContent = `#${styleId}`; pm.appendChild(styleUrl); const pt = sourceDoc.createElement('Point'); const coords = sourceDoc.createElement('coordinates'); coords.textContent = `${Number(p.lon).toFixed(6)},${Number(p.lat).toFixed(6)},${Number(p.alt ?? 0).toFixed(2)}`; pt.appendChild(coords); pm.appendChild(pt); folder.appendChild(pm); }
         documentNode.appendChild(folder); kmlDoc.appendChild(kmlRoot);
