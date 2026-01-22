@@ -21,16 +21,13 @@
       html, body { margin: 0; padding: 0; height: 100%; }
       body {
         font-family: system-ui,-apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
-        background:
-          radial-gradient(circle at 18% 18%, rgba(198,40,40,0.08), transparent 36%),
-          radial-gradient(circle at 80% 0%, rgba(22,143,75,0.08), transparent 38%),
-          linear-gradient(160deg,rgb(27 30 38)df7f4 0%,#f2f7ff 55%,#fdf7f4 100%);
+        background:#ffffff;
         color: var(--text);
       }
-      .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
-      .nav { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-      .nav a { background: #fff; color: var(--text); text-decoration: none; padding: 9px 14px; border-radius: 999px; font-weight: 600; border:1px solid var(--border); box-shadow:0 10px 20px rgba(15,23,42,0.06); }
-      .nav a:hover { border-color: var(--accent); transform: translateY(-1px); transition:.15s ease; }
+      .wrap { max-width: 1400px; margin: 24px auto; padding: 0 16px; }
+      .top-nav{display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px;}
+      .nav-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-weight:600;text-decoration:none;box-shadow:0 10px 20px rgba(15,23,42,0.06);transition:.15s ease;}
+      .nav-btn:hover{border-color:var(--accent);transform:translateY(-1px);}
       .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow:0 18px 40px rgba(15,23,42,0.12); }
       h1 { font-size: 1.4rem; margin: 0 0 8px; color: #ba9942; }
       p.helper { color: #0f172a; margin: 0 0 12px; font-size: .95rem; }
@@ -63,17 +60,74 @@
       .hint { color: #0f172a; }
       .footer { margin-top: 24px; color: var(--muted); font-size: .85rem; text-align: center; }
       a { color: var(--accent); }
-      #map { height: 60vh; width: 100%; margin-top: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow:0 14px 30px rgba(15,23,42,0.08); }
+      .layout-grid{display:grid;grid-template-columns:minmax(360px,460px) 1fr;gap:16px;align-items:start;}
+      .map-card{padding:18px;}
+      .map-wrap{position:relative;height:78vh;}
+      #map{height:100%;width:100%;border-radius:12px;border:1px solid var(--border);box-shadow:0 14px 30px rgba(15,23,42,0.08);}
+    .map-floating-actions{
+      position:absolute;top:16px;left:88px;
+      display:flex;gap:8px;z-index:1100;flex-wrap:wrap;
+    }
+    .map-floating-actions .mini-input{
+      display:flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,0.95);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:6px 8px;
+      box-shadow:0 10px 20px rgba(15,23,42,0.08);
+    }
+    .map-floating-actions .mini-input input{
+      width:72px;
+      padding:6px 8px;
+      border:1px solid var(--border);
+      border-radius:8px;
+    }
+      .export-btn{
+        display:inline-flex;align-items:center;gap:8px;
+        background:#ba9942;
+        color:#fff;text-decoration:none;
+        padding:12px 15px;border-radius:12px;font-weight:800;
+        border:1px solid rgba(0,0,0,0.08);box-shadow:0 12px 26px rgba(15,23,42,0.25);
+        letter-spacing:0.2px;
+        transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      }
+      .export-btn:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(15,23,42,0.3);filter:saturate(1.05);}
+      .export-btn:active{transform:translateY(0);box-shadow:0 10px 20px rgba(15,23,42,0.22);}
+      .export-btn .icon-download{
+        width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;
+        background:rgba(255,255,255,0.12);border-radius:6px;font-size:.95rem;
+        padding:4px;line-height:1;
+      }
+      .drop-target{position:relative;}
+      .drop-target.dropping::after{
+        content:'Solte o KML aqui';
+        position:absolute;inset:0;
+        background:rgba(22,143,75,0.1);
+        border:2px dashed var(--accent-2);
+        border-radius:12px;
+        color:var(--accent-2);
+        display:flex;align-items:center;justify-content:center;
+        font-weight:700;font-size:1.05rem;
+        z-index:1200;
+        pointer-events:none;
+      }
+      @media (max-width: 1200px){
+        .layout-grid{grid-template-columns:1fr;}
+        .map-wrap{height:72vh;}
+      }
+      @media (max-width: 800px){
+        .map-wrap{height:64vh;}
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <div class="nav">
-        <!-- <a href="index.html">Home</a>
-        <a href="gerar_linhas.html">Gerar Linhas</a>
-        <a href="relatorio_cotesia.html">Relatorio</a> -->
+      <div class="top-nav">
+        <!-- <a href="index.html" class="nav-btn">Home</a> -->
+        <a href="gerar_linhas.html" class="nav-btn">Gerar Linhas</a>
       </div>
-      <div class="card">
+      <div class="layout-grid">
+      <div class="card drop-target" id="formCard">
         <h1>Gerador de Pontos ao longo de Linhas (KML)</h1>
         <p class="helper">Carregue um KML defina a quantidade total de pontos e exporte um novo KML com as linhas originais mais pontos numerados.</p>
 
@@ -85,20 +139,9 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="field">
-            <label for="numPoints">Quantidade total de pontos</label>
-            <input id="numPoints" type="number" min="1" step="1" value="10" />
-          </div>
-          <div class="field">
-            <label for="prefixo">Prefixo do nome (opcional)</label>
-            <input id="prefixo" type="text" placeholder="Ex.: pts001" />
-          </div>
-        </div>
-
         <div class="row single">
           <div class="checkbox">
-            <input id="includeEndpoints" type="checkbox" />
+            <input id="includeEndpoints" type="checkbox" checked />
             <label for="includeEndpoints">Incluir extremidades (0% e 100%)</label>
           </div>
           <div class="checkbox">
@@ -112,14 +155,35 @@
         </div>
 
         <div class="actions">
-          <button id="btnGerar" disabled>Gerar KML</button>
-          <a id="downloadLink" class="secondary" href="#" download style="display:none;">Baixar KML Gerado</a>
+          <button id="btnGerar" disabled style="display:none;">Gerar KML</button>
+          <a id="downloadLink" class="export-btn" href="#" download style="display:none;">
+            <span class="icon-download" aria-hidden="true">⤓</span><span>Baixar KML</span>
+          </a>
+          <a id="downloadLinkInline" class="export-btn" href="#" download style="display:none;">
+            <span class="icon-download" aria-hidden="true">⤓</span><span>Baixar KML</span>
+          </a>
           <button id="btnLimparPoligonos" class="secondary" title="Remove todas as áreas de exclusão">Limpar Áreas</button>
         </div>
 
-        <div id="log" class="log hint">Aguardando arquivo KML...</div>
-        <div id="map"></div>
+        <div id="log" class="log hint" aria-live="polite">Aguardando arquivo KML...</div>
       </div>
+
+      <div class="card map-card">
+        <div class="map-wrap drop-target">
+          <div class="map-floating-actions">
+            <div class="mini-input">
+              <label for="numPoints" style="font-weight:700;font-size:.9rem;color:var(--text);">Pontos</label>
+              <input id="numPoints" type="number" min="1" step="1" value="10" />
+            </div>
+            <button id="btnGerarFloating" aria-label="Gerar pontos no mapa" disabled>Gerar Pontos</button>
+            <a id="downloadLinkFloating" class="export-btn" href="#" download style="display:none;padding:10px 12px;border-radius:10px;">
+              <span class="icon-download" aria-hidden="true">⤓</span>
+            </a>
+          </div>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
 
       <div class="footer">Processamento 100% no navegador.</div>
     </div>
@@ -132,14 +196,16 @@
       const logEl = el('log');
       const fileEl = el('kmlFile');
       const numEl = el('numPoints');
-      const prefixEl = el('prefixo');
       const endpointsEl = el('includeEndpoints');
       const warnSmallLinesEl = el('warnSmallLines');
       const applyExclusionsEl = el('applyExclusions');
       const btnEl = el('btnGerar');
       const dlEl = el('downloadLink');
+      const dlInlineEl = el('downloadLinkInline');
+      const dlFloatingEl = el('downloadLinkFloating');
       const btnExemplo = el('btnExemplo');
       const btnLimparPoligonos = el('btnLimparPoligonos');
+      const btnGerarFloating = el('btnGerarFloating');
 
       let loadedKmlText = '';
       let loadedKmlName = 'entrada.kml';
@@ -173,17 +239,21 @@
         map.on(L.Draw.Event.CREATED, (e) => exclusionLayer.addLayer(e.layer));
       }
 
-      fileEl.addEventListener('change', async (e) => {
-        const f = e.target.files && e.target.files[0];
-        if (!f) { btnEl.disabled = true; return; }
-        loadedKmlName = f.name || 'entrada.kml';
-        loadedKmlText = await f.text();
+      async function loadKmlFile(file){
+        if (!file) { btnEl.disabled = true; if (btnGerarFloating) btnGerarFloating.disabled = true; return; }
+        loadedKmlName = file.name || 'entrada.kml';
+        loadedKmlText = await file.text();
         const { linesCount, placemarks, lines } = scanKmlDetailed(loadedKmlText);
-        if (linesCount === 0) { logMsg('Nenhum LineString encontrado no KML.', true); btnEl.disabled = true; return; }
+        if (linesCount === 0) { logMsg('Nenhum LineString encontrado no KML.', true); btnEl.disabled = true; if (btnGerarFloating) btnGerarFloating.disabled = true; return; }
         currentLines = lines; currentPoints = [];
         drawLinesOnMap(currentLines); pointLayer.clearLayers();
-        btnEl.disabled = false;
-        logMsg(`Arquivo carregado: ${f.name} - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
+        btnEl.disabled = false; if (btnGerarFloating) btnGerarFloating.disabled = false;
+        logMsg(`Arquivo carregado: ${file.name} - ${linesCount} linha(s) em ${placemarks} placemark(s).`);
+      }
+
+      fileEl.addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        await loadKmlFile(f);
       });
 
       if (btnExemplo) {
@@ -219,23 +289,28 @@
 
       btnLimparPoligonos.addEventListener('click', () => { exclusionLayer.clearLayers(); logMsg('Áreas de exclusão removidas.'); });
 
-      btnEl.addEventListener('click', () => {
+      const triggerGerar = () => {
         try {
           if (!loadedKmlText) { logMsg('Nenhum arquivo KML carregado.', true); return; }
           const N = parseInt(numEl.value, 10); if (!(N >= 1)) { logMsg('Quantidade de pontos deve ser >= 1.', true); return; }
           const includeEnds = !!endpointsEl.checked;
-          const prefixo = (prefixEl.value || '').trim();
-          const result = processKml(loadedKmlText, { totalPoints: N, includeEndpoints: includeEnds, prefix: prefixo, warnSmallLines: !!warnSmallLinesEl.checked, applyExclusions: !!applyExclusionsEl.checked });
+          const result = processKml(loadedKmlText, { totalPoints: N, includeEndpoints: includeEnds, prefix: '', warnSmallLines: !!warnSmallLinesEl.checked, applyExclusions: !!applyExclusionsEl.checked });
           if (!result || !result.kml) { logMsg('Falha ao gerar KML.', true); return; }
           const outName = suggestOutName(loadedKmlName);
           const blob = new Blob([result.kml], { type: 'application/vnd.google-earth.kml+xml' });
           const url = URL.createObjectURL(blob);
-          dlEl.href = url; dlEl.download = outName; dlEl.style.display = 'inline-block';
+          [dlEl, dlInlineEl, dlFloatingEl].forEach(anchor => {
+            if (!anchor) return;
+            anchor.href = url; anchor.download = outName; anchor.style.display = 'inline-flex';
+          });
           currentPoints = result.pointsForMap; drawPointsOnMap(currentPoints);
           const msg = `Gerado com sucesso: ${result.totalPoints} ponto(s) em ${result.linesProcessed} linha(s).` + (result.warn || '');
           logMsg(msg, false, true);
         } catch (err) { console.error(err); logMsg('Erro inesperado ao processar o KML.', true); }
-      });
+      };
+
+      btnEl.addEventListener('click', triggerGerar);
+      if (btnGerarFloating) btnGerarFloating.addEventListener('click', triggerGerar);
 
       function suggestOutName(name) { const idx = name.lastIndexOf('.'); return (idx > 0 ? name.slice(0, idx) : name) + '-pontos.kml'; }
       function logMsg(msg, isError = false, success = false) { logEl.className = 'log ' + (isError ? 'error' : success ? 'success' : 'hint'); logEl.textContent = msg; }
@@ -427,6 +502,18 @@ ${xml}`;
       }
 
       window.addEventListener('DOMContentLoaded', initMap);
+      // Drag & Drop KML
+      const dropZones = [document.getElementById('formCard'), document.querySelector('.map-wrap')];
+      dropZones.forEach(zone => {
+        if (!zone) return;
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dropping'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dropping'));
+        zone.addEventListener('drop', async (e) => {
+          e.preventDefault(); zone.classList.remove('dropping');
+          const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (f) await loadKmlFile(f);
+        });
+      });
     </script>
   </body>
 </html>
