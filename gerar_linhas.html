@@ -182,14 +182,10 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row single">
           <div class="field">
             <label for="altura">Altitude das linhas (m)</label>
             <input id="altura" type="number" min="0" step="1" value="30">
-          </div>
-          <div class="field">
-            <label for="nomePrefixo">Prefixo do nome (opcional)</label>
-            <input id="nomePrefixo" type="text" placeholder="Ex.: PTS001">
           </div>
         </div>
 
@@ -197,7 +193,7 @@
           <div class="field">
             <label for="modoLinha">Modo das linhas</label>
             <select id="modoLinha">
-              <option value="normal">Normal (segmentos retos)</option>
+              <option value="normal">Normal (reto) </option>
               <option value="suavizado">Suavizado (curvas)</option>
             </select>
           </div>
@@ -219,6 +215,9 @@
         <div class="map-wrap drop-target">
           <div class="map-floating-actions">
             <button id="btnGerar" aria-label="Gerar linhas paralelas" disabled>Gerar Linhas</button>
+            <a id="downloadLinkFloat" class="export-btn" href="#" download style="display:none;padding:10px 12px;border-radius:10px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </a>
           </div>
           <div id="map"></div>
           <div class="angle-overlay">
@@ -249,7 +248,6 @@
     const angleDial = document.getElementById('angleDial');
     const altEl = document.getElementById('altura');
     const borderEl = document.getElementById('bordadura');
-    const namePrefixEl = document.getElementById('nomePrefixo');
     const modoLinhaEl = document.getElementById('modoLinha');
     const iterSuavizarEl = document.getElementById('iterSuavizar');
     const btnGerar = document.getElementById('btnGerar');
@@ -257,6 +255,7 @@
     const btnProximo = document.getElementById('btnProximo');
     const btnLimparProjeto = document.getElementById('btnLimparProjeto');
     const dlEl = document.getElementById('downloadLink');
+    const dlFloatEl = document.getElementById('downloadLinkFloat');
 
     let map, polygons = [], polygonCoords = null, selectedIdx = -1, kmlFileName = '';
     let polyLayer, linesLayer, projectLayer;
@@ -330,14 +329,17 @@
       const angleDeg = Math.max(0, Math.min(359, parseFloat(angEl.value || '0')));
       const altitude = Math.max(0, parseFloat(altEl.value || '30'));
       const baseName = (selectedIdx>=0 && polygons[selectedIdx]?.name ? polygons[selectedIdx].name : 'Talhão');
-      const prefix = (namePrefixEl.value || (baseName + ' ')).trim();
+      const prefix = (baseName + ' ').trim();
       const { pathLL, segmentsLL } = buildParallelPathInsidePolygon(polygonCoords, spacing, angleDeg, Math.max(0, parseFloat(borderEl.value || '0')));
       const finalPath = getProcessedPath(pathLL);
       drawPath(finalPath);
       const kml = exportPathToKml(finalPath, altitude, prefix);
       const blob = new Blob([kml], { type:'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
-      dlEl.href = url; dlEl.download = buildDownloadName('KML_Linhas.kml'); dlEl.style.display = 'inline-block';
+      [dlEl, dlFloatEl].forEach(a => {
+        if (!a) return;
+        a.href = url; a.download = buildDownloadName('KML_Linhas.kml'); a.style.display = 'inline-flex';
+      });
       addPathToProject(prefix || baseName, altitude, finalPath);
       updateExportLink();
       logMsg(`Caminho continuo gerado para "${prefix || 'Talhão'}" com ${segmentsLL.length} faixas.`, 'success');
@@ -456,11 +458,14 @@
     }
 
     function updateExportLink() {
-      if (!projectPaths || projectPaths.length === 0) { dlEl.style.display = 'none'; return; }
+      if (!projectPaths || projectPaths.length === 0) { [dlEl, dlFloatEl].forEach(a => { if (a) a.style.display='none'; }); return; }
       const kml = exportProjectToKml(projectPaths);
       const blob = new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' });
       const url = URL.createObjectURL(blob);
-      dlEl.href = url; dlEl.download = buildDownloadName('KML_Linhas.kml'); dlEl.style.display = 'inline-block';
+      [dlEl, dlFloatEl].forEach(a => {
+        if (!a) return;
+        a.href = url; a.download = buildDownloadName('KML_Linhas.kml'); a.style.display = 'inline-flex';
+      });
     }
 
     function parseCoordinates(text) {
